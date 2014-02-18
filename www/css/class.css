@@ -1,0 +1,499 @@
+
+/* BEGIN css reset */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/* END css reset */
+
+
+/* BEGIN common rules */
+body {
+	/*line-height: 1;
+	font-family: Verdana, Arial, Helvetica, sans-serif;*/
+	background: rgb(239, 238, 234);
+}
+
+h1 {
+	font-weight: bold;
+}
+
+h2 {
+	font-weight: bold;
+}
+
+a {
+	text-decoration: none;
+}
+
+a img {
+	border: 0;	/* thank you 'text-decoration' in IE */
+}
+
+hr {
+	margin-bottom: 20px;
+}
+/* END common rules */
+
+
+/* BEGIN layout */
+#page {
+	width: 925px;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;
+}
+
+#header {
+	height: 28px;
+	background: url('../images/header.jpg') repeat-x;
+        border-bottom: 1px solid rgb(204,204,204);
+}
+
+/*
+#header div#motto {
+	color: gray;
+	font-style: italic;
+	font-weight: bold;
+	font-size: 16px;
+	margin: 0 auto;
+	width: 925px;
+	padding: 40px 0 0 0;
+}
+
+#header div#motto p {
+	position: relative; left: -20px;
+}
+
+p.author {
+	padding-left: 430px;
+}
+*/
+
+#topbar {
+	/*font-family: "Palatino Linotype", Times, serif;*/
+	/*font-size: 120%;*/
+	background: black;
+	height: 45px;
+	text-align: right;
+	padding-right: 0px;
+	border-bottom: 1px solid rgb(204,204,204);
+}
+
+#topbarmenu{
+	width: 925px;
+	margin: 0 auto;
+	line-height: 1.6em;
+}
+
+#main-page {	/* for left-column and middle-page */
+	background: rgb(239, 238, 234);
+	background: white;
+	/*width: 925px;*/
+	min-height: 800px;
+	font-family: "Palatino Linotype", Times, serif;
+	/*line-height: 100%;*/
+	text-align: justify;
+	border-radius: 0 0 12px 12px;
+	padding: 0px 30px 50px 30px;	
+	margin-top: -2px;
+}
+
+
+#footer {
+	clear: both;	/* under left-column */
+	color: rgb(50%,50%,50%);
+	text-align: right;
+	padding: 10px 30px;
+	/*border-top: 2px solid white;*/
+}
+/* END layout */
+
+
+#topbar ul {
+	list-style: none;
+}
+
+#topbar li {
+	display: inline-block;
+	padding: 5px 20px 5px 20px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border-right: 2px solid rgb(204,204,204);
+        font-weight: bold;
+        font-family: Verdana, Arial, sans-serif;
+        font-size: 80%;
+        opacity: 0.8;
+}
+
+#topbar li.end {
+    border: 0;
+}
+
+#topbar h2 {
+	padding: 40px 0px 5px;
+}
+
+#topbar a:link {
+	color: orange;
+}
+
+#topbar a:visited {
+	color: orange;
+}
+
+/* blog style -- for homepage */
+#blog-style {
+	font-size: 105%;
+	padding: 0 30px 30px 30px; 	
+}
+
+#blog-style div.comment {
+	/*padding: 0 10px 10px 10px;*/
+	padding: 0 20px 20px 20px;
+	/*border-bottom: 1px solid rgb(204,204,204);*/
+	/*height: 180px;*/
+}
+
+#blog-style div.comment h1 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 130%;
+	text-align: left;	
+	padding-top: 25px;
+	padding-bottom: 15px;
+	border-top: 2px solid rgb(204,204,204);
+}
+
+#blog-style a:link {
+	color: black;
+}
+
+#blog-style a:visited {
+	color: black;
+}
+
+#blog-style p.description {
+	margin-bottom: 20px;
+}
+
+#blog-style p.label {
+	font-size: 80%;
+	margin: 0 0 10px 0;
+}
+
+#blog-style img.right {
+	float: right;
+	margin: 0 0 0 20px;
+}
+
+
+/* normal text style */
+#middle-page {
+	font-size: 105%;
+	line-height: 1.5em;
+	padding: 0 30px 30px 30px; 
+}
+
+#middle-page h1 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 140%;
+    /*line-height: 1.5em;
+	letter-spacing: 3px;*/
+	margin: 0px;
+	text-align: center;
+	color: black;
+	padding-bottom: 30px;
+	padding-top: 25px;
+}
+
+#middle-page h2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 120%;
+	text-align: center;	
+	padding-top: 25px;
+	padding-bottom: 15px;
+}
+
+#middle-page h3 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 100%;
+	font-weight: bold;
+	text-align: left;	
+	padding-top: 25px;
+	padding-bottom: 10px;	
+}
+
+#middle-page a:link {
+	color: blue;
+}
+
+#middle-page a:visited {
+	color: orange;
+}
+
+#middle-page img {
+	padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+#middle-page img.right {
+	float: right;
+	margin: 5px 0 0 12px;
+	padding: 0;
+}
+
+#middle-page img.left {
+	float: left;
+	margin: 5px 12px 0 0;
+	padding: 0;
+}
+
+#middle-page td {
+	padding: 2px;
+}
+
+
+#middle-page ul {
+	padding: 15px 0 15px 50px;
+}
+
+#middle-page ol {
+	padding: 15px 0 15px 50px;
+}
+
+/* devel style */
+#devel-page {
+
+}
+
+#devel-page div.comment {
+    padding: 0 0 10px 0;
+    border-bottom: 2px solid black;
+}
+
+#devel-page p#description {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    font-style: italic;
+}
+
+#devel-page p.solution {
+    margin: 5px 0 5px 0;
+    padding: 10px;
+    border-left: 10px solid orange;
+}
+
+/* others */
+.ref {
+	padding-bottom: 5px;
+}
+
+.item {
+	padding-bottom: 5px;
+}
+
+.bf {
+	font-weight: bold;
+}
+
+.i {
+	font-style: italic;
+}
+
+img.right-more {
+    float: right;
+}
+
+img.right-01 {
+	float: right;
+	margin: -2px 0 0 30px;
+}
+
+img.center {
+    display: block;
+    margin: 0 auto;
+}
+
+table.small {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 70%;
+	margin: 20px 0 20px 0;
+	line-height: 1.5em;
+}
+
+table.stretch {
+    border-spacing: 10px;
+    background-color: lightgoldenrodyellow;
+    border-collapse: separate;
+}
+
+/*
+table.stretch td {
+    padding: 150px;
+    background-color: red;
+}
+*/
+
+table.small th {
+    font-weight: bold;
+}
+
+table.small .w150 {
+    width: 150px;
+}
+
+caption {
+    padding-bottom: 10px;
+}
+
+td.fixed {
+    width: 80px;
+    text-align: center;
+}
+
+tr.end {
+    border-bottom: 1px dotted gray;
+}
+
+pre {
+	margin: 15px 0 10px 0;
+	padding: 10px;
+	/*font-family: Consolas, Monaco, Lucida Console;*/
+	font-family: "Courier New", Consolas, Monaco;
+	border: 1px solid #d4d4d4;
+	background: #F6F4F0;
+	font-size: 14px;
+	line-height: 1.3em;
+}
+
+code {
+	/*font-family: Consolas, Monaco, Lucida Console;*/
+	font-family: "Courier New", Consolas, Monaco;
+	font-size: 14px;
+}
+
+.flag {
+    padding-bottom: 10px;
+}
+
+.equip {
+    font-style: italic;
+}
+
+div.small-bar {
+    margin: 40px 0 0 0;
+    padding: 5px 0 5px 0;
+    text-align: center;
+    font-weight: bold;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 80%;
+    border: 1px solid gray;
+}
+
+div.left {
+	float: left;
+	width: 60%;
+}
+
+div.right {
+	float: right;
+	padding: 0 30px 0 0;
+}
+
+div.right img {
+	border-left: 4px solid black;
+	border-right: 4px solid black;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
+#contact p {
+	padding: 5px 5px 10px 5px;
+}
+
+#contact a {
+	color: blue;
+}
+
+span.github {
+	position: relative; bottom: 5px;
+}
+
+p.icons-01 {
+	
+}
+
+p.icons-02 {
+	position: relative; top: 25px;
+}
+
+div.comment .box {
+    width: 95%;
+    margin: 10px 15px 10px 5px;
+    //padding: 10px;
+}
+
+div.comment .box th {
+    font-weight: bold;
+    background: #F6F4F0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 90%;
+    padding: 5px;
+}
+
+div.comment .box tr.row td {
+    padding: 25px;
+    margin: 5px;
+}
+
+div.comment p.date {
+    font-size: 10px;
+    color: gray;
+    text-align: right;
+}
+
+table.list {
+    font-size: 90%;
+    text-align: left;
+}
+
+.w60per {
+    width: 60%;
+}
+
+.w35per {
+    width: 50%;
+}

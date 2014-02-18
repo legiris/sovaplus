@@ -1,0 +1,118 @@
+
+{block content}
+
+<div id="middle-page">
+    <div id="devel-page">
+
+        <!--<p id="description">Here there is a space for solving my common or less common problems with development and for simple instructions.</p>-->
+
+        <div class="comment">
+            <h2>What do I need to install after Windows' reinstallation?</h2>
+            <p>I find Windows is an unstable system, sometimes something stops working, so I must reinstall it.
+                There is a&nbsp;list of my favourite programs or applications. Of course, Microsoft Word is <span class="bf">not</span>
+            my favourite application, it is terrible, but I need it.</p>
+        
+            <table class="box">
+                <tr>
+                    <th>Windows</th>
+                    <th>Development</th>
+                    <th>Text / Image</th>
+                </tr>
+                <tr class="row">    
+                    <td>AVG</td>
+                    <td><a href="http://www.apachefriends.org/index.html" title="apachefriends.org" target="_blank">Xampp</a></td>
+                    <td>TeX Live</td>
+                </tr>
+                <tr class="row">                
+                    <td>Unreal Commander</td>
+                    <td><a href="http://www.oracle.com/technetwork/server-storage/virtualbox/downloads/index.html?ssSourceSiteId=ocomcz" title="oracle.com" target="_blank">VirtualBox</a></td>
+                    <td>Photoshop</td>
+                </tr>
+                <tr class="row">
+                    <td>ALZip</td>
+                    <td><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html" title="oracle.com" target="_blank">Java SE Development Kit 7 x64</a></td>
+                    <td>JPEG Resampler</td>
+                </tr>
+                <tr class="row">
+                    <td>Google Chrome</td>
+                    <td><a href="https://netbeans.org/downloads/" target="_blank" title="netbeans.org">NetBeans 7.4</a></td>
+                    <td>IrfanView</td>
+                </tr>    
+                <tr class="row">
+                    <td>Mozzila Firefox</td>
+                    <td>Lamp</td>
+                    <td>Adobe Reader</td>
+                </tr> 
+                <tr class="row">
+                    <td>Microsoft Office</td>
+                    <td>Git</td>
+                    <td></td>
+                </tr>
+                <tr class="row">
+                    <td>Steam</td>
+                    <td>Composer</td>
+                    <td></td>
+                </tr>
+                <tr class="row">
+                    <td>CCleaner</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <p class="date">Date: 2014-02-02</p>
+        </div>
+        
+        <div class="comment">
+            <h2>How to easily install Symfony2 in Linux/Windows</h2>
+            <p>The best way is to use <a href="https://getcomposer.org/download/" title="getcomposer.org" target="_blank">Composer</a>
+                for Linux or Windows and
+                run the following command:</p>
+            <pre>composer create-project symfony/framework-standard-edition [directory]/ 2.4.1</pre>
+            <p>So if I have created a new folder <code>blog</code> for my new project, I can use these commands:</p>
+            <pre>cd blog
+composer create-project symfony/framework-standard-edition ./ 2.4.1</pre>
+            <p>Note: Symfony2 framework uses as a default page <code>app_dev.php</code> instead of <code>index.php</code>,
+                so my path to the
+                project can be like this:</p><pre>http://localhost/web/blog/web/app_dev.php</pre>
+            <p>More information:</p>
+            <p><a href="http://symfony.com/download" target="_blank" title="symfony.com">Symfony Standard Edition</a></p>
+            <p class="date">Date: 2013-12-28 | Update: 2014-02-02</p>
+        </div>
+       
+        <div class="comment">
+            <h2>VirtualBox &#8211; copying a virtual HD and UUID error</h2>
+            <p>I want only to copy my vmdk. file from disk E: to disk C:, because I need an another disk with the same content.
+               After this I rename the copied file and create a new virtual machine without HD. Then I want to add my disk,
+               but I get this error: <span class="i">Cannot register the hard disk 'C:\Lamp\lamp.vmdk' because a hard disk
+               'E:\Lamp\lamp-default.vmdk' with UUID already exists.</span>
+            </p>
+            <p class="solution">The solution: to generate a new UUID using Command line in Windows.</p>
+            <pre>C:\Users\Admin>"c:\Program Files\Oracle\VirtualBox\VBoxManage" internalcommands sethduuid
+"c:\Lamp\lamp.vmdk"</pre>
+            <p>More information:</p>
+            <p><a href="http://www.randallkent.com/virtual-box/change-uuid-of-virtualbox-vdi" target="_blank" title="randallkent.com">Change UUID of
+                VirtualBox vdi</a></p>
+            <p class="date">Date: 2014-02-02</p>
+        </div>
+        
+        <div class="comment">
+            <h2>Ubuntu &#8211; Waiting for network configuration...</h2>
+            <p>This error occurs during a boot of Ubuntu. The first message is <span class="i">Waiting for network configuration...</span>,
+               then <span class="i">Waiting up to 60 more seconds for network configuration...</span> The system works, but
+               the network will not work. We can enter a command <code>ifconfig</code>, probably we can see only localhost network,
+               so enter <code>ifconfig -a</code>, in this case we can see all connections (e.g. eth2, eth3, lo). If so, 
+               we check a file <code>70-persistent-net.rules</code> in <code>/etc/udev/rules</code> &#8211; we should see network for e.g. eth0,
+               eth1, eth2, eth3.
+            </p>
+            <p class="solution">The solution: this error can be caused by a file <code>70-persistent-net.rules</code> in <code>/etc/udev/rules</code>.
+                Remove it and then restart the system.</p>
+            <p class="date">Date: 2014-02-02</p>
+        </div>
+    </div><!-- #devel-page -->
+</div><!-- #middle-page -->
+{/block}
+
+Symfony2 na subdoméně Wedosu
+na produkci hodit app.dev a nastavit $kernel = new AppKernel('prod', true);
+
+parametr 'prod' a 'No route found for "GET"' (?)

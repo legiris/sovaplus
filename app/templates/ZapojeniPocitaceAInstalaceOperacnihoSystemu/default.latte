@@ -1,0 +1,105 @@
+﻿{block content}
+
+<div id="middle-page">
+
+<h1>Zapojení počítače a instalace OS (3. díl)</h1>
+
+<p>
+Po montáži všech komponentů do počítačové skříně nás čeká patrně ještě více zajímavější část, kterou představuje správné zapojení počítače. Pokud počítačová skříň umožňuje
+organizaci kabelů (cable management), využijme této možnosti a hlavní kabely vyvedeme přes vnější stranu počítačové skříně tak, aby zbytečně nezabíraly místo ve skříni. Stejně tak kvalitnější
+zdroje umožňují připojit pouze potřebné kabely. Jako první zapojíme nejsilnější svazek kabelů &#8211; ATX kabel,
+který zabezpečuje napájení základní desky. Pak musíme ze zdroje zajistit také dodatečné napájení pro procesor a nezapomene ani na zapojení ventilátoru procesoru do konektoru
+CPU_FAN na základní desce.
+</p>
+<img src="{$basePath}/images/pc/zalman-management.jpg" width="510" height="383" title="PC cable management" alt="PC cable management" />
+
+<p class="text">
+Pro zapojení SATA zařízení, tedy pevných disků a DVD mechaniky, potřebujeme datový (SATA) a&nbsp;napájecí kabel. Čtečku paměťových karet obvykle zapojujeme do USB portu přímo
+na základní desce. O&nbsp;napájení grafické karty se přímo ze zdroje stará 6 pinový konektor popř. dva 6 pinové konektory. Ventilátory umístěné ve skříni zapojujeme do konektorů
+na základní desce &#8211; nejčastěji se jedná o&nbsp;konektory s označením SYS_FAN1 a SYS_FAN2. Nakonec je potřeba propojit kabely z předního panelu počítače s konektory na základní
+desce. Jde např. o tlačítko pro zapnutí/vypnutí počítače, tlačítko reset, audio vstupy, USB porty a další. Postup zapojení předního panelu je popsán v manuálu základní desky
+a&nbsp;v&nbsp;manuálu počítačové skříně. Pokud zaměníme polaritu konektoru, tak příslušné tlačítko nebo LED dioda nebude po zapnutí počítače fungovat a nebo se počítač nepodaří spustit.
+Zapojování relativně drobných konektorů předního panelu se může zdát trochu nepřehledné, k ruce se tak může hodit třeba pinzeta, kterou jednotlivé konektory můžeme přidržet.<br />
+Na rozmístění a celkovém uspořádání kabelů či jejich vyvázání bychom si měli dát aspoň trochu záležet. Samozřejmě čím menší nebo levnější skříň, tím máme k dispozici
+méně místa a bude potřeba si s tím o to víc pohrát. Pro představu takto to vypadá v mojí skříni typu midi-tower o rozměrech 20 x 50 x 56 cm
+a je to přesně ukázka toho, jak to vypadat zkrátka nemá. Bohužel se mi to nechce předělávat, možná až s&nbsp;upgradem základní desky a procesoru.
+</p>
+<img src="{$basePath}/images/pc/pc_cable_managementI.jpg"  width="510" height="339" title="PC Cable Management" alt="PC Cable Management" />
+
+<p class="text">A ještě pohled z druhé strany.</p>
+<img src="{$basePath}/images/pc/pc_cable_managementII.jpg"  width="510" height="339" title="PC Cable Management" alt="PC Cable Management" />
+
+<p class="text">
+Před prvním spuštěním počítače k počítači ještě připojíme LCD monitor &#8211; nejlépe přes digitální rozhraní, tedy konektor DVI na grafické kartě a DVI konektor monitoru.
+V dalším kroku můžeme zapojit počítač do elektrické sítě a přepneme vypínač počítačového zdroje do pozice ON. Dále znovu zkontrolujeme, zda máme všechny potřebné komponenty
+správně zapojenené do základní desky a&nbsp;zdroje. Po stisknutí tlačítka pro zapnutí počítače by mělo dojít k nastartování systému. V tomto případě se podíváme, zda se všechny
+ventilátory ve skříni točí a na monitoru se objeví bootovací obrazovka pro vložení CD, ze kterého budeme instalovat operační systém.<br /> 
+Pokud systém nenaběhne, tak máme
+jistotu, že je něco špatně. Znovu zkontrolujeme, zda jsme něco neopomenuli, zda jsme správně zapojili konektory čelního panelu, zda máme zapnutý zdroj a vše, co nás
+napadne, abychom vyloučili vlastní chybu, protože jinak se také samozřejmě může jednat o technickou závadu, kdy některý z komponentů nemusí fungovat. Pak se postupuje tak,
+že se komponent, na který máme podezření, vyzkouší na jiné PC sestavě. Pokud doma takovou možnost nemáme, tak zřejmě nezbude nic jiného než navštívit servis. 
+</p>
+
+<h2>Instalace operačního systému (Windows)</h2>
+
+<p>
+V našem případě se bude jednat o Windows 7. Na instalaci Windows není až tak nic magického.
+Ovšem pokud hodláme instalovat systém na SSD disk, je více než dobré ho mít v režimu AHCI, tedy v BIOSu v&nbsp;záložce "Integrated Peripherals" bychom měli mít SATA AHCI Mode
+nastaven na hodnotu AHCI a ne IDE. Dodatečná změna režimu z IDE na AHCI nemusí být úplně
+triviální, nicméně základní postup je uveden v článku <a href="http://extrawindows.cnews.cz/jak-zmenit-rezim-disku-z-ide-na-ahci-bez-reinstalace-windows"
+title="Jak změnit režim disku z IDE na AHCI bez reinstalace Windows">Jak změnit režim disku z IDE na AHCI bez reinstalace Windows</a>. 
+Bootovací obrazovka nás pak přímo vyzve ke vložení CD s operačním systémem.
+Po vložení CD automaticky začne proces instalace. Nejprve potvrdíme nastavení jazyka, formátu času a měny, v dalším kroku odsouhlasíme
+licenční podmínky a provedeme výběr disku, na který se má nainstalovat operační systém. Windows automaticky na daném disku vytvoří systémový oddíl o velikosti 100 MB,
+takže na disku budeme mít 2 oddíly. To si později můžeme prohlédnout ve Správě disků, kam se dostaneme přes nabídku Ovládací panely &rarr; Systém a zabezpečení &rarr;
+Vytvořit a formátovat oddíly na pevném disku. V rámci instalace pak ještě musíme vyplnit uživatelské jméno, heslo, název počítače a budeme mít také možnost se rovnou
+připojit k síti či pořešit zabezpečení počítače, ale toto můžeme nechat na později.
+</p>
+
+<p>
+Pokud máme v počítači SSD disk, tak doporučím se ještě podívat na článek <a href="http://pctuning.tyden.cz/software/ladeni-windows/17030-optimalizace-windows-7-pro-ssd-co-funguje-a-co-ne"
+title="Optimalizace Windows 7 pro SSD">Optimalizace Windows 7 pro SSD</a>. V podstatě jde o následující kroky:
+</p>
+<ul>
+<li>zkontrolovat, zda je oddíl disku správně zarovnán &#8211; to poznáme např. z programu AS SSD Benchmark, pokud u velikosti oddílu vidíme zelené "OK", tak je
+zarovnání v pořádku, dál tam také máme informaci o použitém řadiči. Běžně se můžeme setkat s řadičem amdsata.sys (AMD řadič), ten je samozřejmě možné změnit
+na msahci.sys (řadič od Microsoftu).</li>
+<li>zakázat defragmentaci &#8211; viz Nabídka Start &rarr; Počítač &rarr; Disk C &rarr; Vlastnosti &rarr; Nástroje &rarr; Defragmentovat &rarr; Konfigurovat plán.</li>
+<li>zakázat hibernaci &#8211; na disku C bychom neměli mít soubor hiberfil.sys, lze udělat z příkazové řádky pomocí příkazu powercfg -h off.</li>
+<li>obnovení systému &#8211; body pro vytváření obnovení systému lze zakázat a nebo můžete nastavit maximální velikost, Ovládací panely &rarr;
+Systém a zabezpečení &rarr; Ochrana systému.</li>
+<li>stránkovací soubor &#8211; obecně pokud máme v počítači dostatek paměti (RAM), není stránkovací soubor potřeba, ovšem jeho úplné zakázání spíše
+nedoporučuji a je lepší "nějaký" stránkovací soubor mít, některé programy (viz <a href="http://www.dpreview.com/forums/thread/2641293#forum-post-32700564"
+title="Does Photoshop CS4 Require a Pagefile?">Does Photoshop CS4 Require a Pagefile?</a>) ho mohou "vyžadovat". Pro RAM 12 GB tak ponechávám stránkovací
+soubor o velikosti 4 GB. Nastavení: Ovládací panely &rarr; Systém a zabezpečení &rarr; Upřesnit &rarr; Výkon: Nastavení &rarr; Upřesnit: Virtuální paměť &rarr; Změnit.</li>
+
+</ul>
+
+
+<p>
+Po nainstalování operačního systému nám ještě bude zbývat instalace ovladačů jednotlivých zařízení, tedy ovladače grafické karty, základní desky,
+popř. i zvukové karty, myši, klávesnice apod. Potom můžeme přistoupit k instalaci běžných aplikací &#8211; v závorce je uvedeno, co používám a s čím
+mám tedy vesměs dobré zkušenosti, výjimkou je Word, ale bohužel Word je pro mě nutnost :D Místo balíku Microsoft Office můžete samozřejmě použít balík OpenOffice, nicméně
+ta kompatibilita není 100%, ale na domácí použití to stačit může.
+</p>
+<ul>
+<li>prohlížeč (Google Chrome, Mozilla Firefox)</li>
+<li>souborový manažer (Unreal Commander)</li>
+<li>archivátor (ALZip)</li>
+<li>antivirový program (AVG Free)</li>
+<li>balík kancelářských aplikací (Microsoft Office)</li>
+<li>grafika (Photoshop Portable, IrfanView, JPEG Resampler)</li>
+<li>práce s PDF (Adobe Reader, PDFCreator)</li>
+<li>přehrávač (SimpleTV, VLC media player)</li>
+<li>základní údržba (CCleaner)</li>
+</ul>
+ 
+<div class="small-bar">
+<p>
+<a href="{$basePath}/stavime-pocitac-pokracovani/" title="Sestavení počítače">&lt;&lt; Předchozí</a>
+</p>
+</div>
+
+</div>
+
+{/block}

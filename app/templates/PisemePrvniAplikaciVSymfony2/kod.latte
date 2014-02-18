@@ -1,0 +1,226 @@
+{block content}
+
+<div id="middle-page">
+
+<h1>Zdrojový kód</h1>
+
+<p><code>Resources/config/routing.yml</code></p>
+
+<pre>
+acme_blog_homepage:
+    pattern: /
+    defaults: <?php echo '{'; ?> _controller: AcmeBlogBundle:Homepage:index <?php echo '}'; ?>
+
+    
+acme_blog_article:
+    path: /article/<?php echo '{'; ?>id<?php echo '}'; ?>
+
+    defaults: <?php echo '{'; ?> _controller: AcmeBlogBundle:Article:article <?php echo '}'; ?>
+</pre>
+
+
+<p><code>BaseController.php</code></p>
+
+<pre>
+&lt;?php
+
+namespace Acme\BlogBundle\Controller;
+
+use Acme\BlogBundle\Entity\Article;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+/**
+ * Base controller for all application controllers.
+ *
+ * @author Admin
+ */
+class BaseController extends Controller
+{
+	
+}
+</pre>
+
+<p><code>HomepageController.php</code></p>
+
+<pre>
+&lt;?php
+
+namespace Acme\BlogBundle\Controller;
+
+class HomepageController extends BaseController
+{
+    /**
+     * vybere a zobrazi vsechny clanky
+     * @return array
+     */
+    public function indexAction()
+    {	
+      return $this->render('AcmeBlogBundle:Homepage:index.html.twig', array(
+        'articles' => $this->getDoctrine()->getRepository('AcmeBlogBundle:Article')
+            ->findBy(
+               array(),
+               array('id' => 'DESC')
+          ),
+        ));	
+    }
+}
+</pre>
+
+
+<p><code>ArticleController.php</code></p>
+
+<pre>
+&lt;?php
+
+namespace Acme\BlogBundle\Controller;
+
+/**
+ * Description of ArticleController
+ *
+ * @author Admin
+ */
+class ArticleController extends BaseController
+{
+	/**
+	 * zobrazi detail clanku
+	 * @param int $id
+	 * @return array
+	 */
+	public function ArticleAction($id)
+	{
+		return $this->render('AcmeBlogBundle:Article:article.html.twig', array(
+			'article' => $this->getDoctrine()
+				->getRepository('AcmeBlogBundle:Article')
+				->findOneBy(array(
+					'id' => $id))
+		));
+	}
+	
+	/**
+	 * vybere nejnovejsi clanky
+	 * @param int $count
+	 * @return array
+	 */
+	public function latestArticlesAction($count)
+	{
+		$articles = $this->getDoctrine()->getManager()->createQuery('
+			SELECT a
+			FROM AcmeBlogBundle:Article a
+			ORDER BY a.date DESC			
+		')->setMaxResults($count)->getResult();
+		
+		return $this->render('AcmeBlogBundle:Article:latestArticles.html.twig',
+			array('news' => $articles)
+		);
+	}
+	
+}
+</pre>
+
+<p><code>Resources/views/layout.html.twig</code></p>
+
+<pre>
+<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/layout.html.twig #<?php echo '}'; ?>
+
+<?php echo '{'; ?>% extends '::base.html.twig' %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block stylesheets %<?php echo '}'; ?>
+
+&lt;link rel="stylesheet" href="<?php echo '{'; ?><?php echo '{'; ?> asset('bundles/acmeblog/css/blog.css') <?php echo '}'; ?><?php echo '}'; ?>" /&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block title 'Můj blogísek' %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block body %<?php echo '}'; ?>
+&lt;div id="page"&gt;
+  &lt;div id="top-menu"&gt;&lt;/div&gt;
+  &lt;div id="left-page"&gt;	
+   <?php echo '{'; ?>% block menu %<?php echo '}'; ?>
+
+    <?php echo '{'; ?><?php echo '{'; ?> render(controller('AcmeBlogBundle:Article:latestArticles', <?php echo '{'; ?>'count': 5<?php echo '}'; ?> )) <?php echo '}'; ?><?php echo '}'; ?>
+
+   <?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+
+  &lt;/div&gt;
+  &lt;div id="middle-page"&gt;
+   <?php echo '{'; ?>% block content %<?php echo '}'; ?>
+
+   <?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+
+  &lt;/div&gt;
+&lt;/div&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+
+<p><code>Resources/views/Homepage/index.html.twig</code></p>
+
+<pre>
+<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+
+<?php echo '{'; ?>% extends 'AcmeBlogBundle::layout.html.twig' %<?php echo '}'; ?>
+
+
+<?php echo '{'; ?>% block content %<?php echo '}'; ?>
+
+  <?php echo '{'; ?>% for article in articles %<?php echo '}'; ?>
+
+    &lt;div class="article"&gt;
+      &lt;h1&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getTitle <?php echo '}'; ?><?php echo '}'; ?>&lt;/h1&gt;
+      &lt;p&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getText|slice(0, 200) <?php echo '}'; ?><?php echo '}'; ?> ... &lt;a href="<?php echo '{'; ?><?php echo '{'; ?> path('acme_blog_article',
+                 <?php echo '{'; ?>'id': article.getId<?php echo '}'; ?>) <?php echo '}'; ?><?php echo '}'; ?>" 
+                title="<?php echo '{'; ?><?php echo '{'; ?> article.getTitle <?php echo '}'; ?><?php echo '}'; ?>"&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+      &lt;p class="date"&gt;Přidáno: <?php echo '{'; ?><?php echo '{'; ?> article.getDate|date('d.m.Y | H:i') <?php echo '}'; ?><?php echo '}'; ?>&lt;/p&gt;
+    &lt;/div&gt;
+  <?php echo '{'; ?>% endfor %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+
+<p><code>Resources/views/Article/article.html.twig</code></p>
+
+<pre>
+<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/article.html.twig #<?php echo '}'; ?>
+
+<?php echo '{'; ?>% extends 'AcmeBlogBundle::layout.html.twig' %<?php echo '}'; ?>
+
+
+<?php echo '{'; ?>% block content %<?php echo '}'; ?>
+
+&lt;div class="article"&gt;
+  &lt;h1&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getTitle <?php echo '}'; ?><?php echo '}'; ?>&lt;/h1&gt;
+  &lt;p&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getText <?php echo '}'; ?><?php echo '}'; ?>&lt;/p&gt;
+  &lt;p class="date"&gt;Přidáno: <?php echo '{'; ?><?php echo '{'; ?> article.getDate|date('d.m.Y | H:i') <?php echo '}'; ?><?php echo '}'; ?>&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id="comments"&gt;
+  &lt;h3&gt;Přidat komentář&lt;/h3&gt;
+
+  &lt;h3&gt;Komentáře:&lt;/h3&gt;
+&lt;/div&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+
+<p><code>Resources/views/Article/latestArticles.html.twig</code></p>
+
+<pre>
+<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/menu.html.twig #<?php echo '}'; ?>
+
+
+<?php echo '{'; ?>% block menu %<?php echo '}'; ?>
+
+ &lt;ul&gt;
+  &lt;li class="title"&gt;Nejnovější&lt;/li&gt;
+  <?php echo '{'; ?>% for new in news %<?php echo '}'; ?>
+
+   &lt;li&gt;&lt;a href="<?php echo '{'; ?><?php echo '{'; ?> path('acme_blog_article', <?php echo '{'; ?>'id': new.getId<?php echo '}'; ?>) <?php echo '}'; ?><?php echo '}'; ?>"&gt;<?php echo '{'; ?><?php echo '{'; ?> new.getTitle <?php echo '}'; ?><?php echo '}'; ?>&lt;/a&gt;&lt;/li&gt;
+  <?php echo '{'; ?>% endfor %<?php echo '}'; ?>
+
+ &lt;/ul&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+
+</div>
+{/block}

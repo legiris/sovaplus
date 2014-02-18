@@ -1,0 +1,637 @@
+
+{block content}
+<div id="middle-page">
+
+<h1>OOP &#8211; navrhujeme jednoduchý model v PHP</h1>
+
+<p>
+V tomto článku si ukážeme praktickou ukázku implementace vlastního modelu s využitím objektově orientovaného přístupu. 
+Model bude zahrnovat třídu „Author“, která bude reprezentovat autora uloženého v databázi. Na tuto třídu budeme mít
+následující požadavky:
+</p>
+
+<ul>
+<li>Instance třídy bude obsahovat minimálně tyto atributy: jméno autora, příjmení autora, rok narození a rok úmrtí.
+Další atribut zvolte podle uvážení.</li>
+<li>Třída musí zahrnovat všechny základní CRUD funkce (create, read, update, delete).
+</ul>
+
+<h2>Co budeme potřebovat</h2>
+
+<p>Než přistoupíme k vlastnímu řešení, tak si nejprve řekneme, co využijeme pro implementaci této třídy:</p>
+
+<ul>
+<li>základní znalost OOP,</li>
+<li>PHP jako programovací jazyk,</li>
+<li>PDO (PHP Data Objects) pro přístup k databázi,</li>
+<li>vývojové prostředí, v mém případě to bude xampp na Windows 7.</li>
+</ul>
+
+<p>
+Zadání máme poměrně jasně definované, navíc víme, že třída obsahuje vlastní atributy (vlastnosti) a&nbsp;metody,
+které nám definují samotnou třídu a v případě vytvoření instance i daný objekt, v našem případě by tím objektem
+byl logicky autor.
+</p>
+
+<h2>Modelová vrstva</h2>
+
+<p>
+Nejprve se podíváme na uložení dat v databázi. Připravíme si tabulku pod názvem <span class="i">author</span>, která bude obsahovat
+následující sloupce: <span class="i">id</span>, <span class="i">name</span>, <span class="i">surname</span>, <span class="i">birth</span>,
+<span class="i">death</span> a jako další volitelný atribut přidám sloupec pro označení země,
+tedy <span class="i">country</span>. 
+</p>
+
+<pre>
+CREATE TABLE IF NOT EXISTS `author` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8_czech_ci NOT NULL,
+  `surname` varchar(100) COLLATE utf8_czech_ci NOT NULL,
+  `birth` date NOT NULL,
+  `death` date NOT NULL,
+  `country` varchar(50) COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci AUTO_INCREMENT=1 ;
+</pre>
+
+
+<h2>Index.php</h2>
+
+<p>Pro testovací účely si připravíme domovskou stránku <span class="i">index.php</span>, která bude obsahovat formulář pro přidání
+a editaci autora. Pod formulářem se bude zobrazovat seznam všech autorů z databáze. Mohlo by to vypadat nějak takto:
+</p>
+<img src="{$basePath}/images/index-author.jpg" width="513" height="406" alt="index.php" />
+
+<p>
+Vzhledem k tomu, že nám jde v první řadě o návrh modelu, tak abstrahujeme od řešení vzhledu a zároveň také úplně vynecháme kontrolu
+formuláře či použití roletkového menu pro výběr státu či data.<br /><br />
+</p>
+
+<p>Zdrojový kód:</p>
+<pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="description" content="" /&gt;	
+    &lt;title&gt;OOP: navrhujeme jednoduchý model&lt;/title&gt;	
+    &lt;link rel="shortcut icon" href="/favicon.ico" /&gt;	
+  &lt;/head&gt;	
+  &lt;body&gt;
+   &lt;h2&gt;Přidat nebo upravit data&lt;/h2&gt;	
+   &lt;form method="POST"&gt;
+   &lt;table&gt;
+    &lt;tr&gt;&lt;td&gt;Jméno:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="name" value="" /&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Příjmení:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="surname" value="" /&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Narození:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="birth" value="" /&gt;&amp;nbsp;(yyyy-mm-dd)
+        &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Úmrtí:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="death" value="" /&gt;&amp;nbsp;(yyyy-mm-dd)
+        &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Stát:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="country" value="" /&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="submit" value="Uložit" name="action" /&gt;&lt;/td&gt;&lt;/tr&gt;
+   &lt;/table&gt;
+   &lt;/form&gt;
+		
+   &lt;hr /&gt;
+		
+   &lt;h2&gt;Seznam autorů&lt;/h2&gt;
+		
+   &lt;table&gt;
+    &lt;tr&gt;&lt;th&gt;Id&lt;/th&gt;&lt;th&gt;Jméno&lt;/th&gt;&lt;th&gt;Příjmení&lt;/th&gt;&lt;th&gt;Narození&lt;/th&gt;&lt;th&gt;Úmrtí&lt;/th&gt;&lt;th&gt;Stát&lt;/th&gt;
+        &lt;th&gt;&lt;/th&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;Karl&lt;/td&gt;&lt;td&gt;May&lt;/td&gt;&lt;td&gt;1842-02-25&lt;/td&gt;&lt;td&gt;1912-03-30&lt;/td&gt;
+        &lt;td&gt;Německo&lt;/td&gt;&lt;td&gt;&lt;a href="" title="Upravit"&gt;Upravit&lt;/a&gt;&amp;nbsp;&amp;nbsp;
+        &lt;a href="" title="Smazat"&gt;Smazat&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;Jaroslav&lt;/td&gt;&lt;td&gt;Foglar&lt;/td&gt;&lt;td&gt;1907-07-06&lt;/td&gt;&lt;td&gt;1999-01-23&lt;/td&gt;
+        &lt;td&gt;Česká republika&lt;/td&gt;&lt;td&gt;&lt;a href="" title="Upravit"&gt;Upravit&lt;/a&gt;&amp;nbsp;&amp;nbsp;
+        &lt;a href="" title="Smazat"&gt;Smazat&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+   &lt;/table&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+ 
+
+<h2>Třída Author.php</h2>
+
+<p>
+Nyní se můžeme vrhnout do úvodní definice třídy a připravíme si základní metody pro nastavení jednotlivých atributů a pro
+získání jejich hodnot &#8211; napíšeme si tedy vlastní getry a setry.
+</p>
+
+<pre>
+&lt;?php
+
+class Author
+{
+	/**
+	 * @var int
+	 */
+	protected $id;
+	
+	/**
+	 * @var string
+	 */
+	protected $name;
+	
+	//...
+
+	
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
+	 * @param int $id
+	 */
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+	
+	/**
+	 * @param string $name
+	 */
+	public function setName($name)
+	{
+		$this->name = $name;
+	}
+
+	//...
+}
+</pre>
+
+<p>Podobným způsobem si dopíšeme zbývající metody i pro ostatní atributy. Jako první si doplníme metodu pro výpis všech autorů a k tomu již budeme
+potřebovat připojení k databázi. Vzhledem k tomu, že metoda pro připojení k databázi může být ovšem velmi dobře využitelná i pro jinou třídu,
+tak si pro ni vytvoříme tzv. rodičovskou třídu &#8211; <span class="i">BaseManager.php</span>.
+</p>
+
+<h2>Třída BaseManager.php</h2>
+
+<p>
+Třída BaseManager.php bude rodičovskou třídou pro všechny
+ostatní třídy tzn., že budeme mít třídu, ve které již budeme moci definovat společné metody, atributy i pro další třídy. Toho využijeme i pro nastavení
+kódování na UTF-8. A protože nebudeme chtít,
+aby z této třídy bylo možné vytvářet další instance, tak si tuto třídu označíme jako abstraktní.
+</p>
+
+<pre>
+abstract class BaseManager
+{	
+	protected $db;
+		
+	public function __construct()
+	{
+		if (!$this->db) {
+			$this->db = new PDO('mysql:host=localhost;dbname=oop', 'root', '');
+			$this->db->exec('SET CHARACTER SET utf8');
+		}
+		return $this->db;
+	}
+}
+</pre>
+
+<p>
+Zároveň se tímto dostáváme i k využití tzv. konstruktoru. Konstruktor si můžeme představit jako speciální metodu třídy, která se automaticky zavolá
+při vytvoření instance, v našem případě by se jednalo o&nbsp;vytvoření instance author <code>$author = new Author()</code>. 
+</p>
+
+<h2>Vytvoření seznamu autorů</h2>
+
+<p>
+Obvykle pro ověření funkčnosti začínám jednoduchým výběrem dat. Problém je akorát v tom, že v&nbsp;databázi dosud nemáme žádná data, takže si do databáze
+vložíme třeba dva testovací záznamy. Ve třídě <span class="i">Author.php</span> si vytvoříme novou metodu <span class="i">fetchAll()</span>,
+navíc ji potřebujeme rozšířit o její rodičovskou třídu.
+<p>
+
+<pre>
+class Author extends BaseManager
+{
+	//...
+
+	public function fetchAll()
+	{
+		$sth = $this->db->query('
+			SELECT
+				id, name, surname, birth, death, country
+			FROM
+				author
+			');
+		
+		$authors = $sth->fetchAll(PDO::FETCH_CLASS);
+		
+		return $authors;
+	}
+</pre>
+
+<p>
+Všimněte si, že použitý parametr PDO::FETCH_CLASS u PDO funkce <span class="i">fetchAll()</span> nám vrátí již jednotlivé instance autorů, takže
+bez většího úsilí rovnou obdržíme pole se všemi instancemi. Nyní si musíme upravit také soubor <span class="i">index.php</span>. Hned
+na úvod si potřebujeme připojit třídy <span class="i">BaseManager.php</span> a <span class="i">Author.php</span>, pak uděláme seznam autorů.
+</p>
+
+<pre>
+&lt;?php
+require_once 'BaseManager.php'; 
+require_once 'Author.php';
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+
+&lt;!-- ... --&gt;
+
+&lt;h2&gt;Seznam autorů&lt;/h2&gt;
+		
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Id&lt;/th&gt;&lt;th&gt;Jméno&lt;/th&gt;&lt;th&gt;Příjmení&lt;/th&gt;&lt;th&gt;Narození&lt;/th&gt;&lt;th&gt;Úmrtí&lt;/th&gt;&lt;th&gt;Stát&lt;/th&gt;
+    &lt;th&gt;&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;
+&lt;?php
+  $author = new Author();
+  $authors = $author-&gt;fetchAll();
+		
+  foreach ($authors as $author) {			
+    echo '&lt;tr&gt;&lt;td&gt;' . $author-&gt;id . '&lt;/td&gt;&lt;td&gt;' . $author-&gt;name . '&lt;/td&gt;&lt;td&gt;'
+          . $author-&gt;surname . '&lt;/td&gt;&lt;td&gt;' . $author-&gt;birth . '&lt;/td&gt;&lt;td&gt;' . $author-&gt;death
+          . '&lt;/td&gt;&lt;td&gt;' . $author-&gt;country . '&lt;/td&gt;&lt;td&gt;&lt;a href=""
+          title="Upravit"&gt;Upravit&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;a href="" title="Smazat"&gt;Smazat&lt;/a&gt;
+          &lt;/td&gt;&lt;/tr&gt;';
+  }
+?&gt;
+&lt;/table&gt;
+</pre>
+
+<p>
+Tímto způsobem jsme si tedy vygenerovali seznam všech autorů, u odkazů Upravit a Smazat si zatím ponecháme prázdný atribut href.
+</p>
+
+<h2>Vložení nového záznamu</h2>
+
+<p>
+Do třídy <span class="i">Author.php</span> si doplníme metodu pro vložení nového autora.
+</p>
+
+<pre>
+public function save()
+{
+	$sth = $this->db->prepare('
+		INSERT INTO
+			author (name, surname, birth, death, country)
+		VALUES 
+			(:name, :surname, :birth, :death, :country)
+		');
+	$sth->execute(array(
+		':name'		=> $this->getName(),
+		':surname'	=> $this->getSurname(),
+		':birth'	=> $this->getBirth(),
+		':death'	=> $this->getDeath(),
+		':country'	=> $this->getCountry()
+	));
+}
+</pre>
+
+<p>
+Myslím, že zdrojový kód je poměrně srozumitelný, nicméně
+na funkci <span class="i">save()</span> si můžeme blíže ukázat zpracování PDO dotazu. Funkce <span class="i">prepare()</span>
+očekává SQL dotaz, na který můžeme navázat parametry.
+To lze udělat přes zápis <span class="i">„:název parametru“</span> nebo pro vložení parametru můžeme využít placeholder
+a vložit zástupný znak <span class="i">„?“</span>.
+Pro zvýšení čitelnosti kódu doporučuji používat první způsob, tedy pojmenované parametry. Funkce <span class="i">execute()</span> pak provede takto
+předpřipravený dotaz. Pokud jsme v dotazu použili parametr, musíme jej také nějakým způsobem předat. To provedeme pomocí
+navázání parametrů, kdy funkci <span class="i">execute()</span> předáme rovnou pole s jednotlivými parametry nebo nejprve využijeme
+funkci <span class="i">bindParam()</span> a pak <span class="i">execute()</span>.
+</p>
+
+<p>
+Používání předpřipravených dotazů nám přináší několik výhod. Jednou z nich je to, že analýza samotného dotazu se bude provádět
+pouze jednou, takže stejný dotaz můžeme provést několikrát se stejnými nebo různými parametry. Pomocí předpřipravených dotazů
+tak můžeme zabránit tomu, aby se opakovaně prováděla analýza, kompilace dotazu a celkově můžeme lépe optimalizovat běh aplikace.
+Další podstatnou výhodou je zabezpečení proti SQL injections.
+</p>
+
+<p>
+Do souboru <span class="i">index.php</span> nám ještě zbývá doplnit část aplikační logiky. Na začátek souboru tak přidáme následující kód:
+</p>
+
+<pre>
+&lt;?php
+require_once 'BaseManager.php';
+require_once 'Author.php';
+
+if (isset($_POST['action']) &amp;&amp; $_POST['action'] == 'Uložit') {
+	//vytvorime instanci pro ulozeni autora
+	$author = new Author();
+	$author->setName($_POST['name']);
+	$author->setSurname($_POST['surname']);
+	$author->setBirth($_POST['birth']);
+	$author->setDeath($_POST['death']);
+	$author->setCountry($_POST['country']);
+	$author->save();
+	
+	header('Location: index.php');
+}
+?&gt;
+</pre>
+
+<p>
+Úvodní podmínka nám kontroluje to, zda v předaných datech metodou POST vůbec existuje parametr <span class="i">action</span> a pokud ano, tak
+nás zajímá jeho hodnota, která nám definuje příslušnou akci. Pokud je toto všechno
+splněno, tak si vytvoříme instanci autora, nastavíme požadovaného hodnoty a autora uložíme do databáze.
+Nakonec přesměrujeme uživatele na úvodní stránku <span class="i">index.php</span> proto, aby nedošlo k opětovnému odeslání
+formuláře při aktualizaci stránky.
+</p>
+
+<h2>Odstranění záznamu</h2>
+
+<p>
+Pro odstranění záznamu z databáze si vytvoříme další metodu, kterou přídáme do třídy <span class="i">Author.php</span>.
+</p>
+
+<pre>
+public function delete()
+{
+	$sth = $this->db->prepare('
+		DELETE FROM
+			author
+		WHERE
+			id = :id
+		');
+	$sth->execute(array(
+		':id' => $this->getId()
+	));
+}
+</pre>
+
+<p>
+Vidíte, že metoda <span class="i">delete()</span> nepřebírá žádný parametr, přitom potřebujeme <span class="i">id</span> záznamu, abychom ho mohli odstranit.
+Místo toho se na <span class="i">id</span> odkazujeme přes <code>$this->getId()</code>, to znamená, že v tomto případě již pracujeme s konkrétním objektem,
+který musíme nejprve také získat. Před odstraněním autora z databáze tedy musíme načíst objekt &#8211; autora, se kterým hodláme pracovat.
+Proto si pro tento účel vytvoříme další metodu, která nám načte data o konkrétním objektu.
+</p>
+
+<pre>
+public function find($id)
+{
+	$sth = $this->db->prepare('
+		SELECT
+			id, name, surname, birth, death, country
+		FROM
+			author
+		WHERE
+			id = :id
+		');
+	$sth->execute(array(
+		':id' => $id
+	));
+
+	$author = $sth->fetch(PDO::FETCH_ASSOC);
+
+	$this->setId($author['id']);
+	$this->setName($author['name']);
+	$this->setSurname($author['surname']);
+	$this->setBirth($author['birth']);
+	$this->setDeath($author['death']);
+	$this->setCountry($author['country']);
+}
+</pre>
+
+
+<p>
+Nyní se již můžeme pustit do úpravy souboru <span class="i">index.php</span>. Nejprve si k atributu <code>href</code> u odkazu Smazat
+doplníme cílovou adresu se dvěma paremetry. První parametr nám definuje <span class="i">id</span> autora, abychom ho mohli vybrat z databáze a druhý
+název akce, abychom poznali, co máme dělat.
+</p>
+
+<pre>
+//...
+foreach ($authors as $author) {			
+  echo '...
+   &lt;a href="index.php?id=' . $author-&gt;id . '&action=delete" title="Smazat"&gt;Smazat&lt;/a&gt;
+   &lt;/td&gt;&lt;/tr&gt;';
+}
+</pre>
+
+<p>
+Pak na začátek souboru musíme přidat další podmínku, kterou definujeme akci <span class="i">delete</span>:
+</p>
+
+<pre>
+if (isset($_POST['action']) && $_POST['action'] == 'Uložit') {	
+	$author = new Author();
+	//...
+} elseif (isset($_GET['action']) && $_GET['action'] == 'delete') {
+	$author = new Author();
+	$author->find($_GET['id']);
+	$author->delete();
+	header('Location: index.php');
+}
+</pre>
+
+<h2>Editace záznamu</h2>
+
+<p>
+Pro editaci si nejdříve v souboru <span class="i">index.php</span> opět upravíme cílovou adresu u atributu <code>href</code>,
+kam si doplním parametr pro <span class="i">id</span> autora. Jelikož pro uložení a editaci záznamu budeme používat jedno tlačítko, tak
+novou akci definovat nebudu. To, zda budeme autora ukládat nebo editovat, poznáme podle <span class="i">id</span>.
+V případě editace budeme znát hodnotu <span class="i">id</span>, kdežto při vkládání nového autora bude mít
+<span class="i">id</span> hodnotu null.
+</p>
+
+<pre>
+//...
+foreach ($authors as $author) {			
+  echo '...
+   &lt;a href="index.php?id=' . $author-&gt;id . '" title="Upravit"&gt;Upravit&lt;/a&gt;&amp;nbsp;&amp;nbsp; ...';
+}
+</pre>
+
+<p>
+Co se týká funkce z hlediska toho, jak chceme, aby aplikace fungovala, tak po kliknutí na odkaz Upravit načteme údaje o autorovi do formuláře, kde je bude možné
+opravit. Pojďme si nyní tuto funkčnost doplnit. K tomu, abychom načetli data o autorovi nám stačí zkontrolovat, zda známe <span class="i">id</span> autora.
+</p>
+
+<pre>
+&lt;form method="POST"&gt;
+&lt;table&gt;
+ &lt;tr&gt;&lt;td&gt;Jméno:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="name" 
+     value="&lt;?php if (isset($_GET['id'])) { echo $author-&gt;getName(); } ?&gt;" /&gt;&lt;/td&gt;&lt;/tr&gt;
+ &lt;tr&gt;&lt;td&gt;Příjmení:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="surname" 
+     value="&lt;?php if (isset($_GET['id'])) { echo $author-&gt;getSurname(); } ?&gt;" /&gt;&lt;/td&gt;&lt;/tr&gt;
+ &lt;tr&gt;&lt;td&gt;Narození:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="birth" 
+     value="&lt;?php if (isset($_GET['id'])) { echo $author-&gt;getBirth(); } ?&gt;" /&gt;
+     &amp;nbsp;(yyyy-mm-dd)&lt;/td&gt;&lt;/tr&gt;
+ &lt;tr&gt;&lt;td&gt;Úmrtí:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="death" 
+     value="&lt;?php if (isset($_GET['id'])) { echo $author-&gt;getDeath(); } ?&gt;" /&gt;
+     &amp;nbsp;(yyyy-mm-dd)&lt;/td&gt;&lt;/tr&gt;
+ &lt;tr&gt;&lt;td&gt;Stát:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="country" 
+     value="&lt;?php if (isset($_GET['id'])) { echo $author-&gt;getCountry(); } ?&gt;" /&gt;&lt;/td&gt;&lt;/tr&gt;
+ &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="submit" value="Uložit" name="action" /&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/form&gt;
+</pre>
+
+<p>
+V následujícím kroku opět musíme rozšířit úvodní podmínku o další část <code>else</code> a načteme si autora, se kterým budeme pracovat:
+</p>
+
+<pre>
+if (isset($_POST['action']) && $_POST['action'] == 'Uložit') {	
+	//...
+} elseif (isset($_GET['action']) && $_GET['action'] == 'delete') {
+	//...
+} elseif (isset($_GET['id'])) {
+	$author = new Author;
+	$author->find($_GET['id']);
+}
+</pre>
+
+<p>
+Pro editaci údajů ve třídě <span class="i">Author.php</span> upravíme metodu <span class="i">save()</span>
+&#8211; o tom, zda záznam uložíme, se rozhodujeme podle <span class="i">id</span>:
+</p>
+
+<pre>
+public function save()
+{
+	if ($this->id == NULL) {
+		$sth = $this->db->prepare('
+			INSERT INTO
+				author (name, surname, birth, death, country)
+			VALUES 
+				(:name, :surname, :birth, :death, :country)
+			');
+		$sth->execute(array(
+			':name'		=> $this->getName(),
+			':surname'	=> $this->getSurname(),
+			':birth'	=> $this->getBirth(),
+			':death'	=> $this->getDeath(),
+			':country'	=> $this->getCountry()
+		));
+	} else {
+		$sth = $this->db->prepare('
+			UPDATE
+				author 
+			SET 
+				name = :name,
+				surname = :surname,
+				birth = :birth,
+				death = :death,
+				country = :country
+			WHERE
+				id = :id
+			');
+		$sth->execute(array(
+			':id'		=> $this->getId(),
+			':name'		=> $this->getName(),
+			':surname'	=> $this->getSurname(),
+			':birth'	=> $this->getBirth(),
+			':death'	=> $this->getDeath(),
+			':country'	=> $this->getCountry()
+		));
+	}
+}
+</pre>
+
+<p>
+Opět musíme pozměnit soubor <span class="i">index.php</span> a do úvodní podmínky přidáme kontrolu <span class="i">id</span>,
+abychom rozlišili, zda se jedná o nový záznam nebo ne.
+</p>
+
+<pre>
+if (isset($_POST['action']) && $_POST['action'] == 'Uložit') {	
+	$author = new Author();
+	if (isset($_GET['id'])) { 
+		$author->find($_GET['id']);
+	}
+	$author->setName($_POST['name']);
+	$author->setSurname($_POST['surname']);
+	$author->setBirth($_POST['birth']);
+	$author->setDeath($_POST['death']);
+	$author->setCountry($_POST['country']);
+	$author->save();
+	header('Location: index.php');
+}
+//...
+</pre>
+
+<p>
+Dál provedeme ještě pár kosmetických úprav. Ve třídě <span class="i">Author.php</span> si vytvoříme jednoduchou metodu
+pro nastavení předaných dat z formuláře. Metodu pojmenujeme <span class="i">setFormData()</span>:
+</p>
+
+<pre>
+public function setFormData($data)
+{
+	$this->setName($data['name']);
+	$this->setSurname($data['surname']);
+	$this->setBirth($data['birth']);
+	$this->setDeath($data['death']);
+	$this->setCountry($data['country']);
+}
+</pre>
+
+<p>
+A nakonec upravíme také soubor <span class="i">index.php</span>, kde si vytvoříme instanci autora hned na začátku skriptu
+a&nbsp;doplníme metodu <span class="i">setFormData()</span>:
+</p>
+
+<pre>
+&lt;?php
+require_once 'BaseManager.php';
+require_once 'Author.php';
+
+//inicializace
+$author = new Author();
+
+if (isset($_POST['action']) && $_POST['action'] == 'Uložit') {	
+	if (isset($_GET['id'])) { 
+		$author->find($_GET['id']);
+	}
+	$author->setFormData($_POST);
+	$author->save();
+	header('Location: index.php');
+} elseif (isset($_GET['action']) && $_GET['action'] == 'delete') {
+	$author->find($_GET['id']);
+	$author->delete();
+	header('Location: index.php');
+} elseif (isset($_GET['id'])) {
+	$author->find($_GET['id']);
+}
+?&gt;
+//...
+&lt;?php
+	$authors = $author->fetchAll();
+	foreach ($authors as $author) {	
+//...
+?&gt;
+</pre>
+
+
+<h2>Závěr</h2>
+
+<p>
+V tomto článku jsme si ukázali, jakým způsobem můžeme navrhnout model pro správu autorů. K řešení jsme využili objektově
+orientovaný přístup, čímž jsme dosáhli hiearchické struktury i u takto jednoduchého modelu. Zároveň se
+nám podařilo zlepšit čitelnost kódu a zvýšit jeho znovupoužitelnost. 
+</p>
+
+<h3>Zdrojový kód</h3>
+
+<p>
+Soubory se zdrojovým kódem je možné si stáhnout v zazipované verzi <a href="{$basePath}/files/base-model-in-php.zip" 
+title="base-model-in-php.zip">tady</a>.</p>
+
+
+
+</div>
+{/block}

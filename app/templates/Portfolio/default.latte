@@ -1,0 +1,89 @@
+
+{block content}
+<div id="blog-style">
+
+<div class="comment">
+    <h1>Stromová struktura
+		<span class="github">
+			<a href="http://menu.sovaplus.cz/" title="přejít na stránku" target="_blank"><img src="{$basePath}/images/window-icon.png" alt="přejít na stránku" /></a>
+			<a href="https://github.com/legiris/menu" title="zobrazit zdrojový kód" target="_blank"><img src="{$basePath}/images/github.jpg" alt="zobrazit drojový kód" /></a>
+		</span>
+	</h1>
+	<div class="left">
+		<p class="description">Ukázka implementace stromové struktury ve frame-worku Nette. Pro řešení byl zvolen klasický přístup za využití parent ID.</p>
+		<p class="icons-01">&bull;
+			<img src="{$basePath}/images/php-logo.png" alt="PHP 5.4" />
+			<img src="{$basePath}/images/nette-logo.png" alt="Nette Framework 2.0" />
+			<img src="{$basePath}/images/dibi-logo.gif" alt="Dibi database layer" />
+		</p>
+	</div>
+	<div class="right">
+		<p><a href="http://menu.sovaplus.cz/" title="přejít na stránku menu.sovaplus.cz" target="_blank">
+			<img src="{$basePath}/images/menu.jpg" alt="menu.sovaplus.cz" width="200" height="108" /></a></p>
+	</div>
+  </div>	<!-- ./comment -->
+
+
+ <div class="comment">
+    <h1>Anonymní diskuze
+		<span class="github">
+			<a href="http://forum.sovaplus.cz/" title="přejít na stránku" target="_blank"><img src="{$basePath}/images/window-icon.png" alt="přejít na stránku" /></a>
+			<a href="https://github.com/legiris/discussion" title="zobrazit zdrojový kód" target="_blank"><img src="{$basePath}/images/github.jpg" alt="zobrazit drojový kód" /></a>
+		</span>
+	</h1>
+	<div class="left">
+		<p class="description">Aplikace na způsob zjednodušeného diskuzního fóra bez registrace uživatelů. Umožňuje zakládat diskuzní vlákna a vkládat komentáře.</p>
+		<p class="icons-01">&bull;
+			<img src="{$basePath}/images/php-logo.png" alt="PHP 5.4" />
+			<img src="{$basePath}/images/nette-logo.png" alt="Nette Framework 2.0" />
+			<img src="{$basePath}/images/dibi-logo.gif" alt="Dibi database layer" />
+		</p>
+	</div>
+	<div class="right">
+		<p><a href="http://forum.sovaplus.cz/" title="přejít na stránku forum.sovaplus.cz" target="_blank">
+			<img src="{$basePath}/images/discussion.jpg" alt="forum.sovaplus.cz" width="200" height="108" /></a></p>
+	</div>
+  </div>	<!-- ./comment -->
+
+
+<div class="comment">
+	<h1>Aplikace na správu článků
+		<span class="github">
+			<a href="http://danube.sovaplus.cz/" title="přejít na stránku" target="_blank"><img src="{$basePath}/images/window-icon.png" alt="přejít na stránku" /></a>
+			<a href="https://github.com/legiris/articles" title="zobrazit zdrojový kód" target="_blank"><img src="{$basePath}/images/github.jpg" alt="zobrazit drojový kód" /></a>
+		</span>
+	</h1>
+	<div class="left">
+		<p class="description">Aplikace umožňuje správu PDF článků, je rozdělena na administrátorskou a uživatelskou část.</p>
+		<p class="icons-02">&bull;
+			<img src="{$basePath}/images/php-logo.png" alt="PHP 5.4" />
+			<img src="{$basePath}/images/nette-logo.png" alt="Nette Framework 2.0" />
+			<img src="{$basePath}/images/dibi-logo.gif" alt="Dibi database layer" />
+		</p>
+	</div>
+	<div class="right">
+		<p><a href="http://danube.sovaplus.cz/" title="přejít na stránku danube.sovaplus.cz" target="_blank">
+			<img src="{$basePath}/images/articles.jpg" alt="danube.sovaplus.cz" width="200" height="108" />
+		</a></p>
+	</div>
+  </div>	<!-- ./comment -->
+
+  
+  
+</div> <!-- ./blog style -->
+{/block}
+
+{block scripts}
+{include #parent}
+<script src="http://jush.sourceforge.net/jush.js"></script>
+<script>
+	jush.create_links = false;
+	jush.highlight_tag('code');
+	$('code.jush').each(function(){ $(this).html($(this).html().replace(/\x7B[/$\w].*?\}/g, '<span class="jush-latte">$&</span>')) });
+
+	$('a[href^=#]').click(function(){
+		$('html,body').animate({ scrollTop: $($(this).attr('href')).show().offset().top - 5 }, 'fast');
+		return false;
+	});
+</script>
+{/block}

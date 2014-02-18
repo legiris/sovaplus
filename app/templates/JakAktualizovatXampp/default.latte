@@ -1,0 +1,52 @@
+{block content}
+
+<div id="middle-page">
+
+<h1>Jak aktualizovat Xampp</h1>
+
+<p>Pokud používáme pro vývojové prostředí <a href="http://www.apachefriends.org/en/xampp.html" title="Xampp" target="_blank">Xampp</a>,
+tak občas může být potřeba si ho zaktualizovat např.
+proto, že budeme chtít využívat novější verzi PHP. Xampp lze aktualizovat poměrně jednoduchým způsobem.
+Nejprve si stáhneme novou verzi Xamppu, následně aktualizujeme projekty a nakonec musíme obnovit data v databázi.</p>
+
+<h3>Instalace nové verze Xamppu</h3>
+
+<ul>
+  <li>Přejmenujeme si výchozí adresář <code>xampp</code> např. na <code>xampp-old</code>.
+Je potřeba mít zavřené všechny soubory, které by Xampp mohl používat, jinak Windows neumožní změnit název
+adresáře. Přes Správce úloh se můžeme podívat na běžící procesy a zavřít ty, které by mohli
+způsobovat kolizi např. <code>xampp-control.exe</code>.</li>
+  <li>Ze stránek <a href="http://www.apachefriends.org/en/xampp.html" title="apachefriends.org" target="_blank">
+apachefriends.org</a> si stáhneme požadovanou verzi Xamppu.</li>
+  <li>Na disku si vytvoříme nový adresář (např. <code>E:\xampp</code>) a do něho nainstalujeme nový Xampp.</li>
+</ul>  
+
+<h3>Projekty</h3>
+
+<ul>
+  <li>Vybrané projekty přesuneme ze složky <code>htdocs</code> (<code>E:\xampp-old\htdocs</code>) do nově vytvořené složky
+<code>htdocs</code> (<code>E:\xampp\htdocs</code>).</li>
+</ul>
+
+<h3>Databáze</h3>
+
+<ul>
+  <li>Ze složky <code>mysql/data</code> (<code>E:\xampp-old\mysql\data</code>) přesuneme vybrané adresáře (databáze) do nově vytvořené
+složky <code>mysql/data</code> (<code>E:\xampp\mysql\data</code>).
+      Pokud si ovšem spustíme domovskou stránku <code>localhost/phpmyadmin</code>, vidíme, že máme pouze vytvořené jednotlivé databáze
+a že nám v tabulkách chybí data.</li>
+  <li>Přes Xampp Control Panel vypneme MySQL server.</li>
+  <li>Vrátíme se do nově vytvořené složky <code>mysql/data</code> (<code>E:\xampp\mysql\data</code>) a přejmenujeme popř. rovnou odstraníme
+soubory typu <code>ib_logfile</code> a <code>ibdata</code>.</li>
+  <li>Z původní instalace xamppu si ze složky <code>mysql/data</code> (<code>E:\xampp-old\mysql\data</code>) překopírujeme soubor <code>ibdata</code>
+do nové instalace Xamppu (<code>E:\xampp\mysql\data</code>).
+      Složky typu <code>ib_logfile</code> se již vytvoří automaticky.</li>
+  <li>Spustíme MySQL server.</li>
+  <li>Pokud si nyní zaktualizujeme stránku <code>localhost/phpmyadmin</code>, budeme mít k dispozici kompletní databázi včetně dat.</li>
+  <li>Více na <a href="http://www.apachefriends.org/f/viewtopic.php?p=200469&sid=291eb3094bdaba7e6cf63ff5d6e134b0"
+title="No table shown in databases when copied user tables"
+target="_blank">apachefriends.org</a>.</li>
+</ul>
+
+</div>
+{/block}

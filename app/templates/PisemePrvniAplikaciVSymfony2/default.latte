@@ -1,0 +1,958 @@
+
+{block content}
+
+<div id="middle-page">
+
+<h1>Píšeme první aplikaci v Symfony2</h1>	
+    <p>V tomto článku si ukážeme, jakým způsobem můžeme v Symfony2 vytvořit naši první aplikaci v podobě jednoduchého blogu. 
+       Symfony2 framework vychází z návrhového vzoru MVC a za jeho vývojem stojí firma Sensio Labs.
+       Pokud si ovšem chcete jen vyzkoušet práci s „nějakým tím“ frameworkem, tak
+       Symfony2 z&nbsp;mého pohledu doopravdy nedoporučím &#8211; ne jako první framework.
+       Tady mi třeba dost pomohl Nette framework. Symfony2 vypadá a funguje trochu jinak,
+       první pocit byl pro mě takový, že se mi v něm hůře orientuje a celkově je postup učení pomalejší než v Nette, proto 
+       počítejte s tím, že na to, abyste se naučili se Symfony2 dobře pracovat, tak to zabere poměrně dost času.
+       Na závěr ještě doplním, co všechno budeme potřebovat:
+    </p>
+    <ul>
+        <li>povědomí o tom, jak funguje MVP/MVC architektura</li>
+        <li>základní znalost OOP, PHP a nejlépe i nějakého ORM (Object-Relational Mapping) nad databází</li>
+        <li>vývojové prostředí</li>
+    </ul>
+
+    <h3>Instalujeme Symfony2</h3>
+    <p>Nejprve si nainstalujeme Symfony2 framework, který je k dispozici na stránkách symfony.com, takže doporučuji si rovnou
+       projít i sekci „Get started“. Nejjednodušší je provést instalaci přes Composer. Pokud jste s Composerem nikdy nepracovali,
+       můžete si stáhnout zazipovanou verzi, ale určitě doporučuji se na Composer podívat.
+       Symfony framework si umístíme do kořenového adresáře našeho projektu.
+       Na Windows používám xampp, takže v htdocs mám vytvořenou složku „web“ a tam mám jednotlivé projekty.
+       Moje adresářová struktura vypadá takto:
+    </p>	
+    <pre>
+.../
+  xampp/
+    htdocs/
+      web/
+        blog/
+          web/
+            ...
+            app_dev.php</pre>
+		
+    <p>Adresa pro zobrazení na localhostu potom bude ve tvaru <code>http://localhost/web/blog/web/app_dev.php</code>.<br />
+    Tam by se nám měla zobrazit uvodní demo stránka Symfony frameworku.
+    </p>
+    <img src="{$basePath}/images/symfony2.jpg" title="Symfony2 demo page" width="600" height="421" class="center" />
+    <p>
+    Základním stavebním kamenem Symfony frameworku je „Bundle“, což si můžeme představit jako plugin, ve kterém se nachází naše aplikace.
+    Instalace implicitně zahrnuje DemoBundle, ve kterém se mimo jiné nachází controllery a views. Zároveň si také můžete projít
+    ukázkové příklady.<br />
+    Pro představu zde uvedu alespoň způsob, jakým si můžeme inicializovat proměnnou v controlleru a&nbsp;předat ji do template:
+    </p>
+    <pre>
+public function indexAction()
+{	
+    $var = 'my variable';	
+    return $this->render('AcmeDemoBundle:Welcome:index.html.twig',
+        array('variable' => $var));
+}</pre>
+	
+    <p>Již z této ukázky vidíme, že Symfony používá <code>twig</code> šablonovací systém.
+       Výše uvedenou proměnnou si tedy v šabloně vypíšeme jako:</p>
+    <pre>{{ variable }}</pre>
+    <p>
+    Pokud si pro změnu v controlleru definujeme pole:
+    </p>
+
+    <pre>
+public function indexAction()
+{
+    $array = array(
+        'foo' => 'bar',
+        'bar' => 'foo',
+        'name' => 'Desmond',
+        'surname' => 'Cousland'
+    );
+
+    return $this->render('AcmeBlogBundle:Blog:index.html.twig', array(
+        'array' => $array
+    ));		
+}</pre>
+
+    <p>Tak ho v šabloně můžeme vypsat tímto způsobem:</p>
+    <pre>
+<?php echo '{'; ?>% for item in array %<?php echo '}'; ?>
+
+  &lt;p&gt;<?php echo '{'; ?><?php echo '{'; ?> item <?php echo '}'; ?><?php echo '}'; ?>&lt;/p&gt;
+<?php echo '{'; ?>% endfor %<?php echo '}'; ?>
+		</pre>
+
+    <p>
+    Nebo pokud nás bude zajímat jednom hodnota „name“:
+    </p>
+
+    <pre>{{ array.name }}</pre>
+
+    <p>Více informací o práci se šablonami najdete v <a href="http://symfony.com/doc/current/book/templating.html"
+       title="Symfony2: Creating and using Templates" target="_blank">dokumentaci</a>. Nyní se již vrhneme na zmíněný blog.</p>
+		
+		<h2>Vytváříme jednoduchý blog</h2>
+		
+		<p>
+			Jako ukázkovou aplikaci zvolím jednoduchý blog &#8211; budeme mít nějaký seznam článků, ke kterým budeme moci vkládat komentáře.
+			Zároveň je to také moje první aplikace v Symfony2, takový můj QuickStart. Ale dost řečí, raději pojďme na to. 
+			Nejdříve odstraníme DemoBundle a založíme si vlastní BlogBundle.
+		</p>
+		
+		<h3>Jak odstranit DemoBundle a vytvořit vlastní</h3>
+		
+		<p>Potřebujeme „odstranit“ DemoBundle v níže uvedených souborech a pak ho můžeme smazat.</p>
+		<ul>
+			<li>app\AppKernel.php</li>
+			<li>app\config\routing_dev.yml</li>
+		</ul>
+		
+		<p>Bližší informace najdete zde:</p>
+
+		<ul>
+		<li><a href="http://symfony.com/doc/current/cookbook/bundles/remove.html" title="symfony.com" target="_blank">symfony.com</a></li>
+		<li><a href="http://funktion-it.co.za/2012/06/symfony2-removing-the-acme-demo/" title="funktion-it.co.za" target="_blank">removing the acme demo</a></li>
+		<li><a href="http://www.devforyou.be/delete-a-bundle-in-symfony2/" title="devforyou.be" target="_blank">delete a bundle in symfony2</a></li>
+		</ul>
+			
+		
+		<p>Nový bundle, který si pojmenujeme jako BlogBundle, si vytvoříme pomocí příkazu:</p>
+		
+<pre>
+php app/console generate:bundle --namespace=Acme/BlogBundle --format=yml</code>
+</pre>
+
+			Pokud používáte Příkazový řádek ve Windows, je potřeba nastavit správnou cestu k symfony projektu,
+			v mém případě <code>...\xampp\htdocs\web\blog</code>. Tento postup nám vytvoří požadovanou strukturu.
+			Nyní si v souboru <code>app\config\routing.yml</code> upravíme nastavení routy, abychom mohli stránku zobrazit:
+		</p>
+		
+		<pre>
+acme_blog_homepage:
+    pattern: /
+    defaults: { _controller: AcmeBlogBundle:Blog:index }
+		</pre>
+		
+		<p>Pokud jsme použili pro vytvoření nového bundlu „demo“ nastavení, bude potřeba trochu upravit také controller
+			(viz <code>Acme/BlogBundle/Controller/BlogController.php</code>): </p>
+		<pre>
+class BlogController extends Controller
+{
+    public function indexAction()
+    {
+        return $this->render('AcmeBlogBundle:Blog:index.html.twig');
+    }
+}
+		</pre>
+		
+		<p>a šablonu v <code>Acme/BlogBundle/Resources/views/Blog/index.html.twig</code>, kam vložíme nějaký text:</p>
+		
+		<pre>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit
+		</pre>
+		
+		<p>Nyní si aplikaci zobrazíme na webu: <code>http://localhost/web/blog/web/app_dev.php/</code>. Měli bychom vidět prázdnou stránku
+			s textem <span class="i">Lorem ipsum dolor sit amet, consectetur adipiscing elit</span>.
+		Vzápětí si k tomu doplníme html strukturu.
+		</p>
+
+<h3>Základní příprava šablony</h3>
+<p>Nejprve se podíváme na to, jakým způsobem to funguje. Základní layout stránky, tedy definice typu DOCTYPE html se nachází 
+v souboru <code>base.html.twig</code>, který najdeme v <code>/app/Resources/views/</code>. Dále si připravíme výchozí
+layout stránky pojmenovaný jako <code>layout.html.twig</code>, který umístíme do <code>src/Acme/BlogBundle/Resources/views/</code>. 
+Tento layout bude dědit z <code>base.html.twig</code>.
+</p>
+
+<pre>
+<?php echo'{'?># src/Acme/BlogBundle/Resources/views/layout.html.twig #<?php echo'}'?>
+
+<?php echo'{'?>% extends '::base.html.twig' %<?php echo'}'?>
+
+<?php echo'{'?>% block title 'Můj blogísek' %<?php echo'}'?>
+</pre>
+
+<p>Nyní si doplníme šablonu pro blog <code>index.html.twig</code>, takže se potřebujeme odkázat na <code>layout.html.twig</code>:</p>
+
+<pre>
+<?php echo'{'?># src/Acme/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo'}'?>
+
+<?php echo'{'?>% extends 'AcmeBlogBundle::layout.html.twig' %<?php echo'}'?>
+
+<?php echo'{'?>% block body %<?php echo'}'?>
+
+&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit&lt;/p&gt;
+<?php echo'{'?>% endblock %<?php echo'}'?>
+</pre>
+
+<p>Pokud si nyní zkusíme načíst stránku v localhostu, tak se sice na pohled mnoho nezměnilo, ale stránka už má svůj html kabát, který
+ještě upravíme. V titulku stránky je text „Můj blogísek“ a dole máme již umístěný Symfony2 toolbar.
+V toolbaru máme základní informace o stránce, takže si
+všimněte, že pro načtení stránky byla použita routa s názvem acme_blog_homepage a že se z BlogControlleru vykonala
+akce indexAction.
+Daleko více se pak ohledně šablon dočtete v <a href="http://symfony.com/doc/current/book/templating.html" title="Symfony templating" target="_blank">dokumentaci</a>.
+</p>
+
+<h3>Vložení stylu</h3>
+
+<p>Pro testovací účely si připravíme jednoduchou definici stylu:</p>
+<pre>
+body <?php echo'{'?> 
+    background-color: whitesmoke;
+<?php echo'}'?>
+</pre>
+
+<p>Tento styl si pojmenujeme jako <code>blog.css</code>. Pokud se vrátíme ke struktuře naší aplikace, tak styl si uložíme do adresáře
+<code>web/bundles</code>, kde nám, jak vidím, ještě zůstal adresář <code>acmedemo</code>, ten si tedy přejmenujeme na <code>acmeblog</code> a zároveň odstraníme původní styl <code>demo.css</code>.
+Do souboru <code>layout.html.twig</code> si přidáme následující kód:</p> 
+<pre>
+<?php echo'{'?>% block stylesheets %<?php echo'}'?>
+
+&lt;link rel="stylesheet" href="<?php echo'{'?><?php echo'{'?> asset('bundles/blogdemo/css/blog.css') <?php echo'}'?><?php echo'}'?>" /&gt;
+<?php echo'{'?>% endblock %<?php echo'}'?>
+</pre>
+
+<p>Do stylu zatím doplním <a href="http://meyerweb.com/eric/tools/css/reset/" title="myeyerweb reset" target="_blank">
+CSS reset</a> a jelikož stránka nevypadá úplně dobře, tak to aspoň trochu vystředím a přidám nějaký okraj, jinak „design“ aplikace o moc víc řešit nebudu.
+Taky to dělám proto, abychom si mohli ukázat použití šablon, kdy základní strukturu stránky dám do layoutu a ve výsledku tak dostaneme
+pěkný třívrstvý model.<br /><br />
+</p>
+
+<p>Šablona layout.html.twig</p>
+<pre>
+<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/layout.html.twig #<?php echo '}'; ?>
+<?php echo '{'; ?>% extends '::base.html.twig' %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block stylesheets %<?php echo '}'; ?>
+&lt;link rel="stylesheet" 
+                             href="<?php echo '{'; ?><?php echo '{'; ?> asset('bundles/acmeblog/css/blog.css') <?php echo '}'; ?><?php echo '}'; ?>" /&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block title 'Můj blogísek' %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block body %<?php echo '}'; ?>
+
+&lt;div id="page"&gt;
+  &lt;div id="top-menu"&gt;&lt;/div&gt;
+  &lt;div id="left-page"&gt;
+    <?php echo '{'; ?>% block menu%<?php echo '}'; ?>
+
+    <?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+
+  &lt;/div&gt;
+  &lt;div id="middle-page"&gt;
+    <?php echo '{'; ?>% block content %<?php echo '}'; ?>
+
+    <?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+
+  &lt;/div&gt;
+&lt;/div&gt;
+
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+<p>Šablona index.html.twig</p>
+<pre>
+<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+
+<?php echo '{'; ?>% extends 'AcmeBlogBundle::layout.html.twig' %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block menu %<?php echo '}'; ?>
+
+  &lt;ul&gt;
+    &lt;li class="title"&gt;Nejnovější&lt;/li&gt;
+    &lt;li&gt;&lt;a href=""&gt;Lorem Ipsum&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=""&gt;De Finibus Bonorum...&lt;/li&gt;&lt;/a&gt;
+  &lt;/ul&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block content %<?php echo '}'; ?>
+
+  &lt;div class="article"&gt;
+    &lt;h1&gt;Lorem Ipsum&lt;/h1&gt;
+    &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit ... 
+          &lt;a href="" title=""&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+    &lt;p class="date"&gt;Přidáno: 19.10.2013 v 18:42&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="article"&gt;
+    &lt;h1&gt;De Finibus Bonorum et Malorum&lt;/h1&gt;
+    &lt;p&gt;Sed nibh velit, porttitor nec arcu at, porttitor bibendum nunc. Vivamus nec eros ac
+       odio porttitor rhoncus non eu massa. Pellentesque dignissim est et elit lobortis luctus.
+       Donec consequat nibh sit amet orci aliquam, sed elementum eros posuere. Morbi iaculis
+       fringilla nisl, mattis tempor tortor posuere in. Nulla et venenatis augue. Suspendisse
+       volutpat justo eu risus lobortis, quis lobortis nulla ornare. Aliquam erat volutpat.
+       Praesent ut nunc felis. Etiam tincidunt dolor ac nisl congue, eu molestie ante venenatis.
+       Curabitur at risus ... &lt;a href="seznam.cz" title=""&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+    &lt;p class="date"&gt;Přidáno: 17.10.2013 v 22:05&lt;/p&gt;
+  &lt;/div&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+
+<p>Blog &#8211; návrh</p>
+<img src="{$basePath}/images/blog.jpg" alt="blog (návrh)" width="600" height="260" class="center" />
+
+<h2>Navrhujeme model aneb cesta k ORM</h2>
+<p>
+Dosud ještě nebyla řeč o modelu, takže je na čase postoupit zase o krok dál. Vzhledem k tomu, že se potřebuji dostat k Doctrine2,
+tak využiji toho, že Symfony2 v sobě tuto knihovnu již zahrnuje a postavím tuto „aplikaci“ na Doctrine2. Pokud jste dosud dělali jen
+s MySQL nebo PDO, tak práce s Doctrine či jiným ORM je zkrátka jiná. O tom, co Doctrine je a jak se používá, vyšel i seriál v češtině na
+<a href="http://www.zdrojak.cz/serialy/doctrine-2/" title="doctrine 2" target="_blank">zdrojak.cz</a>.
+Doctrine2 využívá návrhový vzor <span class="i">Data Mapper</span> oproti vzoru <span class="i">Active Record</span>,
+se kterým jste se již pravděpodobně setkali. Proto předtím,
+než se do něčeho pustíte, tak doporučuji si projít minimálně <a href="http://www.zdrojak.cz/clanky/doctrine-2-zakladni-definice-entit/"
+title="Doctrine2: Základní definice entit" target="_blank">tento článek</a>, kde se dozvíte, na jakém principu se s Doctrine2 pracuje
+a něco o pojetí entit, bez kterých se v Doctrine2 neobejdete.
+Místo Doctrine by neměl být problém využít třeba Propel. 
+</p>
+
+<p>
+Nejprve si tedy připravíme databázovou strukturu. Vytvořím si novou databázi, kterou pojmenuji jednoduše „blog“ a která bude
+obsahovat tabulky pro uložení článků a komentářů.<br /><br />
+</p>
+
+<p>Tabulka pro články:</p>
+<pre>
+CREATE TABLE IF NOT EXISTS `article` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) COLLATE utf8_czech_ci NOT NULL,
+  `text` text COLLATE utf8_czech_ci NOT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci AUTO_INCREMENT=1 ;
+</pre>
+
+<p>Tabulka pro komentáře:</p>
+<pre>
+CREATE TABLE IF NOT EXISTS `comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `text` varchar(2500) COLLATE utf8_czech_ci NOT NULL,
+  `nickname` varchar(30) COLLATE utf8_czech_ci NOT NULL,
+  `date` datetime NOT NULL,
+  `article_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `article_id` (`article_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci AUTO_INCREMENT=1 ;
+</pre>
+
+<p>Nyní si musíme naplnit tabulku „article“ daty. Pro reálné nasazení by bylo potřeba si vytvořit trochu více
+sofistikovanější systém, který by nám umožňoval přidávat a editovat jednotlivé články.
+My si v této chvíli práci usnadníme a budeme předpokládat, že takový systém již máme.
+</p>	
+
+<h3>Nastavení parametrů pro připojení k Doctrine2</h3>
+
+<p>Pro to, abychom se mohli připojit k databázi, potřebujeme provést základní konfiguraci. Při instalaci
+přes composer se automaticky vygeneruje také soubor s parametry (<code>parameters.yml</code>), který je uložen ve složce
+<code>/app/config/</code> &#8211; tam si můžeme zkontrolovat nastavení. My nyní musíme upravit soubor <code>config.yml</code>, 
+konkrétně část Doctrine configuration a přepíšeme tam původní parametry. Pro první test si v controlleru
+<code>BlogController.php</code> provizorně upravíme funkci <code>indexAction()</code> a využijeme službu <code>database_connection</code>:
+</p>
+
+<pre>
+public function indexAction()
+{
+	$conn = $this->get('database_connection');
+	$rows = $conn->fetchAll('SELECT * FROM article');
+
+	var_dump($rows);
+
+	return $this->render('AcmeBlogBundle:Blog:index.html.twig');
+}
+</pre>
+
+<p>Nicméně výše uvedený postup s využitím vrstvy DBAL (DataBase Abstraction Layer) využívat nebudeme, protože nám jde o mapování
+objektů na relační databázi, tedy o vrstvu ORM. Proto si vytvoříme vlastní model postavený na entitách, se kterými Doctrine2 pracuje.
+</p>
+
+
+<h3>Entita jako základní prvek modelu</h3>
+<p>Jako první si vytvoříme entitu „Article“, která nám bude definovat samotný článek. V pojetí PHP entitě bude odpovídat
+samostatná třída. V adresáři <code>Acme/BlogBundle</code> si vytvoříme novou složku „Entity“ a do ní umístíme tuto třídu.
+V této třídě pak jednotlivé atributy popíšeme pomocí anotací tak, abychom s nimi mohli v Doctrine2 pracovat.
+Nakonec doplníme standardní metody pro čtení a nastavení hodnot.
+</p> 
+
+<pre>
+&lt;?php
+
+namespace Acme\BlogBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="article")
+ */
+class Article
+{
+
+	/**
+	 * @ORM\Id
+	 * @ORM\Column(type="integer")
+	 * @ORM\GeneratedValue(strategy="AUTO")
+	 */	
+	protected $id;
+
+	/**
+	 * @ORM\Column(type="string", length=50)
+	 */
+	protected $title;
+
+	/**
+	 * @ORM\Column(type="text")
+	 */
+	protected $text;
+
+	/**
+	 * @ORM\Column(type="datetime")
+	 */
+	protected $date;
+
+
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	public function getText()
+	{
+		return $this->text;
+	}
+
+	public function getDate()
+	{
+		return $this->date;
+	}
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
+	public function setText($text)
+	{
+		$this->text = $text;
+	}
+
+	public function setDate($date)
+	{
+		$this->date = $date;
+	}
+
+}
+</pre>
+
+<h2>Přehled všech článků &#8211; controller a view</h2>
+
+<p>
+Po implementaci entity Article můžeme přistoupit ke zobrazení všech článků. Budeme potřebovat upravit
+odpovídající controller a šablonu.
+Ve třídě <code>BlogController.php</code> si upravíme metodu <code>indexAction()</code> tak, aby nám vybrala všechny
+články uložené v databázi. 
+</p>
+
+<pre>
+namespace Acme\BlogBundle\Controller;
+
+use Acme\BlogBundle\Entity\Article;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+class BlogController extends Controller
+{
+	public function indexAction()
+	{	
+		return $this->render('AcmeBlogBundle:Blog:index.html.twig', array(
+			'articles' => $this->getDoctrine()
+				->getRepository('AcmeBlogBundle:Article')
+				->findAll()
+		));		
+	}
+}
+</pre>
+
+<p>A nakonec je v šabloně <code>index.html.twig</code> vypíšeme, zároveň tímto také odstraníme předchozí obsah:</p>
+
+<pre>
+<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+
+<?php echo '{'; ?># ... #<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block content %<?php echo '}'; ?>
+
+  <?php echo '{'; ?>% for article in articles %<?php echo '}'; ?>
+
+  &lt;div class="article"&gt;
+    &lt;h1&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getTitle <?php echo '}'; ?><?php echo '}'; ?>&lt;/h1&gt;
+    &lt;p&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getText <?php echo '}'; ?><?php echo '}'; ?> ... &lt;a href="" title=""&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+    &lt;p class="date"&gt;Přidáno: <?php echo '{'; ?><?php echo '{'; ?> article.getDate|date('d.m.Y | H:i') <?php echo '}'; ?><?php echo '}'; ?>&lt;/p&gt;
+  &lt;/div&gt;
+  <?php echo '{'; ?>% endfor %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+<p>
+Všimněte si, že datum ve formátu <code>datetime</code> nemůžeme vypsat jako řetěz, ale musíme použít filtr <code>date()</code>.
+Dále se nám u každého článku zobrazuje kompletní text, zatímco by nám stačila jen jeho část.
+Provizorně tedy text ořízneme pomocí filtru <code>slice()</code>, později si můžeme doplnit vlastní filtr.
+</p>
+
+<pre>
+<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+
+<?php echo '{'; ?># ... #<?php echo '}'; ?>
+
+    &lt;p&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getText|slice(0, 200) <?php echo '}'; ?><?php echo '}'; ?> ... &lt;a href="" title=""&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+<?php echo '{'; ?># ... #<?php echo '}'; ?>
+</pre>
+
+<p>
+Zbývá nám ještě seřadit články sestupně podle data. K tomuto účelu místo metody <code>findAll()</code> využijeme
+metodu <code>findBy()</code>, jejíž druhý parametr nám definuje způsob řazení. Funkce <code>indexAction()</code>
+ve třídě <code>BlogController.php</code> bude tedy vypadat takto:
+</p>
+
+<pre>
+// src/Acme/BlogBundle/Controller/BlogController.php
+//...
+
+public function indexAction()
+{	
+	return $this->render('AcmeBlogBundle:Blog:index.html.twig', array(
+		'articles' => $this->getDoctrine()
+			->getRepository('AcmeBlogBundle:Article')
+			->findBy(
+				array(),
+				array('id' => 'DESC')
+			)
+	));	
+}	
+</pre>
+
+
+<h2>Doctrine Query Language &#8211; přehled nejnovějších článků</h2>
+
+<p>Rozhodli jsme se, že si do levé části aplikace ještě umístíme přehled nejnovějších článků, jejich počet si omezíme
+na pět. Tady se dostáváme k situaci, kdy si potřebujeme sestavit vlastní dotaz. K tomu využijeme Doctrine Query Language (DQL).
+Zatím si doplníme metodu <code>indexAction()</code> v souboru <code>BlogController.php</code>.
+</p>
+
+<pre>
+// src/Acme/BlogBundle/Controller/BlogController.php
+//...
+	
+public function indexAction()
+{	
+	return $this->render('AcmeBlogBundle:Blog:index.html.twig', array(
+		'articles' => $this->getDoctrine()
+			->getRepository('AcmeBlogBundle:Article')
+			->findBy(
+				array(),
+				array('id' => 'DESC')
+			),
+		'news' => $this->getDoctrine()->getManager()->createQuery('
+			SELECT a
+			FROM AcmeBlogBundle:Article a
+			ORDER BY a.date DESC
+		')->setMaxResults(5)->getResult()
+	));	
+}
+</pre>
+
+<p>A také šablonu <code>index.html.twig</code>.</p>
+
+<pre>
+<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+
+<?php echo '{'; ?># ... #<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block menu %<?php echo '}'; ?>
+
+  &lt;ul&gt;
+    &lt;li class="title"&gt;Nejnovější&lt;/li&gt;
+    <?php echo '{'; ?>% for new in news %<?php echo '}'; ?>
+
+	&lt;li&gt;&lt;a href=""&gt;<?php echo '{'; ?><?php echo '{'; ?> new.getTitle <?php echo '}'; ?><?php echo '}'; ?>&lt;/a&gt;&lt;/li&gt;
+    <?php echo '{'; ?>% endfor %<?php echo '}'; ?>
+  
+  &lt;/ul&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+<p>V současné chvíli by nám aplikace měla vypadat takto:</p>
+
+<img src="{$basePath}/images/blog-01.jpg" alt="blog (homepage)" width="600" height="470" class="center" />
+
+<p>
+Tímto bychom měli základní výpis článků hotový, nicméně nám ke každému článku zbývá doplnit odkaz, pod kterým
+si článek budeme moci prohlédnout a k tomu se dostaneme v další části.
+</p>
+
+
+<h2>Jak zobrazit detail článku</h2>
+
+<p>
+Předpokládejme, že budeme chtít, aby článek byl dostupný na url typu:
+</p>
+
+<pre>
+[nazev_domeny]/article/5
+</pre>
+
+<p>
+Tímto se dostáváme k otázce <span class="i">routování</span>. Já si ještě provedu takovou kosmetickou úpravu, a to
+že si přejmenuji BlogController na HomepageController a dále kvůli tomu upravím soubory index.html.twig a routing.yml.
+Dělám to proto, že mi to přijde líp čitelnější, nic víc v tom nehledejte.
+</p>
+
+<h3>Routování</h3>
+
+<p>Nejdříve se podíváme na to, jakým způsobem to funguje. Možná vám při testování routování přijdou vhod tyto odkazy:</p>
+
+<ul>
+<li><a href="http://symfony.com/doc/current/book/controller.html" title="symfony.com">Symfony &#8211; Controller</a></li>
+<li><a href="http://symfony.com/doc/current/book/routing.html" title="symfony.com">Symfony &#8211; Routing</a></li>
+</ul>
+
+<p>
+Nejprve si zkusím v <code>HomepageControlleru</code> nadefinovat akci „Article“, která bude mít za úkol zobrazit testovací stránku.  
+K tomu využiji objekt <code>Response</code>, proto nesmím zapomenout na začátek kódu doplnit příslušnou komponentu.
+</p>
+
+<pre>
+&lt;?php
+
+namespace Acme\BlogBundle\Controller;
+
+use Acme\BlogBundle\Entity\Article;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+class HomepageController extends Controller
+{
+	//...
+    
+	public function ArticleAction()
+	{
+		return new Response('&lt;html&gt;&lt;body&gt;Hello&lt;/body&gt;&lt;/html&gt;');
+	}	
+}	
+</pre>
+
+<p>
+Nyní si v souboru <code>routing.yml</code> doplním požadovanou routu:
+</p>
+
+<pre>
+acme_blog_article:
+    path: /article/
+    defaults: { _controller: AcmeBlogBundle:Homepage:article }
+</pre>
+
+<p>
+Pokud do prohlížeče zadám url v níže uvedeném tvaru, měla by se nám zobrazit stránka, kterou jsme si nadefinovali v metodě
+<code>ArticleAction()</code>.
+</p>
+
+<pre>
+http://localhost/web/blog/web/app_dev.php/article/
+</pre>
+
+<p>Ve stavovém řádku prohlížeče si ještě můžeme zkontrolovat, že se nám vykonala metoda <code>ArticleAction()</code> z
+<code>HomepageControlleru</code> a název routy.</p>
+
+<h3>Detail článku</h3>
+
+<p>Nejprve si upravíme soubor <code>routing.yml</code>, protože <span class="i">id</span> článku budeme předávat jako parametr.</p>
+
+<pre>
+acme_blog_article:
+    path: /article/<?php echo '{'; ?>id<?php echo '}'; ?>
+
+    defaults: { _controller: AcmeBlogBundle:Homepage:article }
+</pre>
+
+<p>Přepíšeme metodu <code>ArticleAction()</code> v <code>HomepageControlleru</code>:</p>
+
+<pre>
+public function ArticleAction($id)
+{
+	return $this->render('AcmeBlogBundle:Homepage:article.html.twig', array(
+		'article' => $this->getDoctrine()
+			->getRepository('AcmeBlogBundle:Article')
+			->findOneBy(array(
+				'id' => $id))
+	));
+}
+</pre>
+
+
+<p>Ve <code>views</code> v adresáři <code>Homepage</code> si vytvoříme novou šablonu <code>article.html.twig</code>:</p>
+
+<pre>
+<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/article.html.twig #<?php echo '}'; ?>
+
+<?php echo '{'; ?>% extends 'AcmeBlogBundle::layout.html.twig' %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block content %<?php echo '}'; ?>
+
+&lt;div class="article"&gt;
+  &lt;h1&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getTitle <?php echo '}'; ?><?php echo '}'; ?>&lt;/h1&gt;
+  &lt;p&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getText <?php echo '}'; ?><?php echo '}'; ?>&lt;/p&gt;
+  &lt;p class="date"&gt;Přidáno: <?php echo '{'; ?><?php echo '{'; ?> article.getDate|date('d.m.Y | H:i') <?php echo '}'; ?><?php echo '}'; ?>&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id="comments"&gt;
+  &lt;h3&gt;Přidat komentář&lt;/h3&gt;
+
+  &lt;h3&gt;Komentáře:&lt;/h3&gt;
+&lt;/div&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+<p>Když si do prohlížeče zadáme níže uvedenou url, měl by se nám zobrazit náhled článku &#8211; samozřejmě za předpokladu,
+že <span class="i">id</span> existuje, pokud ne, skončí požadavek chybou. Předpokládám, že v ostrém provozu Symfony2 zobrazí nějakou uživatelsky
+přívětivou chybovou stránku, která bude informovat o tom, že požadovaná stránka neexistuje (500 Internal Server Error).</p>
+
+<pre>
+http://localhost/web/blog/web/app_dev.php/article/5
+</pre>
+
+<img src="{$basePath}/images/blog-02.jpg" alt="detail článku" width="600" height="198" class="center" />
+
+<p>Zajisté vidíte, že nám v levé části chybí menu. Méně pozitivní zprávou už je to, že co na první
+pohled vypadá jako drobný nedostatek, tak pro nás bude znamenat přepsání části kódu. A to proto, že
+kód nemáme dobře postaven. K tomu se ovšem dostanu v další části. Zatím si ještě odladíme odkazy.</p> 
+
+
+<h3>Odkazy v šabloně</h3>
+
+<p>Vezmeme si soubor <code>index.html.twig</code> a doplníme si odkazy k menu.
+Pro vytvoření odkazu vyjdeme z názvu routy a doplníme <span class="i">id</span> článku.</p>
+
+<pre>
+<?php echo '{'; ?>% block menu %<?php echo '}'; ?>
+
+&lt;ul&gt;
+ &lt;li class="title"&gt;Nejnovější&lt;/li&gt;
+ <?php echo '{'; ?>% for new in news %<?php echo '}'; ?>
+      
+   &lt;li&gt;&lt;a href="<?php echo '{'; ?><?php echo '{'; ?> path('acme_blog_article', <?php echo '{'; ?>'id': new.getId<?php echo '}'; ?>) <?php echo '}'; ?><?php echo '}'; ?>"&gt;<?php echo '{'; ?><?php echo '{'; ?> new.getTitle <?php echo '}'; ?><?php echo '}'; ?>&lt;/a&gt;&lt;/li&gt;
+ <?php echo '{'; ?>% endfor %<?php echo '}'; ?>
+  
+&lt;/ul&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+
+<p>Ještě nám zbývá také doplnit odkazy pro jednotlivé články.</p>
+
+<pre>
+<?php echo '{'; ?>% block content %<?php echo '}'; ?>
+
+  <?php echo '{'; ?>% for article in articles %<?php echo '}'; ?>
+
+    &lt;div class="article"&gt;
+      &lt;h1&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getTitle <?php echo '}'; ?><?php echo '}'; ?>&lt;/h1&gt;
+      &lt;p&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getText|slice(0, 200) <?php echo '}'; ?><?php echo '}'; ?> ... &lt;a href="<?php echo '{'; ?><?php echo '{'; ?> path('acme_blog_article',
+                 <?php echo '{'; ?>'id': article.getId<?php echo '}'; ?>) <?php echo '}'; ?><?php echo '}'; ?>" 
+                title="<?php echo '{'; ?><?php echo '{'; ?> article.getTitle <?php echo '}'; ?><?php echo '}'; ?>"&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+      &lt;p class="date"&gt;Přidáno: <?php echo '{'; ?><?php echo '{'; ?> article.getDate|date('d.m.Y | H:i') <?php echo '}'; ?><?php echo '}'; ?>&lt;/p&gt;
+    &lt;/div&gt;
+  <?php echo '{'; ?>% endfor %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+
+
+<h3>Pojďte pane, budeme si hrát</h3>
+
+<p>Nyní se dostáváme k celkové úpravě kódu. Kód přepíšeme tak, abychom mohli přesunout
+menu ze souboru <code>index.html.twig</code> do souboru <code>layout.html.twig</code>,
+protože chceme, aby se zobrazovalo všude.
+Vzhledem k současné implementaci budeme muset určité věci přesunout či pozměnit.</p>
+
+<p>Zde je přehled provedených změn:</p>
+
+<ul>
+<li><span class="i">BaseController</span> &#8211; tímto získáme výchozí controller pro další controllery</li>
+<li><span class="i">ArticleController</span>, vytvoření složky Article ve views a šablona <code>latestArticles.html.twig</code></li>
+<li>přesunutí šablony <code>article.html.twig</code> do složky Article</li>
+<li>odstranění šablony <code>menu.html.twig</code> a <code>article.html.twig</code> ze složky Homepage</li>
+<li>úprava souboru <code>routing.yml</code></li>
+</ul>
+
+<p>Tímto jsme si tedy rozčlenili aplikaci na samostatné logické celky. Vzhledem k většímu
+počtu změn je zdrojový kód pro jednotlivé soubory k dispozici na zvláštní <a href="{$basePath}/piseme-prvni-aplikaci-v-symfony2/kod/" target="_blank">stránce</a>.
+Zde akorát vypíchnu způsob, jakým můžeme začlenit opakující se úsek kódu do stránky s layoutem. K řešení jsme využili
+samostatnou šablonu <code>latestArticle.html.twig</code>, kde si nadefinujeme výpis menu a metodu <span class="i">latestArticleAction()</span>
+(viz <span class="i">ArticleController</span>), které parametrem předáme počet článků.
+V šabloně <code>layout.html.twig</code> se pak na akci controlleru odkážeme tímto způsobem:</p>
+
+<pre>
+<?php echo '{'; ?>% block menu %<?php echo '}'; ?>
+
+  <?php echo '{'; ?><?php echo '{'; ?> render(controller('AcmeBlogBundle:Article:latestArticles', <?php echo '{'; ?>'count': 5<?php echo '}'; ?> )) <?php echo '}'; ?><?php echo '}'; ?>
+
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+<p>Voláme tedy klasicky <span class="i">bundle:controller:action</span>.</p>
+
+
+<h2>Komentáře</h2>
+
+<p>Zdá se, že zobrazení článků nám již funguje tak, jak chceme, a proto se můžeme vrhnout na samotné komentáře.</p>
+
+<h3>Entita a asociace</h3>
+
+<p>Vzhledem k tomu, že i v tomto případě budeme potřebovat databázi, tak práci začneme tím, že si vytvoříme entitu.
+Rozdíl oproti předešlému návrhu bude akorát v tom, že v tabulce máme definovaný cizí klíč &#8211; <span class="i">article_id</span>.
+Ovšem Doctrine2 pracuje na jiném principu než relační databáze &#8211; svět nemáme popsaný pomocí tabulek, ale pomocí entit
+tzn., že pro popis vztahů mezi entitami nebudeme používat cizí klíče tak, jak je známe,
+ale pro popis vztahů mezi entitami budeme využívat tzv. asociace, a to podle typu vazeb (1:1, 1:N a M:N).
+V našem příkladě si vystačíme s jednoduchou asociací typu 1:N
+a použijeme anotaci @ManyToOne (na straně, kde máme definovaný cizí klíč).
+Přehled všech typů je uveden v&nbsp;<a href="http://docs.doctrine-project.org/en/latest/reference/association-mapping.html" title="Doctrine2: Association Mapping"
+target="_blank">dokumentaci</a>.
+</p>
+
+<pre>
+&lt;?php
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="comment")
+ */
+class Comment
+{
+	/**
+	 * @ORM\Id
+	 * @ORM\Column(type="integer")
+	 * @ORM\GeneratedValue(stategy="AUTO")
+	 * @var int
+	 */
+	protected $id;
+	
+	/**
+	 * @ORM\Column(type="string", length=2500)
+	 * @var text
+	 */
+	protected $text;
+	
+	/**
+	 * @ORM\Column(type="string", length=30)
+	 * @var text
+	 */
+	protected $nickname;
+	
+	/**
+	 * @ORM\Column(type="datetime")
+	 * @var datetime
+	 */
+	protected $date;
+	
+	/**
+	 * @ManyToOne(targetEntity="Article")
+	 * @JoinColumn(name="article_id", referencedColumnName="id")
+	 * @var int
+	 */
+	protected $article;
+	
+	
+	public function getId()
+	{
+		return $this->id;
+	}
+	
+	public function getText()
+	{
+		return $this->text;
+	}
+	
+	public function getNickname()
+	{
+		return $this->nickname;
+	}
+	
+	public function getDate()
+	{
+		return $this->date;
+	}
+	
+	public function getArticle()
+	{
+		return $this->article;
+	}
+	
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+	
+	public function setText($text)
+	{
+		$this->text = $text;
+	}
+	
+	public function setNickname($nickname)
+	{
+		$this->nickname = $nickname;
+	}
+	
+	public function setDate($date)
+	{
+		$this->date = $date;
+	}
+	
+	public function setArticle($article)
+	{
+		$this->article = $article;
+	}	
+}
+</pre>
+
+
+<h3>První formulář</h3>
+<p>Pro přidání komentáře budeme potřebovat formulář, takže si takový jednoduchý formulář navrhneme.
+Pro začátek si vystačíme s definicí v controlleru, později si vytvoříme zvláštní třídu (CommentType.php).</p>
+
+
+
+<p>Začneme samotným vykreslením formuláře. Ve složce Acme/BlogBundle si vytvoříme složku Form
+a dovnitř si uložíme novou třídu, kterou si pojmenujeme jako CommentType.php.</p>
+
+<pre>
+
+</pre>
+
+<p>Komentář uložíme do databáze.</p>
+
+<pre>
+
+</pre>
+
+
+<h3>Přehled komentářů</h3>
+
+<p>Nakonec nám zbývá už jenom vypsat uložené komentáře.</p>
+
+<pre>
+
+</pre>
+
+
+
+
+</div>
+
+</div>
+{/block}

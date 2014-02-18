@@ -1,0 +1,342 @@
+{block content}
+<div id="middle-page">
+
+<h1>Stavíme počítač aneb jak na to (1. díl)</h1>
+
+<img src="{$basePath}/images/pc/zalman.jpg"  width="270" height="179" title="PC" alt="PC" class="right" />
+<p class="text">V následujícím článku si ukážeme, jakým způsobem si sami můžete postavit počítač.
+Na úvod si povíme něco málo o konfiguraci a&nbsp;kompatibilitě jednotlivých komponentů, zmíním také svoje zkušenosti s vlastní sestavou &#8211; tedy zatím toho,
+co se osvědčilo a co mě naopak možná mírně zklamalo. A nakonec přistoupíme
+k&nbsp;samotnému sestavení počítače a k jeho zapojení, přičemž se zlehka dotkneme i instalace operačního systému (Windows 7) a nastavení SSD disku.
+Cílem je tedy nastínit spíše obecný postup, než doporučit vhodné komponenty, protože otázka jejich výběru by sama vydala na ne jeden článek. 
+ 
+Takže celý proces si rozdělíme na tři části:<br /><br />
+1. <a href="#konfigurace" title="Konfigurace">Konfigurace a kompatibilita</a><br />
+2. <a href="{$basePath}/stavime-pocitac-pokracovani/" title="Sestavení počítače">Sestavení počítače</a><br />
+3. <a href="{$basePath}/zapojeni-pocitace-a-instalace-operacniho-systemu/" title="Zapojení počítače a instalace operačního systému">
+Zapojení počítače a instalace operačního systému</a><br /><br />
+</p>
+
+<p>
+Pokud si stále nejste jisti, zda se do toho pustit, tak si dovolím jedno upozornění. <span class="bf">Do stavby počítače se
+nepouštějte,</span> pokud:</p>
+<ul>
+<li>si myslíte, že všechno víte,</li>
+<li>věříte, že návody skutečně nepotřebujete,</li>
+<li>jste pevně přesvědčeni o tom, že co nejde silou, tak půjde ještě větší silou,</li>
+<li>nečtete,</li>
+<li>vás to nezajímá,</li>
+<li>nemáte čas.</li>
+</ul>
+
+<p>Stavba počítače je něco jako lego, akorát s tím rozdílem, že pokud něco vlastní chybou zničíte, tak si to také
+zaplatíte. Proto k tomu s tímto vědomím taky přistupujte :)</p>
+
+
+<h2 id="konfigurace">Konfigurace</h2>
+<p class="text">Konfigurace počítače se odvíjí od vašich požadavků. Pokud nepotřebujete herní mašinu, nemá
+smysl něco takového stavět, protože všechno se následně promítne do ceny takové sestavy. Na prohlížení webu a pro napsání pár
+poznámek ve Wordu si samozřejmě vystačíte s poměrně levným strojem řekněme v ceně okolo 12 až 14 tisíc korun včetně operačního systému.
+Zase nejsem úplně zastáncem těch nejlevnějších sestav, kdy se musíte spokojit s papírovou skříní a dělat
+další a další kompromisy, i když se dá samozřejmě postavit cokoliv.
+Situace se mění, pokud
+např. plánujete zpracovávat videa, fotografie či hrát hry.
+</p>
+
+<h3>Multimediální základ</h3>
+<p>
+Pro představu zde tedy uvedu
+svoji sestavu, která by mi měla stačit na všechno &#8211 jak na práci, tak na to si občas zahrát nějakou tu hru,
+odděleně je znázorněno i další příslušenství,
+v&nbsp;posledních dvou kolonkách je doplněn rok pořízení a pořizovací cena.</p>  
+<table class="small">
+<caption class="bf">Multimediální základ z roku 2011</caption>
+<tr><td>Procesor</td><td>AMD Phenom II X4 965 Black Edition 3.40 GHz</td><td class="fixed">2010</td><td class="fixed">3990</td></tr>
+<tr><td>Chladič procesoru</td><td>Zalman CNPS10X Quiet</td><td class="fixed">2010</td><td class="fixed">1199</td></tr>
+<tr><td>Základní deska</td><td>Gigabyte GA-890XA-UD3</td><td class="fixed">2010</td><td class="fixed">2536</td></tr>
+<tr><td>Grafická karta</td><td>MSI R5850 Twin Frozr II</td><td class="fixed">2011</td><td class="fixed">4385</td></tr>
+<tr><td>RAM I (2x2 GB)</td><td>Kingston HyperX 1333 MHz CL7 (KHX1333C7D3K2/4GX)</td><td class="fixed">2011</td><td class="fixed">1099</td></tr>
+<tr><td>RAM II (2x4 GB)</td><td>Crucial Ballistix Tactical 1600 MHz CL8 (BLT2CP4G3D1608DT1TX0CEU)</td><td class="fixed">2012</td><td class="fixed">1346</td></tr>
+<tr><td>SSD I</td><td>Crucial m4 (CT128M4SSD1) &#8211; 128 GB</td><td class="fixed">2013</td><td class="fixed">2199</td></tr>
+<tr><td>SSD II</td><td>Intel DC S3500 (SSDSC2BB080G401) &#8211; 80 GB</td><td class="fixed">2014</td><td class="fixed">&#8211;</td></tr>
+<tr><td>Pevný disk I</td><td>Samsung SpinPoint F3 (HD502HJ) &#8211; 500 GB</td><td class="fixed">2010</td><td class="fixed">1057</td></tr>
+<tr><td>Pevný disk II</td><td>Seagate BARRACUDA 7200.12 (ST31000528AS) &#8211; 1000 GB</td><td class="fixed">2011</td><td class="fixed">1289</td></tr>
+<tr><td>PC skříň</td><td>Zalman MS1000-HS1</td><td class="fixed">2010</td><td class="fixed">3161</td></tr>
+<tr><td>Zdroj</td><td>Seasonic M12II-520 Bronze &#8211; 520 W</td><td class="fixed">2010</td><td class="fixed">1784</td></tr>
+<tr><td>Ventilátor I</td><td>Noctua NF-S12B FLX</td><td class="fixed">2011</td><td class="fixed">403</td></tr>
+<tr><td>Ventilátor II</td><td>Noctua NF-S12B FLX</td><td class="fixed">2011</td><td class="fixed">403</td></tr>
+<tr><td>DVD mechanika</td><td>LG GH22LS50 retail</td><td class="fixed">2010</td><td class="fixed">606</td></tr>
+<tr><td>Čtečka karet</td><td>Apacer AE700</td><td class="fixed">2010</td><td class="fixed">205</td></tr>
+<tr><td>WiFi karta</td><td>Edimax EW-7727ln</td><td class="fixed">2010</td><td class="fixed">537</td></tr>
+<tr class="end"><td>Rámeček&nbsp;3,5"/5,25"&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Digitus</td><td class="fixed">2010</td><td class="fixed">108</td></tr>
+<tr><td>Zvuková karta</td><td>Line6 POD Studio UX1 (USB)</td><td class="fixed">2009</td><td class="fixed">3092</td></tr>
+<tr><td>Poslechové monitory</td><td>M-Audio BX5a Deluxe</td><td class="fixed">2009</td><td class="fixed">5137</td></tr>
+<tr><td>Monitor</td><td>NEC 2490WUXi2 24" IPS 1920x1200</td><td class="fixed">2010</td><td class="fixed">16690</td></tr>
+<tr><td>Klávesnice</td><td>Microsoft SideWinder X4</td><td class="fixed">2013</td><td class="fixed">999</td></tr>
+<tr><td>Myš</td><td>Cyber Snipa Stinger Mouse</td><td class="fixed">2011</td><td class="fixed">1064</td></tr>
+<tr><td>Podložka pod myš</td><td>CoolerMaster Speed-RX Small</td><td class="fixed">2012</td><td class="fixed">212</td></tr>
+</table>
+
+
+<p>
+Sestava je tedy již nějakou dobu v provozu, takže si dovolím pár poznámek:
+</p>
+<ul>
+<li>Pokud jste zvyklí mít třeba v prohlížeči otevřených 20&#8211;30 karet a k tomu provozovat ještě další programy, tak „deklarované“ 4 GB paměti
+na Windows nestačí. Respektive stačí, ale jsou situace, kdy to není úplně ono. Rozšíření RAM ze 4 GB na 12 GB tento problém vyřešil.</li>
+<li>SSD disk je pro mě zatím nejméně spolehlivý komponent v PC, již mi odešly tři, uvidím, jak dopadne současný Crucial, každopádně od SSD disku se zárukou
+2 roky ruce pryč. Mimochodem Intel poskytuje záruku 5 let.</li>
+<li>Zvuk je kapitola sama pro sebe, bohužel tomu odpovídá i cena, takže jen krátce &#8211; rozdíl mezi „reproduktory“ Genius a poslechovými
+    monitory M-Audio je doopravdy propastný.
+A to nejsem žádný audiofil, ale už teď vím, že klasické reproduktory si k PC jen tak dobrovolně nekoupím.</li>
+
+<li>Pro zajímavost doplním, že počítač v této sestavě odebírá přibližně 140 wattů, což mi přijde poměrně dost, monitor dalších 40 wattů a&nbsp;poslechové monitory udělají zhruba do 20 wattů, takže
+při běžné činnosti (prohlížení webu) se dostanu na 170&#8211;200 wattů. Při hraní hry Dragon Age Origins spotřeba celé sestavy stoupne již na 300 wattů,
+teď to vynásobte počtem hodin provozu/hraní a měsíčně se můžete dostat na docela zajímavou částku :)</li>
+<img src="{$basePath}/images/pc/graphics-card.jpg" width="320" height="212" alt="AMD základní deska" title="AMD základní deska" class="right" />
+<li>Bylo by dnes něco jinak? Ano, bylo. Určitě by již ve výběru nefiguroval počáteční kit pamětí 2x2 GB, ale rovnou 2x4 GB.
+Dál by pravděpodobně dostal příležitost o něco levnější monitor, i když NEC je krásný a&nbsp;poslechové monitory
+M-Audio BX5a by zřejmě nahradily KRK Rokit 6G2. Grafika na jádru RV870 v&nbsp;pohodě utáhne na nejvyšší detaily hry typu Call of Duty Modern Warfare 2,
+Dragon Age Origins, Zaklínač, Assassins Creed II... nemám důvod kupovat lepší. To, zda zvolit platformu AMD nebo Intel je záležitost především ceny či osobních
+preferencí.
+AMD obecně nabízí výhodnější poměr cena/výkon, Intel je o&nbsp;něco dražší, v&nbsp;high-end kategorii nemá konkurenci a jako procesor
+je efektivnější, celkově má lepší provozní vlastnosti než AMD.
+Zatím předpokládám, že další platformou bude pro změnu Intel, konkrétně Intel Core i5.
+</li>
+</ul>
+
+<p>Vzhledem k tomu, že tato sestava není zrovna úplně aktuální, tak zde uvedu, jak by vypadal můj počítač v&nbsp;roce 2014
+    (rozpočet kolem 23 tis. bez OS).</p>
+
+<table class="small">
+<caption class="bf">Multimediální základ pro rok 2014</caption>
+<tr><td>Procesor</td><td>Intel Core i5-4440 3.1 GHz</td><td class="fixed">2014</td><td class="fixed">4430</td></tr>
+<tr><td>Základní deska</td><td>MSI B85-G43 Gaming</td><td class="fixed">2014</td><td class="fixed">2411</td></tr>
+<tr><td>Grafická karta</td><td>MSI R9 270 Gaming 2G</td><td class="fixed">2014</td><td class="fixed">4334</td></tr>
+<tr><td>RAM (2x4 GB)</td><td>Crucial Ballistix Tactical 1600 MHz CL8</td><td class="fixed">2014</td><td class="fixed">2180</td></tr>
+<tr><td>SSD</td><td>Crucial M500 &#8211; 120 GB</td><td class="fixed">2014</td><td class="fixed">1969</td></tr>
+<tr><td>Pevný disk</td><td>Seagate Barracuda 7200.14 &#8211; 1 TB</td><td class="fixed">2014</td><td class="fixed">1460</td></tr>
+<tr><td>PC skříň</td><td>Fractal Define R4 Black Pearl</td><td class="fixed">2014</td><td class="fixed">2558</td></tr>
+<tr><td>Zdroj</td><td>Seasonic M12II-520 Bronze &#8211; 520 W</td><td class="fixed">2014</td><td class="fixed">1912</td></tr>
+<tr><td>Chladič procesoru</td><td>Gelid Solution Tranquillo rev. 2</td><td class="fixed">2014</td><td class="fixed">649</td></tr>
+<tr><td>DVD mechanika</td><td>Samsung SH-224DB</td><td class="fixed">2014</td><td class="fixed">399</td></tr>
+<tr><td>Přední panel 5.25"&nbsp;&nbsp;&nbsp;</td><td>Akasa AK-HC-05BK V2</td><td class="fixed">2014</td><td class="fixed">895</td></tr>
+<tr><td>WiFi USB adaptér</td><td>TP-Link TL-WN722NC + UC100</td><td class="fixed">2014</td><td class="fixed">355</td></tr>
+
+</table>
+
+
+<h3>Sestava na kancelářské využití pro rok 2014</h3>
+<p>Tady je ještě ukázka konfigurace počítačové sestavy z počátku ledna 2014 v ceně do 14 tisíc včetně operačního systému Windows, která je
+určena pro rodiče.
+Jedná se jen o PC, protože všechno ostatní (monitor, klávesnici, myš...) rodiče již mají. Samozřejmě počítač by šel
+postavit levněji, ale takto se mi to zamlouvalo víc.</p>
+
+<table class="small">
+<tr><td>Operační systém</td><td>Microsoft Windows 7 Home Premium CZ 64bit OEM</td><td class="fixed">2014</td><td class="fixed">2267</td></tr>
+<tr><td>Procesor</td><td>Intel Core i3-4330</td><td class="fixed">2014</td><td class="fixed">3066</td></tr>
+<tr><td>Základní deska</td><td>Gigabyte GA-B85M-D3H</td><td class="fixed">2014</td><td class="fixed">1727</td></tr>
+<tr><td>RAM (2x4 GB)</td><td>A-Data XPG V1.0 1600 MHz CL9</td><td class="fixed">2014</td><td class="fixed">1739</td></tr>
+<tr><td>Pevný disk</td><td>Seagate Barracuda 7200.14 &#8211; 1000 GB</td><td class="fixed">2014</td><td class="fixed">1437</td></tr>
+<tr><td>Skříň</td><td>CoolerMaster Centurion Silencio 352 Matte</td><td class="fixed">2014</td><td class="fixed">1470</td></tr>
+<tr><td>Zdroj</td><td>Seasonic SS-400ET-F3 400W OEM</td><td class="fixed">2014</td><td class="fixed">999</td></tr>
+<tr><td>Chladič procesoru&nbsp;&nbsp;&nbsp;</td><td>SilentiumPC Spartan PRO HE924</td><td class="fixed">2014</td><td class="fixed">461</td></tr>
+<tr><td>DVD mechanika</td><td>Samsung SH-224DB</td><td class="fixed">2014</td><td class="fixed">378</td></tr>
+<tr><td>Síťový kabel</td><td>UTP kat. 6 (PC-HUB) &#8211; 5m</td><td class="fixed">2014</td><td class="fixed">59</td></tr>
+<tr><td>Napájecí kabel</td><td>PremiumCord 230V &#8211; 2m</td><td class="fixed">2014</td><td class="fixed">58</td></tr>
+</table>
+
+<img src="{$basePath}/images/pc/coolerMaster-silencio.jpg" width="219" height="330" alt="MiniTower PC" title="MiniTower PC" class="right" />
+
+<p>
+Platforma byla zvolena Intel, konkrétně Intel Core i3 na architektuře Haswell.
+Od AMD mě nic nezaujalo, platformu AM3+ pro FX procesory se mi již pořizovat nechtělo, navíc si pro rodiče představuji
+o něco lepší provozní vlastnosti. Další nevýhodou AM3+ platformy je pak velmi omezená nabídka slušných mATX desek.
+Procesor od Intelu je tedy doplněn základní deskou na čipu Intel B85. Na pamětech by se dalo ušetřit, ale
+raději v sestavě vidím 2x4 GB než 2x2 GB a zvolenou frekvenci 1600 MHz podporuje jak základní deska, tak procesor. Zdroj
+je v&nbsp;podobě spolehlivé OEM verze od Seasonicu. Celá sestava je pak umístěna v&nbsp;odhlučněné skříni CoolerMaster Centurion Silencio 352.
+Jedná se o skříň pro desky typu mATX či mini ITX. Původně byla vybrána skříň Fractal Design Core 1000, ale nakonec dostal
+přednost tento CoolerMaster, a to hlavně kvůli vnitřnímu uspořádání (oproti Fractalu má třeba box na disky) a&nbsp;celkovému zpracování
+&#8211; vypadá fakt dobře.<br /><br />
+</p>
+
+<p>
+Vzhledem k tomu, že se situace v oblasti HW mění poměrně rychle, stejně tak jako ceny, tak pravidelný přehled doporučených sestav vychází
+např. na <a href="http://www.ddworld.cz/pc-a-komponenty/sestavy/" target="_blank">ddworld.cz</a>. 
+</p>
+
+<h2>Kde nakoupit</h2>
+<p>
+Vybrané komponenty můžete objednat v jednom obchodě a nebo jen tak po různu, což byla také moje volba. Osobně spíš
+preferuji nákup v místě bydliště, a to kvůli případné reklamaci, ale záleží, jaké máte možnosti. Pak s nákupem komponentů také může
+souviset licence k operačnímu systému. U Windows 7 se rozlišuje tzv. OEM a krabicová licence. Na OEM licenci máte
+nárok tehdy, pokud u jednoho prodejce objednáte na jednu fakturu základní desku, procesor, paměť, disk, PC skříň a zdroj,
+takže skoro všechno. Jinak potřebujete krabicovou verzi, která je samozřejmě dražší, ale nese s sebou určité výhody, i když
+možná se to dá nějak obejít. U&nbsp;Windows 8 už je to jinak, nerozlišuje se OEM a krabicová licence. Píšu to proto, že je dobré si o tom
+zjistit nějaké info a myslet na to. Pokud plánujete Linux, tak to nemusíte řešit. Pokud si jen sami chcete vybrat komponenty
+a z nich si třeba nechat poskládat počítač, tak aspoň v&nbsp;současné době sestavení počítače zdarma nabízí czc.cz.
+</p>
+
+<h2>A co kompatibilita?</h2>
+<p>
+To, jestli vámi vybrané komponenty k sobě budou pasovat, si musíte zjistit sami. A je dobré to skutečně udělat. Platformu
+máme AMD nebo Intel &#8211; od toho se pak odvíjí výběr procesoru a základní desky. Procesor Intel na desce AMD skutečně fungovat nebude. Pokud máte vybranou desku, tak na stránkách
+výrobce byste třeba měli najít, jaké paměti potřebujete. Stejně tak existuje formát desky mATX a ATX, takže si ověřte, že danou desku
+dostanete do skříně. To samé se týká grafické karty či chladiče procesoru. Pokud si vyberete vyšší chladič, nemusí se vám do skříně vejít.
+Použití boxovaného chladiče příliš nedoporučuji &#8211; právě takový chladič koupíte přímo s procesorem, ale není to ideální.
+Stejně tak je dobré se podívat na umístění chladiče procesoru a pamětí na základní desce, zda nenastane kolize v případě použití pamětí s&nbsp;vyšším
+chladičem, což se týká především platformy AMD. Jsou to všechno asi dost základní a&nbsp;logické věci, ale uvádím je proto, že to není jen o tom, že
+něco v rychlosti naházíte do košíku a objednáte. Pak, co se týká zdroje, jsou někde stránky, které vám vypočítají, jak moc výkonný zdroj potřebujete, ale dost často
+bývá minimální požadavek na zdroj uveden přímo u grafické karty a pak záleží, co na tom vše budete provozovat (disky apod.).
+Každopádně u zdroje vsaďte na osvědčené výrobce &#8211; zmíním hlavně Seasonic nebo Enermax a nejlépe
+vyberte ten s certifikací 80plus Bronze nebo vyšší. Bude to sice o něco dražší, ale tady se šetřit doopravdy nevyplatí.
+</p>
+
+<h2>Další příslušenství</h2>
+<p>
+K počítači samozřejmě neodmyslitelně patří i další příslušenství. Uvedu zde hlavně:
+</p>
+
+<ul>
+<li>LCD monitor</li>
+<li>reproduktory</li>
+<li>klávesnice</li>
+<li>myš</li>
+<li>tiskárna</li>
+</ul>
+
+<h3>LCD monitor</h3>
+<img src="{$basePath}/images/pc/lcd.jpg" alt='24" LCD monitor' title='24" LCD monitor' width="200" height="133" class="right" />
+<p> 
+Obecně mezi nejlevnější monitory patří ty, které jsou vybaveny obyčejným TN panelem, vzhledem k jejich nízké ceně jsou také nejméně kvalitní. 
+Nicméně závisí na vás, kolik jste ochotni do monitoru investovat a na účelu využití. 
+Osobně mi vyhovuje 24" monitor s matným displejem, a to v rozlišení 1920x1200px, jehož základem je jiný než TN panel.
+Pro pracovní využití by mi přišly nejvhodnější dva takové monitory.
+K dispozici je pro úhlopříčku 24" i&nbsp;Full HD rozlišení 1920x1080px, které je levnější, ale přijdete o pixely na výšku(!), takže
+pro pracovní účely se tento monitor příliš nehodí. Pokud tedy chcete na monitoru pracovat, tak na takový monitor raději rovnou zapomeňte. Přesně
+tento typ mám v práci a po příchodu domů, kdy si zapnu svůj monitor 1920x1200px, je to citelný rozdíl &#8211; pro mě 24" monitor
+s rozlišením 1920x1080px doopravdy není.
+Požadovanému rozlišení tedy věnujte dostatečnou pozornost, je doporučeno provozovat monitor v jeho nativním rozlišení tzn., že pokud si zakoupíte
+monitor s rozlišením 1920x1200px, tak si ponecháte toto nastavení.
+Cenově dostupné monitory (IPS) má třeba HP nebo Dell a v&nbsp;dnešní době i NEC a&nbsp;Eizo.<br />
+Více se o výběru monitoru dozvíte např. v článku <a href="http://extrahardware.cnews.cz/pruvodce-vyberem-lcd-monitoru-jaroleto-2012"
+title="Průvodce výběrem LCD monitoru (jaro/léto 2012)" target="_blank">Průvodce výběrem LCD monitoru (jaro/léto 2012)</a>, který byl zveřejněn na serveru extrahardware.cz.
+</p>
+
+<h3>Reproduktory a poslechové monitory</h3>
+<img src="{$basePath}/images/pc/studio-monitor.jpg" alt="Poslechový monitor" title="Poslechový monitor" width="200" height="133" class="right" />
+<p>
+Ozvučení počítače je kapitola sama pro sebe a záleží na vás, do jaké míry si potrpíte na kvalitní reprodukci hudby. Další nevýhodou je skutečnost, že je
+potřeba řešit celý řetězec kompletně tzn., že nestačí koupit jenom lepší reproduktory nebo sluchátka, ale budete také potřebovat adekvátní zvukovou kartu
+či pro sluchátka zesilovač, což znamená další náklady navíc.</p>
+
+<img src="{$basePath}/images/pc/sound-card.jpg" alt="Zvuková karta" title="Zvuková karta" width="200" height="133" class="left" />
+
+<p>
+Cesta za lepším zvukem mě na konec dohnala k&nbsp;poslechovým monitorům. Poslechové monitory mohou být
+alternativou k&nbsp;počítači, ale je potřeba zmínit, že jejich
+primárním zaměřením je co nejvěrnější reprodukce zvuku, zjednodušeně řečeno &#8211; poslechové monitory vám zprostředkují zvuk tak, jak je. 
+Pokud tedy patříte mezi milovníky basů, tak vám podání zvuku nemusí vyhovovat, ale monitory prostě hrají to, co mají a&nbsp;nepřidávají
+žádné efekty navíc. Já si ani při hraní PC her nestěžuji. 
+Dalším úskalím poslechových monitorů je i to, že tyto monitory většinou nemají na přední straně ovládání hlasitosti, potenciometr je
+obvykle umístěn
+na zadní straně monitoru a slouží k&nbsp;nastavení požadované úrovně
+hlasitosti vzhledem k&nbsp;prostředí. Pokud zvuk chcete ovládat manuálně, tak existují klávesnice, které umožňují jeho regulaci, ale
+nepovažuji to za úplně ideální řešení, protože jste minimálně závislí na klávesnici, která to bude umět.
+Uvedený problém lze například vyřešit externí zvukovou kartou, která ovládání hlasitosti umožňuje.
+Navíc pokud pořídíte lepší monitory nebo sluchátka, tak integrovaná zvuková karta vám stačit nebude a dříve nebo později to budete muset řešit.
+Stejně tak jsou poslechové monitory vybaveny „méně standardními“ konektory, najdete zde 6,3 mm jacky, či XLR konektory a ne obvyklé cinche,
+takže jsou potřeba odpovídající kabely.</p>
+
+<p>
+Levnějším variantou oproti poslechovým monitorům mohou být kvalitní sluchátka (zmíním např. Beyerdynamic, AKG...), ale i v tomto případě se neobejdete bez
+kvalitního zdroje.
+</p>
+
+<h3>Klávesnice</h3>
+<p>
+U klávesnice je alfou a omegou samotné rozložení kláves a opět i v tomto případě závisí na vás, jaké rozložení preferujete: 
+tedy zda například vyžadujete dlouhý levý Shift či velký Enter a podle toho si vybrat vhodnou klávesnici. Pokud vybíráte
+klávesnici přes internet, tak jen upozorním na skutečnost, že se mnohdy liší „ilustrační“ obrázky od klávesnice s českým
+layoutem, kterou obdržíte, takže doporučuji se ujistit, že i&nbsp;klávesnice s CZ layoutem má dané rozložení kláves a nekupovat
+zajíce v pytli.
+</p>
+
+<img src="{$basePath}/images/pc/pc-keyboard.jpg" alt="Klávesnice" title="Klávesnice" width="200" height="133" class="right" />
+
+<p>
+Pak se ještě podíváme na to, v čem se jednotlivé klávesnice mohou lišit. V&nbsp;dnešní době jsou k dostání i tzv. nízkoprofilové
+klávesnice, který mají nižší stisk kláves a&nbsp;jejich provedení se blíží k notebookové klávesnici. Dál existují klávesnice,
+jejíž součástí je i opěrka pod zápěstí, já tuto opěrku vítám, protože mě aspoň nestudí stůl. Je to detail, ale proč ne.
+Pokud hrajete hry, tak můžete využít klávesnici s&nbsp;programovatelnými
+klávesy, kterým lze přiřadit makro a&nbsp;na danou klávesu provést požadovanou akci. Stejně tak klávesnice může být vybavena multimediálními tlačítky, 
+ovšem ne všechny klávesnice označené jako multimediální umí regulovat hlasitost, proto si na to dejte pozor, ať si takovou
+klávesnici náhodou nekoupíte, jako se mi to stalo s „multimediální“ klávesnicí od Genius. Další skupinu tvoří klávesnice
+podsvícené a nepodsvícené. Podsvícení mi přijde docela fajn, večer nebo v noci, kdy už není takové světlo, tak konečně
+vidím na klávesnici. Bohužel u levnějších provedení se můžete setkat s tím, že nepodsvícené klávesy nejsou na denním
+světle dobře vidět nebo že podsvícení není úplně dokonalé. Co se v&nbsp;krátkosti týká způsobu připojení klávesnice k počítači,
+jsou běžné klávesnice s USB nebo již s méně obvyklým PS2 kabelem a nebo můžete pořídit klávesnici bezdrátovou. Asi jsem konzervativní, ale
+spíše preferuji drátovou verzi, mám jistotu, že vše bude fungovat a nemusím řešit nápajení pro přenos
+signálu, možná k televizi apod. by to mohla být určitá alternativa, ale k počítači mi ke spokojenosti stačí drátová verze.
+</p>
+
+<h3>Myš</h3>
+
+<p>
+Volba myši je především o tom, jak vám myš padne do ruky, a proto je to s výběrem obtížné. Zřejmě
+už dávno je pryč doba klasických kuličkových myší, dnes světu vládnou senzory, a to buď optický nebo laserový.
+Výhoda laserového senzoru je v tom, že nabízí vyšší citlivost, proto laserová myš funguje na libovolném povrchu tzn.,
+že s myší můžete jezdit třeba po skle.
+Ovšem přiznám se, že pokud používám myš s podložkou pod myš, tak 
+při běžné práci nepoznám rozdíl mezi myší, která je vybavena laserovým nebo optickým senzorem. 
+</p>
+
+<img src="{$basePath}/images/pc/pc-mouse.jpg" alt="Myš" title="Myš" width="200" height="133" class="right" />
+
+<p>
+Co je pro mě dál podstatné, je možnost nastavení citlivosti myši, tedy dpi (jedná se o body, které se vejdou na vzdálenost
+jednoho palce). I pro běžnou práci preferuji vyšší citlivost, protože
+pak s myší můžete po podložce vykonávat kratší pohyb resp. abyste si to dovedli představit &#8211; na stejný pohyb,
+který uděláte myší, kurzor při vyšší citlivosti urazí na monitoru větší vzdálenost. Proto už nemusím divoce jezdit
+myší po podložce, jen si nastavím vyšší citlivost. Rychlost ukazatele myši můžete ve Windows také nastavit v možnostech
+ukazatele, já tento ukazatel ponechávám ve svém středu a&nbsp;myš mám nastavenou na 3200 dpi. Stejně tak se doporučuje 
+vypnout akceleraci myši &#8211; ve Windows je to uvedeno v Možnostech ukazatele jako Zvýšit přesnost ukazatele, ale
+to už se jedná spíše o herní nastavení myši, ale kdo chce, může si o tom najít víc.
+</p>
+
+<p>
+Samozřejmě pokud zde píši o významu citlivosti myši, tak to ani v nejmenším neznamená jednoduchý závěr, že vyšší citlivost = lepší myš,
+protože rozhodující je právě kvalita senzoru a další parametry jako samotná odezva myši v ms/Hz či zrychlení myši.
+Běžné uživatele toto asi nemusí vyloženě trápit, ale pokud hrajete FPS hry, tak se bez kvalitní myši neobejdete.
+</p>
+
+<p>
+Nyní se podíváme na samotné provedení myši. Myš může být vybavena několika tlačítky, obvykle herní myši mají tlačítek více
+a lze je programovat.
+Za běžný standard považuji dvě tlačítka, která jsou umístěna na levé straně a která slouží pro posun vpřed a zpět v prohlížeči.
+Přiznám se, že myš bez těchto tlačítek by mi v dnešní době již poměrně dost vadila. Pokud myš otočíte, tak na spodní straně
+by měly být nalepené různě tvarované kluzné plošky, které umožňují lehký pohyb myši. Myš také může být libovolně pogumovaná,
+taková myš je o&nbsp;něco příjemnější na dotyk. Stejně jako klávesnici, tak i myš můžete zvolit bezdrátovou, ale opět i v tomto
+případě je potřeba počítat s tím, že do myši budete potřebovat baterie a že myš bude po doplnění baterií o&nbsp;něco těžší. Herní
+myši umožňují regulovat svou hmotnost přidáním závažiček.
+</p>
+
+<h3>Tiskárna</h3>
+
+<p>
+U tiskárny hodně záleží na způsobu využití, je to podobné jako s monitorem.
+Pro běžné domácí použití s&nbsp;příležitostným tiskem mi přijde ideální inkoustová multifunkční tiskárna, která umožňuje samotný
+tisk, kopírování a scanování dokumentů.
+Přehledný průvodce pro výběr tískárny
+je dostupný na <a href="http://www.czc.cz/velky-pruvodce-vyberem-tiskarny/clanek" title="Velký průvodce výběrem tiskárny"
+target="_blank">czc.cz</a>. Pokud potřebujete vytisknout „profi“ fotografie (např. na výstavu), tak považuji za nejlepší
+se obrátit přímo na specializovanou tiskárnu.
+</p>
+
+
+<div class="small-bar">
+<p><a href="{$basePath}/stavime-pocitac-pokracovani/" title="Sestavení počítače">Následující &gt;&gt;</a></p>
+</div>
+
+</div>	<!-- ./middle-page -->
+{/block}

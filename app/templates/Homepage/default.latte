@@ -1,0 +1,90 @@
+
+{block content}
+<div id="blog-style">
+
+
+<div class="comment">
+    <h1><a href="{$basePath}/jak-aktualizovat-xampp/">Jak aktualizovat Xampp</a></h1>
+	<img src="{$basePath}/images/xampp.jpg" alt="Xampp" width="200" height="125" class="right" />
+	<p class="description">Používáte jako vývojové prostředí Xampp? A uvažujete o tom, že je na čase
+přejít na novější verzi PHP? Řešíte přeinstalaci? V tomto
+krátkém článku si předvedeme, jakým způsobem si můžeme aktualizovat Xampp.</p>
+		
+	<p class="label">Přidáno: 01.12.2013 | Programování (PHP) | Aktualizováno: 02.02.2014</p>	
+	<p><a href="{$basePath}/jak-aktualizovat-xampp/" title="Více"><img src="{$basePath}/images/vice.png" alt="Více" /></a></p>
+</div>	<!-- ./comment -->
+
+
+<div class="comment">
+    <h1><a href="{$basePath}/navrhujeme-jednoduchy-model-v-php/">OOP &#8211; navrhujeme jednoduchý model v PHP</a></h1>
+	<img src="{$basePath}/images/php-oop.jpg" alt="PHP OOP" width="200" height="125" class="right" />
+	<p class="description">V tomto článku si ukážeme praktickou ukázku implementace vlastního modelu s využitím objektově orientovaného přístupu. 
+Model bude zahrnovat třídu „Author“, která bude reprezentovat autora uloženého v&nbsp;databázi. K řešení použijeme PHP a rozhraní PDO.</p>
+		
+	<p class="label">Přidáno: 31.10.2013 | Programování (PHP)</p>	
+	<p><a href="{$basePath}/navrhujeme-jednoduchy-model-v-php/" title="Více"><img src="{$basePath}/images/vice.png" alt="Více" /></a></p>
+</div>	<!-- ./comment -->
+
+<div class="comment">
+    <h1><a href="{$basePath}/dragon-age-dw-warrior/">Dragon Age Origins: DW Warrior Build</a>
+		<img src="{$basePath}/images/eng.gif" title="English version" width="23" height="14" class="flag" alt="English version" />
+	</h1>
+	<img src="{$basePath}/images/dw-warrior.jpg" alt="Dual-wield warrior" width="200" height="125" class="right" />
+	<p class="description">In this guard we show how to build the dual-wielding warrior. In Dragon Age Origins you can play as a DW warrior with two types
+of characters &#8211; as a warrior or a rogue. Each character can be a male or a&nbsp;female and then
+there is a choice from the race: human, elf or dwarf. </p>
+		
+	<p class="label">Přidáno: 25.10.2013 | Hraní her</p>	
+	<p><a href="{$basePath}/dragon-age-dw-warrior/" title="Více"><img src="{$basePath}/images/vice.png" alt="Více" /></a></p>
+</div>	<!-- ./comment -->
+
+ <div class="comment">
+    <h1><a href="{$basePath}/zapojeni-pocitace-a-instalace-operacniho-systemu/">Zapojení počítače a instalace OS (3. díl)</a></h1>
+	<img src="{$basePath}/images/pc/pc_cable_managementII.jpg" alt="PC cable management" width="200" height="125" class="right" />
+	<p class="description">Po montáži všech komponentů do počítačové skříně nás čeká patrně ještě více zajímavější část, kterou představuje správné zapojení počítače.</p>
+		
+	<p class="label">Přidáno: 25.10.2013 | Počítače</p>
+	<p><a href="{$basePath}/zapojeni-pocitace-a-instalace-operacniho-systemu/" title="Více"><img src="{$basePath}/images/vice.png" alt="Více" /></a></p>
+</div>	<!-- ./comment -->
+
+
+<div class="comment">
+	<h1><a href="{$basePath}/stavime-pocitac-pokracovani/">Stavíme počítač &#8211; pokračování (2. díl)</a></h1>
+	<img src="{$basePath}/images/pc/stavba_pocitace.jpg" alt="Komponenty" width="200" height="125" class="right" />
+	<p class="description">Dostali jsme se konečně do fáze, kdy nám doma leží krabice s&nbsp;komponenty. Takže hurá na to. Ještě než se do toho pustíme, tak se musíme vypořádat se
+statickou elektřinou.</p>
+
+	<p class="label">Přidáno: 25.10.2013 | Počítače</p>
+	<p><a href="{$basePath}/stavime-pocitac-pokracovani/" title="Více"><img src="{$basePath}/images/vice.png" alt="Více" /></a></p>
+</div>	<!-- ./comment -->
+
+
+<div class="comment">
+	<h1><a href="{$basePath}/stavime-pocitac-aneb-jak-na-to/">Stavíme počítač aneb jak na to (1. díl)</a></h1>
+	<img src="{$basePath}/images/pc/zalman.jpg" alt="Počítač" width="200" height="125" class="right" />
+	<p class="description">Na úvod si povíme něco málo o konfiguraci a kompatibilitě jednotlivých komponentů, zmíním také svoje zkušenosti s vlastní sestavou &#8211; tedy zatím toho,
+co se osvědčilo a co mě naopak možná mírně zklamalo.</p>
+
+	<p class="label">Přidáno: 25.10.2013 | Počítače | Aktualizováno: 28.01.2014</p>
+	<p><a href="{$basePath}/stavime-pocitac-aneb-jak-na-to/" title="Více"><img src="{$basePath}/images/vice.png" alt="Více" /></a></p>
+</div>	<!-- ./comment -->
+
+  
+  
+</div> <!-- ./blog style -->
+{/block}
+
+{block scripts}
+{include #parent}
+<script src="http://jush.sourceforge.net/jush.js"></script>
+<script>
+	jush.create_links = false;
+	jush.highlight_tag('code');
+	$('code.jush').each(function(){ $(this).html($(this).html().replace(/\x7B[/$\w].*?\}/g, '<span class="jush-latte">$&</span>')) });
+
+	$('a[href^=#]').click(function(){
+		$('html,body').animate({ scrollTop: $($(this).attr('href')).show().offset().top - 5 }, 'fast');
+		return false;
+	});
+</script>
+{/block}
