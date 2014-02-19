@@ -7,6 +7,25 @@
         <!--<p id="description">Here there is a space for solving my common or less common problems with development and for simple instructions.</p>-->
 
         <div class="comment">
+            <h2>Git &#8211; the first repository</h2>
+            <p>Create a new repository from existing files on the command line:</p>
+            <pre>git init
+git add -A
+git commit -m "first commit"
+git remote add origin git@github.com:login/repository.git
+git push origin master</pre>
+            <p class="solution">Note: I recommend to create and edit a file named <code>.gitignore</code> in the repository
+            <span class="i">before</span> a commit.
+            This file contains paths to other files which Git will be ignored.
+            </p>
+            <p>The simple example of <code>.gitignore</code> file:</p>
+            <pre>/nbproject/private
+/nbproject
+/temp/cache/*</pre>
+        <p class="date">Date: 2014-02-18</p>
+        </div>
+
+        <div class="comment">
             <h2>What do I need to install after Windows' reinstallation?</h2>
             <p>I find Windows is an unstable system, sometimes something stops working, so I must reinstall it.
                 There is a&nbsp;list of my favourite programs or applications. Of course, Microsoft Word is <span class="bf">not</span>
@@ -35,7 +54,7 @@
                 </tr>
                 <tr class="row">
                     <td>Google Chrome</td>
-                    <td><a href="https://netbeans.org/downloads/" target="_blank" title="netbeans.org">NetBeans 7.4</a></td>
+                    <td><a href="https://netbeans.org/downloads/7.3.1/" target="_blank" title="netbeans.org">NetBeans 7.3.1</a></td>
                     <td>IrfanView</td>
                 </tr>    
                 <tr class="row">
