@@ -1,0 +1,92 @@
+{block content}
+<div id="middle-page">
+
+<h1>Git cheat sheet</h1>
+<p>Git is one of version control systems for handeling small or large projects. There is my Git cheat sheet.</p>
+
+<h2>New task</h2>
+<pre>
+git pull origin master            update files in branch "master"
+git checkout -b &lt;branch&gt;          create a new branch
+... edit files ...
+git status                        control changed files
+git add -A                        add all changes
+git commit -m &lt;message&gt;           commit local changes
+git push origin &lt;branch&gt;          publish local changes
+... create a pull request on github.com ...
+... and then merge to master ...
+</pre>
+
+<h2>First repository</h2>
+<p>Create a new repository from existing files on the command line.</p>
+<pre>
+... create or edit .gitignore file before commit ...
+git init                                                    initialization of a .git folder
+git status                                                  control all files
+git add -A                                                  added all changes
+git commit -m "first commit"                                create a commit with message
+git remote add origin git@github.com:login/repository.git   create a remote as "origin"
+git push origin master                                      push to the branch master
+</pre>
+
+
+<h2>Create</h2>
+<pre>
+git clone git@github.com:&lt;login&gt;/&lt;repository&gt;.git &lt;my folder&gt;     clone an existing repository
+git init                          create a new local repository
+</pre>
+
+<h2>Local changes</h2>
+<pre>
+git status                        changed files in working directory
+git add -A                        add all changes to the next commit (new, modified files)
+git commit -m &lt;message&gt;           commit local changes
+git diff                          changes to tracked files
+</pre>
+
+
+<h2>Branches</h2>
+<pre>
+git branch                          list all existing branches
+git checkout -b &lt;branch&gt;            create a new branch
+git checkout &lt;branch&gt;               switch branch
+git branch -m &lt;oldname&gt; &lt;newname&gt;   rename a remote branch
+git branch -m &lt;newname&gt;             rename a local branch
+git branch -d &lt;name&gt;                delete a local branch
+</pre>
+
+<h2>Update & publish</h2>
+<pre>
+git remote -v                       list all currently configured remotes
+git remote show &lt;remote&gt;            show information about a remote
+git remote add &lt;remote&gt; git@github.com:&lt;login&gt;/&lt;repo&gt;.git     add new remote repository, named
+                                                              &lt;remote&gt;
+git fetch &lt;remote&gt;                  download all changes from &lt;remote&gt;, do not integrate
+                                    into HEAD
+git pull &lt;remote&gt; &lt;branch&gt;          download changes and directly merge/integrate into HEAD
+git push &lt;remote&gt; &lt;branch&gt;          publish local changed on a remote
+git push &lt;remote&gt; :&lt;branch&gt;         delete a branch on the remote
+</pre>
+
+<h2>Merge</h2>
+<pre>
+git merge &lt;branch&gt;                  merge &lt;branch&gt; into current HEAD
+</pre>
+
+
+<h2>Undo</h2>
+<pre>
+git checkout .                    revert all uncommitted changes
+git reset --hard                  revert all uncommitted changes, works from any subdirectory
+</pre>
+
+<h2>Remove</h2>
+<pre>
+git rm --cached &lt;directory&gt; -r    remove a directory from the repo, NOT DELETE it from
+                                  the local file system
+git rm &lt;file&gt;                     remove a file from the repo, DELETE it from the local
+                                  file system
+</pre>
+
+</div>
+{/block}

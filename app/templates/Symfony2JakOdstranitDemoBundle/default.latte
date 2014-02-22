@@ -1,0 +1,61 @@
+{block content}
+<div id="middle-page">
+<h1>Symfony2 &#8211; jak odstranit DemoBundle</h1>
+
+<p>Potřebujeme „odstranit“ <code>DemoBundle</code> v níže uvedených souborech a pak ho můžeme smazat.</p>
+    <ul>
+        <li>app\AppKernel.php</li>
+        <li>app\config\routing_dev.yml</li>
+    </ul>
+
+<p>Bližší informace najdete zde:</p>
+
+    <ul>
+        <li><a href="http://symfony.com/doc/current/cookbook/bundles/remove.html" title="symfony.com" target="_blank">symfony.com</a></li>
+        <li><a href="http://funktion-it.co.za/2012/06/symfony2-removing-the-acme-demo/" title="funktion-it.co.za" target="_blank">removing the acme demo</a></li>
+        <li><a href="http://www.devforyou.be/delete-a-bundle-in-symfony2/" title="devforyou.be" target="_blank">delete a bundle in symfony2</a></li>
+    </ul>
+
+
+<p>Nový bundle, který si pojmenuji např. jako <code>BlogBundle</code>, si vytvoříme pomocí příkazu:</p>
+		
+<pre>
+php app/console generate:bundle --namespace=Acme/BlogBundle --format=yml</code>
+</pre>
+
+<p>
+Pokud používáte Příkazový řádek ve Windows, je potřeba nastavit správnou cestu k Symfony projektu,
+v&nbsp;mém případě <code>...\xampp\htdocs\web\blog</code>. Tento postup nám vytvoří požadovanou strukturu.
+Nyní si v&nbsp;souboru <code>app\config\routing.yml</code> upravíme nastavení routy, abychom mohli stránku zobrazit:
+</p>
+
+<pre>
+acme_blog_homepage:
+    pattern: /
+    defaults: { _controller: AcmeBlogBundle:Blog:index }
+</pre>
+		
+<p>Pokud jsme použili pro vytvoření nového bundlu výchozí nastavení, bude potřeba trochu upravit také controller &#8211;
+viz <code>Acme/BlogBundle/Controller/BlogController.php</code>.</p>
+<pre>
+class BlogController extends Controller
+{
+    public function indexAction()
+    {
+        return $this->render('AcmeBlogBundle:Blog:index.html.twig');
+    }
+}
+</pre>
+		
+<p>A šablonu v <code>Acme/BlogBundle/Resources/views/Blog/index.html.twig</code>, kam vložíme nějaký text:</p>
+
+<pre>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit
+</pre>
+		
+<p>Nyní si zobrazíme stránku na localhostu: <code>http://localhost/web/blog/web/app_dev.php/</code>.
+Měli bychom vidět prázdnou stránku
+s textem <span class="i">Lorem ipsum dolor sit amet, consectetur adipiscing elit</span>.
+</p>
+</div>
+{/block}
