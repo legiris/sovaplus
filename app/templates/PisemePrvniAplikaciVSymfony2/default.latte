@@ -195,7 +195,7 @@ strukturu:</p>
 
 <p>Provizorní styl máme, akorát ho potřebujeme vložit do html souboru.
 Pro vložení stylu využijeme tzv. <span class="i">assety</span>, což je označení pro soubory typu CSS, JavaScript a
-obrázky, které vkládáme do html. Na BlogBundle se v tomto případě odkážeme pomocí anotace <code>@pdsBlogBundle</code>.
+obrázky, které vkládáme do html. Na BlogBundle se v tomto případě odkážeme pomocí aliasu <code>@pdsBlogBundle</code>.
 Šablonu <code>layout.html.twig</code> proto upravíme tímto způsobem:</p>
 <pre>
 <?php echo'{'?># src/pds/BlogBundle/Resources/views/layout.html.twig #<?php echo'}'?>
@@ -213,8 +213,7 @@ obrázky, které vkládáme do html. Na BlogBundle se v tomto případě odkáž
 &lt;/head&gt;
 </pre>
 
-<p>Nakonec ještě musíme zohlednit nastavení v konfiguračním souboru <code>app/config/config.yml</code> &#8211; do
-assetic bundlu potřebujeme přidat název bundlu.</p>
+<p>Nakonec ještě musíme přidat náš bundle do assetic bundlu &#8211; to provedeme přímo v konfiguračním souboru <code>app/config/config.yml</code>.</p>
 <pre>
 # Assetic Configuration
 assetic:
@@ -227,71 +226,67 @@ assetic:
 Více informací je možné najít v <a href="http://symfony.com/doc/current/cookbook/assetic/asset_management.html"
 title="How to Use Assetic for Asset Management" target="_blank">dokumentaci</a> popř. i na serveru
 <a href="http://stackoverflow.com/questions/10376946/assetic-unable-to-find-file" title="stackoverflow.com" target="_blank">stackoverflow.com</a>.
+Styl nám funguje, takže nyní si doplním základní kostru stylu a upravím příslušné šablony. Styl je k dispozici TADY.<br /><br />
 </p>
 
-
-
-
-<p>Do stylu zatím doplním <a href="http://meyerweb.com/eric/tools/css/reset/" title="myeyerweb reset" target="_blank">
-CSS reset</a> a jelikož stránka nevypadá úplně dobře, tak to aspoň trochu vystředím a přidám nějaký okraj, jinak „design“ aplikace o moc víc řešit nebudu.
-Taky to dělám proto, abychom si mohli ukázat použití šablon, kdy základní strukturu stránky dám do layoutu a ve výsledku tak dostaneme
-pěkný třívrstvý model.<br /><br />
-</p>
 
 <p>Šablona layout.html.twig</p>
 <pre>
-<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/layout.html.twig #<?php echo '}'; ?>
-<?php echo '{'; ?>% extends '::base.html.twig' %<?php echo '}'; ?>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/layout.html.twig #<?php echo '}'; ?>
 
-<?php echo '{'; ?>% block stylesheets %<?php echo '}'; ?>
-&lt;link rel="stylesheet" 
-                             href="<?php echo '{'; ?><?php echo '{'; ?> asset('bundles/acmeblog/css/blog.css') <?php echo '}'; ?><?php echo '}'; ?>" /&gt;
-<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;<?php echo "{" ?>% block title %<?php echo "}" ?>Můj blogísek<?php echo "{" ?>% endblock %<?php echo "}" ?>&lt;/title&gt;
+    <?php echo "{" ?>% stylesheets '@pdsBlogBundle/Resources/public/css/blog.css' %<?php echo "}" ?>
 
-<?php echo '{'; ?>% block title 'Můj blogísek' %<?php echo '}'; ?>
+    &lt;link rel="stylesheet" href="<?php echo "{" ?><?php echo "{" ?> asset_url <?php echo "}" ?><?php echo "}" ?>" /&gt;
+    <?php echo "{" ?>% endstylesheets %<?php echo "}" ?>
 
-<?php echo '{'; ?>% block body %<?php echo '}'; ?>
+    &lt;link rel="icon" type="image/x-icon" href="<?php echo "{" ?><?php echo "{" ?> asset('favicon.ico') <?php echo "}" ?><?php echo "}" ?>" /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="page"&gt;
+      &lt;div id="top-menu"&gt;&lt;/div&gt;
+      &lt;div id="left-page"&gt;
+        <?php echo "{" ?>% block menu %<?php echo "}" ?>
 
-&lt;div id="page"&gt;
-  &lt;div id="top-menu"&gt;&lt;/div&gt;
-  &lt;div id="left-page"&gt;
-    <?php echo '{'; ?>% block menu%<?php echo '}'; ?>
+        <?php echo "{" ?>% endblock %<?php echo "}" ?>
 
-    <?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+      &lt;/div&gt;
+      &lt;div id="middle-page"&gt;  
+        <?php echo "{" ?>% block content %<?php echo "}" ?><?php echo "{" ?>% endblock %<?php echo "}" ?>
 
-  &lt;/div&gt;
-  &lt;div id="middle-page"&gt;
-    <?php echo '{'; ?>% block content %<?php echo '}'; ?>
+        <?php echo "{" ?>% block javascripts %<?php echo "}" ?><?php echo "{" ?>% endblock %<?php echo "}" ?>
 
-    <?php echo '{'; ?>% endblock %<?php echo '}'; ?>
-
-  &lt;/div&gt;
-&lt;/div&gt;
-
-<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+      &lt;/div&gt;    &lt;!-- END middle-page --&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
 </pre>
 
 <p>Šablona index.html.twig</p>
 <pre>
-<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
 
-<?php echo '{'; ?>% extends 'AcmeBlogBundle::layout.html.twig' %<?php echo '}'; ?>
+<?php echo "{" ?>% extends "pdsBlogBundle::layout.html.twig" %<?php echo "}" ?>
 
-<?php echo '{'; ?>% block menu %<?php echo '}'; ?>
+<?php echo "{" ?>% block menu %<?php echo "}" ?>
 
   &lt;ul&gt;
     &lt;li class="title"&gt;Nejnovější&lt;/li&gt;
     &lt;li&gt;&lt;a href=""&gt;Lorem Ipsum&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href=""&gt;De Finibus Bonorum...&lt;/li&gt;&lt;/a&gt;
+    &lt;li&gt;&lt;a href=""&gt;De Finibus Bonorum...&lt;/a&gt;&lt;/li&gt;
   &lt;/ul&gt;
-<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+<?php echo "{" ?>% endblock %<?php echo "}" ?>
 
-<?php echo '{'; ?>% block content %<?php echo '}'; ?>
+<?php echo "{" ?>% block content %<?php echo "}" ?>
 
   &lt;div class="article"&gt;
     &lt;h1&gt;Lorem Ipsum&lt;/h1&gt;
     &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit ... 
-          &lt;a href="" title=""&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+          &lt;a href="" title=""&gt;celý článek&lt;/a&gt;&lt;/p&gt;
     &lt;p class="date"&gt;Přidáno: 19.10.2013 v 18:42&lt;/p&gt;
   &lt;/div&gt;
   &lt;div class="article"&gt;
@@ -302,10 +297,10 @@ pěkný třívrstvý model.<br /><br />
        fringilla nisl, mattis tempor tortor posuere in. Nulla et venenatis augue. Suspendisse
        volutpat justo eu risus lobortis, quis lobortis nulla ornare. Aliquam erat volutpat.
        Praesent ut nunc felis. Etiam tincidunt dolor ac nisl congue, eu molestie ante venenatis.
-       Curabitur at risus ... &lt;a href="seznam.cz" title=""&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+       Curabitur at risus ... &lt;a href="seznam.cz" title=""&gt;celý článek&lt;/a&gt;&lt;/p&gt;
     &lt;p class="date"&gt;Přidáno: 17.10.2013 v 22:05&lt;/p&gt;
   &lt;/div&gt;
-<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+<?php echo "{" ?>% endblock %<?php echo "}" ?>
 </pre>
 
 
