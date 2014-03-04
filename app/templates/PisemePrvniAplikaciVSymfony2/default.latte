@@ -4,13 +4,10 @@
 <div id="middle-page">
 
 <h1>Píšeme první aplikaci v Symfony2</h1>	
-    <p>V tomto článku si ukážeme, jakým způsobem můžeme v Symfony2 vytvořit naši první aplikaci v podobě jednoduchého blogu. 
+    <p>V tomto článku si ukážeme, jakým způsobem můžeme v Symfony2 vytvořit naši první aplikaci v podobě jednoduchého blogu
+       s&nbsp;komentáři. 
        Symfony2 framework vychází z návrhového vzoru MVC a za jeho vývojem stojí firma Sensio Labs.
-       Pokud si ovšem chcete jen vyzkoušet práci s „nějakým“ frameworkem, tak
-       Symfony2 z&nbsp;mého pohledu spíše nedoporučím &#8211; tedy ne jako první framework.
-       Tady mi třeba dost pomohl Nette framework. Symfony2 vypadá a funguje trochu jinak,
-       první pocit byl pro mě takový, že se mi v něm hůře orientuje a celkově je postup učení pomalejší než v Nette, proto 
-       počítejte s tím, že na to, abyste se naučili se Symfony2 dobře pracovat, tak to zabere poměrně dost času.
+       Více se o frameworku dozvíte přímo na stránce <a href="http://symfony.com/" title="Symfony2" target="_blank">symfony.com</a>.
        Na závěr ještě doplním, co všechno budeme potřebovat:
     </p>
     <ul>
@@ -20,9 +17,9 @@
     </ul>
 
     <h3>Instalujeme Symfony2</h3>
-    <p>Nejprve si nainstalujeme Symfony2 framework, který je k dispozici na stránkách symfony.com, takže doporučuji si rovnou
-       projít i sekci „Get started“. Nejjednodušší je provést instalaci přes <span class="i">Composer</span>. Pokud
-       jste s Composerem nikdy nepracovali,
+    <p>Nejprve si nainstalujeme Symfony2 framework &#8211; odkaz pro stažení je
+        <a href="http://symfony.com/download" title="Symfony2: download" target="_blank">zde</a>.
+       Nejjednodušší je provést instalaci přes <span class="i">Composer</span>. Pokud jste s Composerem nikdy nepracovali,
        můžete si stáhnout zazipovanou verzi, ale určitě doporučuji se na Composer podívat.
        Symfony2 framework si umístíme do kořenového adresáře našeho projektu.
        Na Windows používám <code>xampp</code>, takže v <code>htdocs</code> mám vytvořenou složku <code>web</code> a tam mám
@@ -40,13 +37,15 @@
             app_dev.php</pre>
 		
     <p>Adresa pro zobrazení na localhostu potom bude ve tvaru <code>http://localhost/web/blog/web/app_dev.php</code>.<br />
-    Tam by se nám měla zobrazit uvodní stránka Symfony2 frameworku.
+       Tam by se nám měla zobrazit uvodní stránka Symfony2 frameworku. Stránku <code>app_dev.php</code> musíme zadat.
     </p>
     <img src="{$basePath}/images/symfony2.jpg" title="Symfony2 demo page" width="600" height="421" class="center" />
     <p>
     Základním stavebním kamenem je tzv. „bundle“, což je adresář, ve kterém se nachází naše aplikace.
-    Instalace implicitně zahrnuje DemoBundle, který je umístěn ve složce <code>src/Acme</code>, a to včetně ukázkových příkladů.<br />
-    Pro představu zde uvedu způsob, jakým si můžeme inicializovat proměnnou v controlleru a&nbsp;předat ji do template:
+    Instalace implicitně zahrnuje DemoBundle, který je umístěn ve složce <code>src/Acme</code>, a to včetně ukázkových příkladů
+    &#8211; viz sekce <a href="http://symfony.com/get-started" title="Symfony2: Get started" target="_blank">Get Started</a>.<br />
+    Pro představu zde uvedu, jakým způsobem si můžeme inicializovat proměnnou v controlleru a&nbsp;jakým způsobem ji následně
+    předáme do šablony:
     </p>
     <pre>
 public function indexAction()
@@ -56,7 +55,8 @@ public function indexAction()
         array('variable' => $var));
 }</pre>
 	
-    <p>Již z této ukázky vidíme, že Symfony používá <code>twig</code> šablonovací systém.
+    <p>Již z této ukázky vidíme, že Symfony2 používá <code>twig</code> šablonovací systém. Dokumentace je dostupná
+        <a href="http://twig.sensiolabs.org/" title="Twig" target="_blank">tady</a>.
        Výše uvedenou proměnnou si tedy v šabloně vypíšeme jako:</p>
     <pre>{{ variable }}</pre>
     <p>
@@ -91,7 +91,8 @@ public function indexAction()
     </p>
     <pre>{{ array.name }}</pre>
     <p>Více informací o práci se šablonami najdete v <a href="http://symfony.com/doc/current/book/templating.html"
-       title="Symfony2: Creating and using Templates" target="_blank">dokumentaci</a>. Nyní se již vrhneme na zmíněný blog.</p>
+       title="Symfony2: Creating and using Templates" target="_blank">dokumentaci</a> k Symfony2 frameworku. Nyní se již
+       vrhneme na zmíněný blog.</p>
 		
 
     <h2>Vytváříme jednoduchý blog</h2>
@@ -124,7 +125,7 @@ public function indexAction()
     }
 }</pre>
 
-    <p>A nakonec šablonu <code>Acme/BlogBundle/Resources/views/Blog/index.html.twig</code>, do které vložíme html kód:</p>
+    <p>A nakonec šablonu <code>pds/BlogBundle/Resources/views/Blog/index.html.twig</code>, do které vložíme html kód:</p>
     <pre>
 &lt;html&gt;
   &lt;body&gt;
@@ -137,13 +138,16 @@ public function indexAction()
     s textem <span class="i">Lorem ipsum dolor sit amet, consectetur adipiscing elit</span>.
     Dole na stránce se nachází Symfony2 toolbar. V toolbaru máme základní informace o stránce, takže si
     můžeme všimnout, že pro načtení stránky byla použita routa s názvem pds_blog_homepage a že se z BlogControlleru vykonala
-    akce indexAction.
+    akce indexAction. Dále tam najdeme informace o verzi frameworku, PHP, počet a typ vykonaných dotazů nad databází a další ladicí informace.
     </p>
 
 
 <h3>Šablonovací systém Twig</h3>
-<p>Nyní si doplníme kompletní html strukturu stránky. Do složky <code>Resources/views</code> v <code>src/pds/BlogBundle</code> přidáme novou šablonu <code>layout.html.twig</code>, kde
-se již podle názvu bude nacházet výchozí layout stránky. Část <code>content</code> je pak určena pro vlastní obsah.
+<p>Nyní si doplníme kompletní html strukturu stránky. Do složky <code>Resources/views</code> v <code>src/pds/BlogBundle</code> přidáme novou
+šablonu <code>layout.html.twig</code>, kde
+se již podle názvu bude nacházet výchozí layout stránky. V&nbsp;podstatě se jedná o vzor layoutu ze souboru <code>base.html.twig</code>, který
+je umístěný v <code>app/Resources/views</code>.
+Část <code>content</code> pak vyčlením pro vlastní obsah.
 <pre>
 <?php echo'{'?># src/pds/BlogBundle/Resources/views/layout.html.twig #<?php echo'}'?>
 
@@ -188,8 +192,8 @@ a v titulku máme umístěn text „Můj blogísek“.</p>
 <p>Pro testovací účely si připravím jednoduchou definici stylu:</p>
 <pre>body <?php echo'{'?> background-color: whitesmoke; <?php echo'}'?></pre>
 
-<p>Tento styl si pojmenuji jako <code>blog.css</code>. Pokud se nyní podívám na strukturu aplikace, tak mi přijde
-jako nejlepší řešení, když styl bude součástí bundlu. Pro umístění stylu si tedy vytvoříme následující adresářovou
+<p>Tento styl si pojmenuji jako <code>blog.css</code>. Pokud se nyní podívám na strukturu aplikace, tak budu chtít,
+aby styl byl součástí bundlu. Pro umístění stylu si tedy vytvoříme následující adresářovou
 strukturu:</p>
 <pre>src/pds/BlogBundle/Resources/public/css/blog.css</pre>
 
@@ -309,16 +313,17 @@ Styl nám funguje, takže nyní si doplním základní kostru stylu a upravím p
 
 <h2>Navrhujeme model aneb cesta k ORM</h2>
 <p>
-Dosud ještě nebyla řeč o modelu, takže je na čase postoupit zase o krok dál. Vzhledem k tomu, že se potřebuji dostat k Doctrine2,
-tak využiji toho, že Symfony2 v sobě tuto knihovnu již zahrnuje a postavím tuto „aplikaci“ na Doctrine2. Pokud jste dosud dělali jen
-s MySQL nebo PDO, tak práce s Doctrine či jiným ORM je zkrátka jiná. O tom, co Doctrine je a jak se používá, vyšel i seriál v češtině na
+Dosud ještě nebyla řeč o modelu, takže je na čase postoupit zase o krok dál. Symfony2 v sobě již zahrnuje
+knihovnu Doctrine2, kterou využiji i pro tento ukázkový příklad.
+Pokud jste dosud dělali jen
+s MySQL nebo PDO, tak práce s Doctrine či jiným ORM je zkrátka jiná. O tom, co Doctrine je a jak se používá, vyšel i&nbsp;seriál v češtině na
 <a href="http://www.zdrojak.cz/serialy/doctrine-2/" title="doctrine 2" target="_blank">zdrojak.cz</a>.
 Doctrine2 využívá návrhový vzor <span class="i">Data Mapper</span> oproti vzoru <span class="i">Active Record</span>,
 se kterým jste se již pravděpodobně setkali. Proto předtím,
 než se do něčeho pustíte, tak doporučuji si projít minimálně <a href="http://www.zdrojak.cz/clanky/doctrine-2-zakladni-definice-entit/"
 title="Doctrine2: Základní definice entit" target="_blank">tento článek</a>, kde se dozvíte, na jakém principu se s Doctrine2 pracuje
 a něco o pojetí entit, bez kterých se v Doctrine2 neobejdete.
-Místo Doctrine by neměl být problém využít třeba Propel či samotné PDO. 
+Místo konceptu Doctrine2 by neměl být problém využít třeba Propel či samotné PDO. 
 </p>
 
 <p>
@@ -350,17 +355,39 @@ CREATE TABLE IF NOT EXISTS `comment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci AUTO_INCREMENT=1 ;
 </pre>
 
-<p>Nyní si musíme naplnit tabulku „article“ daty. Pro reálné nasazení by bylo potřeba si vytvořit trochu více
-sofistikovanější systém, který by nám umožňoval přidávat a editovat jednotlivé články.
+<p>Nyní si naplníme tabulku „article“ daty. Vzorová data si můžete stáhnout ZDE. Pro reálné nasazení by bylo potřeba si vytvořit trochu více
+sofistikovanější systém, který by nám umožňoval přidávat a&nbsp;editovat jednotlivé články.
 My si v této chvíli práci usnadníme a budeme předpokládat, že takový systém již máme.
+Základní práci s databází si ukážeme na komentářích.
 </p>	
 
 <h3>Nastavení parametrů pro připojení k Doctrine2</h3>
 
 <p>Pro to, abychom se mohli připojit k databázi, potřebujeme provést základní konfiguraci. Při instalaci
 přes composer se automaticky vygeneruje také soubor s parametry (<code>parameters.yml</code>), který je uložen ve složce
-<code>/app/config/</code> &#8211; tam si můžeme zkontrolovat nastavení. My nyní musíme upravit soubor <code>config.yml</code>, 
-konkrétně část Doctrine configuration a přepíšeme tam původní parametry. Pro první test si v controlleru
+<code>/app/config/</code>. V souboru si zkontrolujeme výchozí nastavení popř. ho upravíme.
+</p>
+<pre>
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: blog
+    database_user: root
+    database_password: null
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: en
+    secret: ThisTokenIsNotSoSecretChangeIt
+</pre>
+
+<p>
+<!--My nyní musíme upravit soubor <code>config.yml</code>, 
+konkrétně část Doctrine configuration a přepíšeme tam původní parametry.-->
+Pro první test si v controlleru
 <code>BlogController.php</code> provizorně upravíme funkci <code>indexAction()</code> a využijeme službu <code>database_connection</code>:
 </p>
 
@@ -372,7 +399,7 @@ public function indexAction()
 
 	var_dump($rows);
 
-	return $this->render('AcmeBlogBundle:Blog:index.html.twig');
+	return $this->render('pdsBlogBundle:Blog:index.html.twig');
 }
 </pre>
 
@@ -383,15 +410,17 @@ objektů na relační databázi, tedy o vrstvu ORM. Proto si vytvoříme vlastn�
 
 <h3>Entita jako základní prvek modelu</h3>
 <p>Jako první si vytvoříme entitu „Article“, která nám bude definovat samotný článek. V pojetí PHP entitě bude odpovídat
-samostatná třída. V adresáři <code>Acme/BlogBundle</code> si vytvoříme novou složku „Entity“ a do ní umístíme tuto třídu.
+samostatná třída. V adresáři <code>pds/BlogBundle</code> si vytvoříme novou složku „Entity“ a do ní umístíme tuto třídu.
 V této třídě pak jednotlivé atributy popíšeme pomocí anotací tak, abychom s nimi mohli v Doctrine2 pracovat.
-Nakonec doplníme standardní metody pro čtení a nastavení hodnot.
+Přehled anotací najdete <a href="http://docs.doctrine-project.org/en/2.0.x/reference/basic-mapping.html" title="doctrine docs: Basic Mapping"
+target="_blank">zde</a>.
+Nakonec doplníme standardní metody pro vrácení a nastavení hodnot.
 </p> 
 
 <pre>
 &lt;?php
 
-namespace Acme\BlogBundle\Entity;
+namespace pds\BlogBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

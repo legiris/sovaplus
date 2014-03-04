@@ -1,0 +1,86 @@
+{block content}
+<div id="middle-page">
+<h1>Symfony2 DemoBundle on a production server</h1>
+<p>A few days ago I solved deploying Symfony2 demo application to server. For my test I downloaded
+    Symfony2 framework and copied selected files or folders to server, but
+    how to run it? My Symfony demo app did not work. Finally, the problem was caused by DemoBundle.
+    DemoBundle is only demo, so this bundle has default setting for it &#8211; that
+    means it is need to configure <code>AppKernel.php</code> and routing unlike the case if you have generated
+    own bundle. But you can see how it works. First, I make common settings.<br /><br />
+</p>
+<p>My new file <code>.htaccess</code> in <code>subdom</code> folder, where is Symfony app, links to <code>web</code> (see directory structure).</p>
+<pre>RewriteEngine on
+RewriteRule ^(.*)$ /web/$1 [L,NE]</pre>
+
+<pre>www/
+  subdom/
+    symfony/
+      app/
+        AppKernel.php
+      src/
+      vendor/
+      web/
+        bundles/
+        app.php
+        app_dev.php
+        .htaccess
+      .htaccess
+</pre>
+
+<p>The file <code>.htaccess</code> in <code>web</code> I leave unchanged, because the default setting
+    is right &#8211; requests are redirected to <code>app.php</code> as directory index file.
+    This file is used for production development, here look at the following line:
+</p>
+<pre>$kernel = new AppKernel('prod', false);</pre>
+<p>The second parameter specifies debug mode. Regardless of the environment, the application can be
+    run with debug mode set to <code>true</code> or <code>false</code>. The difference is in the error display.
+    In the <code>prod</code> environment I can see e.g. this error:
+</p>
+<pre>Oops! An Error Occurred
+The server returned a "404 Not Found".
+Something is broken. Please e-mail us at [email] and let us know what you were doing...
+</pre>
+<p>If you get a similar error, you should try to setup debug mode of <code>app.php</code>.</p>
+<pre>$kernel = new AppKernel('prod', true);</pre>
+<p>In this case Symfony tells you what the problem is &#8211; the common error is the routing.
+    For DemoBundle are set routes only in <code>routing_dev.yml</code>. That's why I copy this route to
+    <code>routing.yml</code>.
+</p>
+<pre># app/config/routing.yml
+_acme_demo:
+    resource: "@AcmeDemoBundle/Resources/config/routing.yml"</pre>
+
+<p>Then, it is essantial to register DemoBundle into <code>AppKernel.php</code> and remove it from <code>dev</code> environment.</p>
+<pre>// app/AppKernel.php
+class AppKernel extends Kernel
+<?php echo "{"; ?>
+
+    public function registerBundles()
+    <?php echo "{"; ?>
+
+        $bundles = array(
+            // ...
+            new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new Acme\DemoBundle\AcmeDemoBundle()
+        );
+
+        if (in_array($this->getEnvironment(), array('dev', 'test'))) <?php echo "{"; ?>
+            
+            //$bundles[] = new Acme\DemoBundle\AcmeDemoBundle();
+            $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
+            // ...
+        <?php echo "}"; ?>
+
+        return $bundles;
+    <?php echo "}"; ?></pre>
+        <p>Finally, do not remember to setup Debug mode to <code>false</code> in the <code>app/app.php</code>, if you have changed it.</p>
+        <pre>$kernel = new AppKernel('prod', false);</pre>
+        <p>And the result:</p>
+        <img src="{$basePath}/images/symfony-demobundle.jpg" width="600" height="464" title="Symfony DemoBundle on prod environment" alt="Symfony DemoBundle on prod environment" />
+        <p>More information:</p>
+        <p><a href="http://stackoverflow.com/questions/13757954/unable-to-set-symfony-project-getting-error-on-app-php" title="Stackoverflow.com: Unable to set symfony project getting error on app.php"
+              target="_blank">Unable to set symfony project getting error on app.php</a></p>
+        <p><a href="http://stackoverflow.com/questions/6997543/why-is-my-symfony2-install-404ing-when-i-access-app-php" title="Stackoverflow.com: Why is my Symfony2 install 404ing when I access app.php?"
+              target="_blank">Why is my Symfony2 install 404ing when I access app.php?</a></p>
+</div>
+{/block}
