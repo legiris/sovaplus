@@ -612,9 +612,13 @@ public function indexAction()
                 [ ],
                 [ 'id' => 'DESC' ]
             ),
-        'news' => $this->getDoctrine()->getManager()->createQuery('
+        'news' => $this->getDoctrine()
+            ->getManager()
+            ->createQuery('
                 SELECT a FROM pdsBlogBundle:Article a ORDER BY a.date DESC    
-            ')->setMaxResults(5)->getResult()
+            ')
+            ->setMaxResults(5)
+            ->getResult()
         ])
     ;
 }
@@ -661,9 +665,7 @@ Předpokládejme, že budeme chtít, aby článek byl dostupný na url typu:
 </pre>
 
 <p>
-Tímto se dostáváme k otázce <span class="i">routování</span>. Já si ještě provedu takovou kosmetickou úpravu, a to
-že si přejmenuji BlogController na HomepageController a dále kvůli tomu upravím soubory index.html.twig a routing.yml.
-Dělám to proto, že mi to přijde líp čitelnější, nic víc v tom nehledejte.
+Tímto se dostáváme k otázce <span class="i">routování</span>.
 </p>
 
 <h3>Routování</h3>
@@ -676,7 +678,7 @@ Dělám to proto, že mi to přijde líp čitelnější, nic víc v tom nehledej
 </ul>
 
 <p>
-Nejprve si zkusím v <code>HomepageControlleru</code> nadefinovat akci „Article“, která bude mít za úkol zobrazit testovací stránku.  
+Nejprve si zkusím v <code>BlogControlleru</code> nadefinovat akci „Article“, která bude mít za úkol zobrazit testovací stránku.  
 K tomu využiji objekt <code>Response</code>, proto nesmím zapomenout na začátek kódu doplnit příslušnou komponentu.
 </p>
 
@@ -685,29 +687,28 @@ K tomu využiji objekt <code>Response</code>, proto nesmím zapomenout na začá
 
 namespace Acme\BlogBundle\Controller;
 
-use Acme\BlogBundle\Entity\Article;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
-class HomepageController extends Controller
+class BlogController extends Controller
 {
-	//...
+    //...
     
-	public function ArticleAction()
-	{
-		return new Response('&lt;html&gt;&lt;body&gt;Hello&lt;/body&gt;&lt;/html&gt;');
-	}	
+    public function ArticleAction()
+    {
+        return new Response('&lt;html&gt;&lt;body&gt;Hello&lt;/body&gt;&lt;/html&gt;');
+    }	
 }	
 </pre>
 
 <p>
-Nyní si v souboru <code>routing.yml</code> doplním požadovanou routu:
+Nyní si v souboru <code>BlogBundle/Resources/config/routing.yml</code> doplním požadovanou routu:
 </p>
 
 <pre>
-acme_blog_article:
+pds_blog_article:
     path: /article/
-    defaults: { _controller: AcmeBlogBundle:Homepage:article }
+    defaults: { _controller: pdsBlogBundle:Blog:article }
 </pre>
 
 <p>
@@ -719,41 +720,42 @@ Pokud do prohlížeče zadám url v níže uvedeném tvaru, měla by se nám zob
 http://localhost/web/blog/web/app_dev.php/article/
 </pre>
 
-<p>Ve stavovém řádku prohlížeče si ještě můžeme zkontrolovat, že se nám vykonala metoda <code>ArticleAction()</code> z
-<code>HomepageControlleru</code> a název routy.</p>
+<p>Ve stavovém řádku prohlížeče si ještě můžeme zkontrolovat, že se nám vykonala metoda <code>ArticleAction()</code> z&nbsp;
+<code>BlogControlleru</code> a název routy.</p>
 
 <h3>Detail článku</h3>
 
-<p>Nejprve si upravíme soubor <code>routing.yml</code>, protože <span class="i">id</span> článku budeme předávat jako parametr.</p>
+<p>Samotný článek můžeme chápat jako další komponentu, proto veškeré operace, které budeme nad článkem provádět,
+umístíme do nového controlleru &#8211; <code>ArticleController</code>.</p>
 
 <pre>
-acme_blog_article:
-    path: /article/<?php echo '{'; ?>id<?php echo '}'; ?>
+&lt;?php
 
-    defaults: { _controller: AcmeBlogBundle:Homepage:article }
-</pre>
+namespace pds\BlogBundle\Controller;
 
-<p>Přepíšeme metodu <code>ArticleAction()</code> v <code>HomepageControlleru</code>:</p>
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-<pre>
-public function ArticleAction($id)
+class ArticleController extends Controller
 {
-	return $this->render('AcmeBlogBundle:Homepage:article.html.twig', array(
-		'article' => $this->getDoctrine()
-			->getRepository('AcmeBlogBundle:Article')
-			->findOneBy(array(
-				'id' => $id))
-	));
+    public function articleAction($id)
+    {
+        return $this->render('pdsBlogBundle:Article:article.html.twig', [
+            'article' => $this->getDoctrine()
+                ->getRepository('pdsBlogBundle:Article')
+                ->findOneBy([ 'id' => $id ])
+        ]);
+    }
 }
 </pre>
 
-
-<p>Ve <code>views</code> v adresáři <code>Homepage</code> si vytvoříme novou šablonu <code>article.html.twig</code>:</p>
+<p>Ve <code>views</code> si vytvoříme nový adresář, který pojmenujeme jako <code>Article</code> a připravíme
+    novou šablonu <code>article.html.twig</code>:
+</p>
 
 <pre>
-<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/article.html.twig #<?php echo '}'; ?>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Article/article.html.twig #<?php echo '}'; ?>
 
-<?php echo '{'; ?>% extends 'AcmeBlogBundle::layout.html.twig' %<?php echo '}'; ?>
+<?php echo '{'; ?>% extends 'pdsBlogBundle::layout.html.twig' %<?php echo '}'; ?>
 
 <?php echo '{'; ?>% block content %<?php echo '}'; ?>
 
@@ -770,8 +772,18 @@ public function ArticleAction($id)
 <?php echo '{'; ?>% endblock %<?php echo '}'; ?>
 </pre>
 
+<p>Nakonec nám zbývá nastavit routu. V souboru <code>BlogBundle/Resources/config/routing.yml</code> upravíme předchozí routu
+    s názvem <code>acme_blog_article</code>, protože <span class="i">id</span> článku budeme předávat jako parametr.</p>
+
+<pre>
+acme_blog_article:
+    path: /article/<?php echo '{'; ?>id<?php echo '}'; ?>
+
+    defaults: { _controller: pdsBlogBundle:Article:article }
+</pre>
+
 <p>Když si do prohlížeče zadáme níže uvedenou url, měl by se nám zobrazit náhled článku &#8211; samozřejmě za předpokladu,
-že <span class="i">id</span> existuje, pokud ne, skončí požadavek chybou. Předpokládám, že v ostrém provozu Symfony2 zobrazí nějakou uživatelsky
+že <span class="i">id</span> existuje, pokud ne, skončí požadavek chybou. V ostrém provozu Symfony2 zobrazí uživatelsky
 přívětivou chybovou stránku, která bude informovat o tom, že požadovaná stránka neexistuje (500 Internal Server Error).</p>
 
 <pre>
@@ -780,9 +792,10 @@ http://localhost/web/blog/web/app_dev.php/article/5
 
 <img src="{$basePath}/images/blog-02.jpg" alt="detail článku" width="600" height="198" class="center" />
 
-<p>Zajisté vidíte, že nám v levé části chybí menu. Méně pozitivní zprávou už je to, že co na první
+<p>Zajisté vidíte, že nám v levé části nyní chybí menu. To se pokusíme napravit hned v následující části.</p>
+<!--Méně pozitivní zprávou už je to, že co na první
 pohled vypadá jako drobný nedostatek, tak pro nás bude znamenat přepsání části kódu. A to proto, že
-kód nemáme dobře postaven. K tomu se ovšem dostanu v další části. Zatím si ještě odladíme odkazy.</p> 
+kód nemáme dobře postaven. K tomu se ovšem dostanu v další části. Zatím si ještě odladíme odkazy.-->
 
 
 <h3>Odkazy v šabloně</h3>
