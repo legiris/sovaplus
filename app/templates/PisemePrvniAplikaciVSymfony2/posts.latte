@@ -1,0 +1,166 @@
+{block content}
+<div id="middle-page">
+
+<h2>Přehled všech článků &#8211; controller a view</h2>
+
+<p>
+Po implementaci entity Article můžeme přistoupit ke zobrazení všech článků. Budeme potřebovat upravit
+odpovídající controller a šablonu.
+Ve třídě <code>BlogController.php</code> si upravíme metodu <code>indexAction()</code> tak, aby nám vybrala všechny
+články uložené v databázi. 
+</p>
+
+<pre>
+namespace pds\BlogBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+class BlogController extends Controller
+{
+    public function indexAction()
+    {
+        return $this->render('pdsBlogBundle:Blog:index.html.twig', [
+            'articles' => $this->getDoctrine()
+                ->getRepository('pdsBlogBundle:Article')
+                ->findAll()
+            ])
+        ;
+    }
+}
+</pre>
+
+<p>A nakonec je v šabloně <code>index.html.twig</code> vypíšeme, zároveň tímto také odstraníme předchozí obsah:</p>
+
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+
+
+<?php echo "{"; ?>% extends "pdsBlogBundle::layout.html.twig" %<?php echo "}"; ?>
+
+<?php echo "{"; ?>% block menu %<?php echo "}"; ?>
+
+  &lt;ul&gt;
+    &lt;li class="title"&gt;Nejnovější&lt;/li&gt;
+    &lt;li&gt;&lt;a href=""&gt;Lorem Ipsum&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=""&gt;De Finibus Bonorum...&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+<?php echo "{"; ?>% endblock %<?php echo "}"; ?>
+
+<?php echo "{"; ?>% block content %<?php echo "}"; ?>
+
+  <?php echo "{"; ?>% for article in articles %<?php echo "}"; ?>
+
+    &lt;div class="article"&gt;
+      &lt;h1&gt;<?php echo "{"; ?><?php echo "{"; ?> article.getTitle <?php echo "}"; ?><?php echo "}"; ?>&lt;/h1&gt;
+      &lt;p&gt;<?php echo "{"; ?><?php echo "{"; ?> article.getText <?php echo "}"; ?><?php echo "}"; ?> ... &lt;a href="" title=""&gt;celý článek&lt;/a&gt;&lt;/p&gt;
+      &lt;p class="date"&gt;Přidáno: <?php echo "{"; ?><?php echo "{"; ?> article.getDate|date('d.m.Y | H:i') <?php echo "}"; ?><?php echo "}"; ?>&lt;/p&gt;
+    &lt;/div&gt;
+  <?php echo "{"; ?>% endfor %<?php echo "}"; ?>
+
+<?php echo "{"; ?>% endblock %<?php echo "}"; ?>
+</pre>
+
+<p>
+Všimněte si, že datum ve formátu <code>datetime</code> nemůžeme vypsat jako řetěz, ale musíme použít filtr <code>date()</code>.
+Dále se nám u každého článku zobrazuje kompletní text, zatímco by nám stačila jen jeho část.
+Provizorně tedy text ořízneme pomocí filtru <code>slice()</code>, později si můžeme doplnit vlastní filtr.
+</p>
+
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+
+
+<?php echo '{'; ?># ... #<?php echo '}'; ?>
+
+    &lt;p&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getText|slice(0, 200) <?php echo '}'; ?><?php echo '}'; ?> ... &lt;a href="" title=""&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+<?php echo '{'; ?># ... #<?php echo '}'; ?>
+</pre>
+
+<p>
+Zbývá nám ještě seřadit články sestupně podle data. K tomuto účelu místo metody <code>findAll()</code> využijeme
+metodu <code>findBy()</code>, jejíž druhý parametr nám definuje způsob řazení. Funkce <code>indexAction()</code>
+ve třídě <code>BlogController.php</code> bude tedy vypadat takto:
+</p>
+
+<pre>
+// src/pds/BlogBundle/Controller/BlogController.php
+//...
+
+public function indexAction()
+{
+    return $this->render('pdsBlogBundle:Blog:index.html.twig', [
+        'articles' => $this->getDoctrine()
+            ->getRepository('pdsBlogBundle:Article')
+            ->findBy(
+                [ ],
+                [ 'id' => 'DESC' ]
+            )
+        ])
+    ;
+}
+</pre>
+
+
+<h2>Doctrine Query Language &#8211; přehled nejnovějších článků</h2>
+
+<p>Rozhodli jsme se, že si do levé části aplikace ještě umístíme přehled nejnovějších článků, jejich počet si omezíme
+na pět. K tomu si sestavíme jednoduchý dotaz pomocí Doctrine Query Language (DQL).
+Doplníme si tedy metodu <code>indexAction()</code> v souboru <code>BlogController.php</code>.
+</p>
+
+<pre>
+// src/pds/BlogBundle/Controller/BlogController.php
+//...
+	
+public function indexAction()
+{
+    return $this->render('pdsBlogBundle:Blog:index.html.twig', [
+        'articles' => $this->getDoctrine()
+            ->getRepository('pdsBlogBundle:Article')
+            ->findBy(
+                [ ],
+                [ 'id' => 'DESC' ]
+            ),
+        'news' => $this->getDoctrine()
+            ->getManager()
+            ->createQuery('
+                SELECT a FROM pdsBlogBundle:Article a ORDER BY a.date DESC    
+            ')
+            ->setMaxResults(5)
+            ->getResult()
+        ])
+    ;
+}
+</pre>
+
+<p>A také šablonu <code>index.html.twig</code>.</p>
+
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+
+
+<?php echo "{"; ?>% extends "pdsBlogBundle::layout.html.twig" %<?php echo "}"; ?>
+
+<?php echo "{"; ?>% block menu %<?php echo "}"; ?>
+
+  &lt;ul&gt;
+    &lt;li class="title"&gt;Nejnovější&lt;/li&gt;
+    <?php echo "{"; ?>% for new in news %<?php echo "}"; ?>      
+    &lt;li&gt;&lt;a href=""&gt;<?php echo "{"; ?><?php echo "{"; ?> new.getTitle <?php echo "}"; ?><?php echo "}"; ?>&lt;/a&gt;&lt;/li&gt;
+    <?php echo "{"; ?>% endfor %<?php echo "}"; ?>
+    
+  &lt;/ul&gt;
+<?php echo "{"; ?>% endblock %<?php echo "}"; ?>
+</pre>
+
+<p>V současné chvíli by nám aplikace měla vypadat takto:</p>
+
+<img src="{$basePath}/images/blog-01.jpg" alt="blog (homepage)" width="600" height="470" class="center" />
+
+<p>
+Tímto bychom měli základní výpis článků hotový, nicméně nám ke každému článku zbývá doplnit odkaz, pod kterým
+si článek budeme moci prohlédnout a k tomu se dostaneme v další části.
+</p>
+    
+</div>
+{/block}

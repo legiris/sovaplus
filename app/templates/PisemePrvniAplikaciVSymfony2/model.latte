@@ -1,0 +1,186 @@
+{block content}
+<div id="middle-page">
+
+<h2>Navrhujeme model aneb cesta k ORM</h2>
+<p>
+Dosud ještě nebyla řeč o modelu, takže je na čase postoupit zase o krok dál. Symfony2 v sobě již zahrnuje
+knihovnu Doctrine2, kterou využiji i pro tento ukázkový příklad.
+Pokud jste dosud dělali jen
+s MySQL nebo PDO, tak práce s Doctrine či jiným ORM je zkrátka jiná. O tom, co Doctrine je a jak se používá, vyšel i&nbsp;seriál v češtině na
+<a href="http://www.zdrojak.cz/serialy/doctrine-2/" title="doctrine 2" target="_blank">zdrojak.cz</a>.
+Doctrine2 využívá návrhový vzor <span class="i">Data Mapper</span> oproti vzoru <span class="i">Active Record</span>,
+se kterým jste se již pravděpodobně setkali. Proto předtím,
+než se do něčeho pustíte, tak doporučuji si projít minimálně <a href="http://www.zdrojak.cz/clanky/doctrine-2-zakladni-definice-entit/"
+title="Doctrine2: Základní definice entit" target="_blank">tento článek</a>, kde se dozvíte, na jakém principu se s Doctrine2 pracuje
+a něco o pojetí entit, bez kterých se v Doctrine2 neobejdete.
+Místo konceptu Doctrine2 by neměl být problém využít třeba Propel či samotné PDO. 
+</p>
+
+<p>
+Nejprve si tedy připravíme databázovou strukturu. Vytvořím si novou databázi, kterou pojmenuji jednoduše „blog“ a která bude
+obsahovat tabulky pro uložení článků a komentářů.<br /><br />
+</p>
+
+<p>Tabulka pro články:</p>
+<pre>
+CREATE TABLE IF NOT EXISTS `article` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) COLLATE utf8_czech_ci NOT NULL,
+  `text` text COLLATE utf8_czech_ci NOT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci AUTO_INCREMENT=1 ;
+</pre>
+
+<p>Tabulka pro komentáře:</p>
+<pre>
+CREATE TABLE IF NOT EXISTS `comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `text` varchar(2500) COLLATE utf8_czech_ci NOT NULL,
+  `nickname` varchar(30) COLLATE utf8_czech_ci NOT NULL,
+  `date` datetime NOT NULL,
+  `article_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `article_id` (`article_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci AUTO_INCREMENT=1 ;
+</pre>
+
+<p>Nyní si naplníme tabulku „article“ daty. Vzorová data si můžete stáhnout <a href="{$basePath}/files/blog.sql" title="Databáze blog">zde</a>.
+Pro reálné nasazení by bylo potřeba si vytvořit trochu více
+sofistikovanější systém, který by nám umožňoval přidávat a&nbsp;editovat jednotlivé články.
+My si v této chvíli práci usnadníme a budeme předpokládat, že takový systém již máme.
+</p>	
+
+<h3>Nastavení parametrů pro připojení k Doctrine2</h3>
+
+<p>Pro to, abychom se mohli připojit k databázi, potřebujeme provést základní konfiguraci. Při instalaci
+přes composer se automaticky vygeneruje také soubor s parametry (<code>parameters.yml</code>), který je uložen ve složce
+<code>/app/config/</code>. V souboru si zkontrolujeme výchozí nastavení popř. ho upravíme.
+</p>
+<pre>
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: blog
+    database_user: root
+    database_password: null
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: en
+    secret: ThisTokenIsNotSoSecretChangeIt
+</pre>
+
+<p>
+<!--My nyní musíme upravit soubor <code>config.yml</code>, 
+konkrétně část Doctrine configuration a přepíšeme tam původní parametry.-->
+Pro první test si v controlleru
+<code>BlogController.php</code> provizorně upravíme funkci <code>indexAction()</code> a využijeme službu <code>database_connection</code>:
+</p>
+
+<pre>
+public function indexAction()
+{
+    $conn = $this->get('database_connection');
+    $rows = $conn->fetchAll('SELECT * FROM article');
+
+    var_dump($rows);
+
+    return $this->render('pdsBlogBundle:Blog:index.html.twig');
+}
+</pre>
+
+<p>Nicméně výše uvedený postup s využitím vrstvy DBAL (DataBase Abstraction Layer) využívat nebudeme, protože nám jde o mapování
+objektů na relační databázi, tedy o vrstvu ORM. Proto si vytvoříme vlastní model postavený na entitách, se kterými Doctrine2 pracuje.
+</p>
+
+
+<h3>Entita jako základní prvek modelu</h3>
+<p>Jako první si vytvoříme entitu „Article“, která nám bude definovat samotný článek. V pojetí PHP entitě bude odpovídat
+samostatná třída. V adresáři <code>pds/BlogBundle</code> si vytvoříme novou složku „Entity“ a do ní umístíme tuto třídu.
+V této třídě pak jednotlivé atributy popíšeme pomocí anotací tak, abychom s nimi mohli v Doctrine2 pracovat.
+Přehled anotací najdete <a href="http://docs.doctrine-project.org/en/2.0.x/reference/basic-mapping.html" title="doctrine docs: Basic Mapping"
+target="_blank">zde</a>.
+Nakonec doplníme standardní metody pro vrácení a nastavení hodnot.
+</p> 
+
+<pre>
+&lt;?php
+
+namespace pds\BlogBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="article")
+ */
+class Article
+{
+
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */	
+    protected $id;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    protected $title;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    protected $text;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $date;
+
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
+
+    public function setDate($date)
+    {
+        $this->date = $date;
+    }
+
+}
+</pre>
+
+</div>
+{/block}

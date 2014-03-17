@@ -1,0 +1,158 @@
+{block content}
+<div id="middle-page">
+
+<h2>Komentáře</h2>
+
+<p>Nyní si do blogu doplníme samotné komentáře. Nejprve se podíváme na zobrazení seznamu jednotlivých komentářů
+    k danému příspěvku a v dalším
+    kroku se budeme zabývat vložením nového komentáře. Pokud jste si nestáhli vzorová data, tak můžete
+    učinit <a href="{$basePath}/files/blog.sql" title="Stáhnout databázi blog">tady</a> a nebo je potřeba si naplnit tabulku <code>comment</code> vlastními daty. Výpisem komentářů
+    začínám proto, že mi pomůže lépe odhalit případné chyby.
+</p>
+
+<h3>Entita a asociace</h3>
+
+<p>Vzhledem k tomu, že i v tomto případě budeme potřebovat databázi, tak práci začneme tím, že si vytvoříme entitu.
+Rozdíl oproti předešlému návrhu bude akorát v tom, že v tabulce máme definovaný cizí klíč &#8211; <span class="i">article_id</span>.
+Ovšem Doctrine2 pracuje na jiném principu než relační databáze &#8211; svět nemáme popsaný pomocí tabulek, ale pomocí entit
+tzn., že pro popis vztahů mezi entitami nebudeme používat cizí klíče tak, jak je známe,
+ale pro popis vztahů mezi entitami budeme využívat tzv. <span class="i">asociace</span>, a to podle typu vazeb (1:1, 1:N a M:N).
+V našem příkladě si vystačíme s jednoduchou asociací typu 1:N
+a použijeme anotaci <code>@ManyToOne</code>, a to na straně, kde máme definovaný cizí klíč.
+Přehled všech typů je uveden v&nbsp;<a href="http://docs.doctrine-project.org/en/latest/reference/association-mapping.html" title="Doctrine2: Association Mapping"
+target="_blank">dokumentaci</a>.
+</p>
+<p>Všimněte si, že sloupec s ID příspěvku mám v databázi pojmenovaný jako <code>article_id</code>,
+    v definici entity mu pak odpovídá proměnná <code>$articleId</code>, která se odkazuje na daný sloupec.
+</p>
+
+<pre>
+&lt;?php
+
+namespace pds\BlogBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="comment")
+ */
+class Comment
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(type="string", length=2500)
+     */
+    protected $text;
+
+    /**
+     * @ORM\Column(type="string", length=30)
+     */
+    protected $nickname;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $date;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Article")
+     * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     * @ORM\Column(name="article_id", type="integer")
+     */
+    protected $articleId;
+
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    public function getNickname()
+    {
+        return $this->nickname;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    public function getArticleId()
+    {
+        return $this->articleId;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
+
+    public function setNickname($nickname)
+    {
+        $this->nickname = $nickname;
+    }
+
+    public function setDate($date)
+    {
+        $this->date = $date;
+    }
+
+    public function setArticleId($articleId)
+    {
+        $this->articleId = $articleId;
+    }
+}
+</pre>
+
+<h3>Přehled komentářů</h3>
+<p>Nakonec nám zbývá už jenom vypsat uložené komentáře.</p>
+
+<pre>
+
+</pre>
+
+
+<h3>První formulář</h3>
+<p>Pro přidání komentáře budeme potřebovat formulář, takže si takový jednoduchý formulář navrhneme.
+Pro začátek si vystačíme s definicí v controlleru, později si ukážeme implementaci formuláře v rámci
+samostatné třídy. Práci s komentáři nám bude zajišťovat <code>CommentController</code>.
+Pojďme si takový controller vytvořit.
+</p>
+
+
+
+<p>Začneme samotným vykreslením formuláře. Ve složce Acme/BlogBundle si vytvoříme složku Form
+a dovnitř si uložíme novou třídu, kterou si pojmenujeme jako CommentType.php.</p>
+
+<pre>
+
+</pre>
+
+<p>Komentář uložíme do databáze.</p>
+
+<pre>
+
+</pre>
+
+
+
+
+</div>
+{/block}

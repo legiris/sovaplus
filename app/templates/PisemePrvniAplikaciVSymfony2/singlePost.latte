@@ -1,0 +1,290 @@
+{block content}
+<div id="middle-page">
+
+<h2>Jak zobrazit detail článku</h2>
+
+<p>
+Předpokládejme, že budeme chtít, aby článek byl dostupný na url typu:
+</p>
+
+<pre>
+[nazev_domeny]/article/5
+</pre>
+
+<p>
+Tímto se dostáváme k otázce <span class="i">routování</span>.
+</p>
+
+<h3>Routování</h3>
+
+<p>Nejdříve se podíváme na to, jakým způsobem to funguje. Možná vám při testování routování přijdou vhod tyto odkazy:</p>
+
+<ul>
+<li><a href="http://symfony.com/doc/current/book/controller.html" title="symfony.com">Symfony &#8211; Controller</a></li>
+<li><a href="http://symfony.com/doc/current/book/routing.html" title="symfony.com">Symfony &#8211; Routing</a></li>
+</ul>
+
+<p>
+Nejprve si zkusím v <code>BlogControlleru</code> nadefinovat akci „Article“, která bude mít za úkol zobrazit testovací stránku.  
+K tomu využiji objekt <code>Response</code>, proto nesmím zapomenout na začátek kódu doplnit příslušnou komponentu.
+</p>
+
+<pre>
+&lt;?php
+
+namespace Acme\BlogBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
+
+class BlogController extends Controller
+{
+    //...
+    
+    public function ArticleAction()
+    {
+        return new Response('&lt;html&gt;&lt;body&gt;Hello&lt;/body&gt;&lt;/html&gt;');
+    }	
+}	
+</pre>
+
+<p>
+Nyní si v souboru <code>BlogBundle/Resources/config/routing.yml</code> doplním požadovanou routu:
+</p>
+
+<pre>
+pds_blog_article:
+    path: /article/
+    defaults: { _controller: pdsBlogBundle:Blog:article }
+</pre>
+
+<p>
+Pokud do prohlížeče zadám url v níže uvedeném tvaru, měla by se nám zobrazit stránka, kterou jsme si nadefinovali v metodě
+<code>ArticleAction()</code>.
+</p>
+
+<pre>
+http://localhost/web/blog/web/app_dev.php/article/
+</pre>
+
+<p>Ve stavovém řádku prohlížeče si ještě můžeme zkontrolovat, že se nám vykonala metoda <code>ArticleAction()</code> z&nbsp;
+<code>BlogControlleru</code> a název routy.</p>
+
+<h3>Detail článku</h3>
+
+<p>Samotný článek můžeme chápat jako další komponentu, proto veškeré operace, které budeme nad článkem provádět,
+umístíme do nového controlleru &#8211; <code>ArticleController</code>.</p>
+
+<pre>
+&lt;?php
+
+namespace pds\BlogBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+class ArticleController extends Controller
+{
+    public function articleAction($id)
+    {
+        return $this->render('pdsBlogBundle:Article:article.html.twig', [
+            'article' => $this->getDoctrine()
+                ->getRepository('pdsBlogBundle:Article')
+                ->findOneBy([ 'id' => $id ])
+        ]);
+    }
+}
+</pre>
+
+<p>Ve <code>views</code> si vytvoříme nový adresář, který pojmenujeme jako <code>Article</code> a připravíme
+    novou šablonu <code>article.html.twig</code>:
+</p>
+
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Article/article.html.twig #<?php echo '}'; ?>
+
+<?php echo '{'; ?>% extends 'pdsBlogBundle::layout.html.twig' %<?php echo '}'; ?>
+
+<?php echo '{'; ?>% block content %<?php echo '}'; ?>
+
+&lt;div class="article"&gt;
+  &lt;h1&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getTitle <?php echo '}'; ?><?php echo '}'; ?>&lt;/h1&gt;
+  &lt;p&gt;<?php echo '{'; ?><?php echo '{'; ?> article.getText <?php echo '}'; ?><?php echo '}'; ?>&lt;/p&gt;
+  &lt;p class="date"&gt;Přidáno: <?php echo '{'; ?><?php echo '{'; ?> article.getDate|date('d.m.Y | H:i') <?php echo '}'; ?><?php echo '}'; ?>&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id="comments"&gt;
+  &lt;h3&gt;Přidat komentář&lt;/h3&gt;
+
+  &lt;h3&gt;Komentáře:&lt;/h3&gt;
+&lt;/div&gt;
+<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+</pre>
+
+<p>Nakonec nám zbývá nastavit routu. V souboru <code>BlogBundle/Resources/config/routing.yml</code> upravíme předchozí routu
+    s názvem <code>acme_blog_article</code>, protože <span class="i">id</span> článku budeme předávat jako parametr.</p>
+
+<pre>
+acme_blog_article:
+    path: /article/<?php echo '{'; ?>id<?php echo '}'; ?>
+
+    defaults: { _controller: pdsBlogBundle:Article:article }
+</pre>
+
+<p>Když si do prohlížeče zadáme níže uvedenou url, měl by se nám zobrazit náhled článku &#8211; samozřejmě za předpokladu,
+že <span class="i">id</span> existuje, pokud ne, skončí požadavek chybou. V ostrém provozu Symfony2 zobrazí uživatelsky
+přívětivou chybovou stránku, která bude informovat o tom, že požadovaná stránka neexistuje (500 Internal Server Error).</p>
+
+<pre>
+http://localhost/web/blog/web/app_dev.php/article/5
+</pre>
+
+<img src="{$basePath}/images/blog-02.jpg" alt="detail článku" width="600" height="198" class="center" />
+
+<p>Zajisté vidíte, že nám v levé části nyní chybí menu. To se pokusíme napravit hned v následující části.</p>
+
+
+<h3>Úprava menu</h3>
+<p>Jak jsme si před chvíli ukázali, menu nefunguje podle našich představ. Proto se nyní podíváme na to,
+jakým způsobem můžeme začlenit opakující se úsek kódu do stránky s layoutem. K řešení využijeme
+samostatnou šablonu <code>latestArticle.html.twig</code>, kde si nadefinujeme výpis menu
+a metodu <code>latestArticleAction()</code> &#8211; viz <span class="i">ArticleController</span>,
+které parametrem předáme počet článků. 
+</p>
+<pre>
+// src/pds/BlogBundle/Controller/ArticleController.php
+
+public function latestArticleAction($count)
+{
+    $articles = $this->getDoctrine()
+        ->getManager()
+        ->createQuery('
+            SELECT a FROM pdsBlogBundle:Article a ORDER BY a.date DESC
+        ')
+        ->setMaxResults($count)
+        ->getResult()
+    ;
+
+    return $this->render('pdsBlogBundle:Article:latest.html.twig', [
+       'news' => $articles 
+    ]);
+}
+</pre>
+
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Article/latest.html.twig #<?php echo '}'; ?>
+
+
+<?php echo "{"; ?>% block menu %<?php echo "}"; ?>
+
+  &lt;ul&gt;
+    &lt;li class="title"&gt;Nejnovější&lt;/li&gt;
+    <?php echo "{"; ?>% for new in news %<?php echo "}"; ?>
+
+    &lt;li&gt;&lt;a href=""&gt;<?php echo "{"; ?><?php echo "{"; ?> new.getTitle <?php echo "}"; ?><?php echo "}"; ?>&lt;/a&gt;&lt;/li&gt;
+    <?php echo "{"; ?>% endfor %<?php echo "}"; ?>
+
+  &lt;/ul&gt;
+<?php echo "{"; ?>% endblock %<?php echo "}"; ?>
+</pre>
+
+<p>Po doplnění předchozího kódu můžeme do šablony <code>layout.html.twig</code> doplnit:</p>
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/layout.html.twig #<?php echo '}'; ?>
+
+
+&lt;div id="left-page"&gt;
+<?php echo "{"; ?>% block menu %<?php echo "}"; ?>
+
+  <?php echo "{"; ?><?php echo "{"; ?> render(controller('pdsBlogBundle:Article:latestArticle', <?php echo "{"; ?>'count': 5<?php echo "}"; ?> )) <?php echo "}"; ?><?php echo "}"; ?>
+
+<?php echo "{"; ?>% endblock %<?php echo "}"; ?>
+
+&lt;/div&gt;
+</pre>
+
+<p>Voláme tedy akci controlleru <code>latestArticle()</code> pomocí notace <span class="i">bundle : controller : action</span>.
+    Nakonec ze souborů <code>BlogController.php</code> a <code>index.html.twig</code> odstraníme duplicitní kód:</p>
+
+<pre>
+public function indexAction()
+{
+    return $this->render('pdsBlogBundle:Blog:index.html.twig', [
+        'articles' => $this->getDoctrine()
+            ->getRepository('pdsBlogBundle:Article')
+            ->findBy(
+                [ ],
+                [ 'id' => 'DESC' ]
+            ),
+//            'news' => $this->getDoctrine()
+//                ->getManager()
+//                ->createQuery('
+//                    SELECT a FROM pdsBlogBundle:Article a ORDER BY a.date DESC    
+//                ')
+//                ->setMaxResults(5)
+//                ->getResult()
+        ])
+    ;
+}
+</pre>
+
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+
+
+<?php echo "{"; ?>% extends "pdsBlogBundle::layout.html.twig" %<?php echo "}"; ?>
+
+<?php echo "{"; ?>% block content %<?php echo "}"; ?>
+
+  <?php echo "{"; ?>% for article in articles %<?php echo "}"; ?>
+
+    &lt;div class="article"&gt;
+      &lt;h1&gt;<?php echo "{"; ?><?php echo "{"; ?> article.getTitle <?php echo "}"; ?><?php echo "}"; ?>&lt;/h1&gt;
+      &lt;p&gt;<?php echo "{"; ?><?php echo "{"; ?> article.getText|slice(0, 200) <?php echo "}"; ?><?php echo "}"; ?> ... &lt;a href="" title=""&gt;celý článek&lt;/a&gt;&lt;/p&gt;
+      &lt;p class="date"&gt;Přidáno: <?php echo "{"; ?><?php echo "{"; ?> article.getDate|date('d.m.Y | H:i') <?php echo "}"; ?><?php echo "}"; ?>&lt;/p&gt;
+    &lt;/div&gt;
+  <?php echo "{"; ?>% endfor %<?php echo "}"; ?>
+
+<?php echo "{"; ?>% endblock %<?php echo "}"; ?>
+</pre>
+
+<h3>Odkazy v šabloně</h3>
+
+<p>Nyní se podíváme na to, jakým způsobem upravíme jednotlivé odkazy. Pro vytvoření odkazu vyjdeme z&nbsp;názvu routy
+    a doplníme <span class="i">id</span> článku. Nejprve si zpřístupníme odkazy v menu, které máme v souboru
+    <code>latest.html.twig</code>:
+</p>
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Article/latest.html.twig #<?php echo '}'; ?>
+
+
+&lt;li&gt;&lt;a href="<?php echo "{"; ?><?php echo "{"; ?> path('pds_blog_article', <?php echo "{"; ?> 'id': new.getId <?php echo "}"; ?>) <?php echo "}"; ?><?php echo "}"; ?>"&gt;<?php echo "{"; ?><?php echo "{"; ?> new.getTitle <?php echo "}"; ?><?php echo "}"; ?>&lt;/a&gt;&lt;/li&gt;
+</pre>
+
+
+<p>A nesmíme zapomenout ani na odkazy v šabloně <code>index.html.twig</code>, kam přidáme i popisek k atributu <code>title</code>:</p>
+
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+
+
+&lt;p&gt;<?php echo "{"; ?><?php echo "{"; ?> article.getText|slice(0, 200) <?php echo "}"; ?><?php echo "}"; ?> ... &lt;a href="<?php echo "{"; ?><?php echo "{"; ?> path('pds_blog_article',
+        <?php echo "{"; ?> 'id': article.getId <?php echo "}"; ?>) <?php echo "}"; ?><?php echo "}"; ?>" title="<?php echo "{"; ?><?php echo "{"; ?> article.getTitle <?php echo "}"; ?><?php echo "}"; ?>"&gt;celý článek&lt;/a&gt;&lt;/p&gt;
+</pre>
+<p>Navíc si také do šablony <code>article.html.twig</code> přidáme odkaz Zpět.</p>
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Article/article.html.twig #<?php echo '}'; ?>
+
+
+&lt;p class="date"&gt;Přidáno: <?php echo "{"; ?><?php echo "{"; ?> article.getDate|date('d.m.Y | H:i') <?php echo "}"; ?><?php echo "}"; ?> &lt;span class="back"&gt;
+  &lt;a href="<?php echo "{"; ?><?php echo "{"; ?> path('pds_blog_homepage') <?php echo "}"; ?><?php echo "}"; ?>" title="Zpět"&gt;Zpět&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+</pre>
+
+<p>Tímto se nám podařilo dokončit úvodní část blogu, na kterém jsme si ukázali pouze základní ovládání Symfony2
+    frameworku. Výsledek našeho snažení by měl zatím vypadat takto:
+</p>
+
+<img src="{$basePath}/images/blog-03.jpg" alt="detail článku" width="600" height="271" class="center" />
+
+<p>V další části již využijeme současné znalosti a vytvoříme si také první formulář.</p>
+
+</div>
+{/block}
