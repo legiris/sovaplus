@@ -122,18 +122,92 @@ class Comment
 </pre>
 
 <h3>Přehled komentářů</h3>
-<p>Nakonec nám zbývá už jenom vypsat uložené komentáře.</p>
-
+<p>Práci s komentáři nám bude zajišťovat <code>CommentController</code>. Jako první si připravíme funkci
+    <code>fetchAllByArticleIdAction()</code>
+    pro vypsání všech komentářů, které se nacházejí pod daným příspěvkem. Pojďme si takový controller vytvořit.
+</p>
 <pre>
+&lt;?php
 
+namespace pds\BlogBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+class CommentController extends Controller
+{
+    public function fetchAllByArticleIdAction($articleId)
+    {
+        $comments = $this->getDoctrine()
+            ->getManager()
+            ->createQuery('
+                SELECT c FROM pdsBlogBundle:Comment c
+                WHERE c.articleId = :articleId
+                ORDER BY c.date DESC
+            ')
+            ->setParameter('articleId', $articleId)
+            ->getResult()
+        ;
+        
+        return $this->render('pdsBlogBundle:Comment:comment.html.twig', [
+            'comments' => $comments
+        ]);
+    }
+}
 </pre>
 
+<p>Nyní si do složky <code>Resources/views/Comment</code> doplníme šablonu <code>comment.html.twig</code> pro vypsání jednoho komentáře.</p>
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Comment/comment.html.twig #<?php echo '}'; ?>
+
+
+<?php echo "{" ?>% block comment %<?php echo "}" ?>
+
+<?php echo "{" ?>% if comments is empty %<?php echo "}" ?>
+
+  &lt;p&gt;Dosud nebyl vložen žádný komentář.&lt;/p&gt;
+<?php echo "{" ?>% else %<?php echo "}" ?>
+
+  <?php echo "{" ?>% for comment in comments %<?php echo "}" ?>
+
+    &lt;div class="comment"&gt;
+      &lt;p class="text"&gt;
+        &lt;span class="name"&gt;<?php echo "{" ?><?php echo "{" ?> comment.getNickname <?php echo "}" ?><?php echo "}" ?>&lt;/span&gt;:&lt;br /&gt;
+        <?php echo "{" ?><?php echo "{" ?> comment.getText <?php echo "}" ?><?php echo "}" ?>&lt;br /&gt;
+        &lt;span class="date"&gt;<?php echo "{" ?><?php echo "{" ?> comment.getDate|date('d.m.Y | H:i:s') <?php echo "}" ?><?php echo "}" ?>&lt;/span&gt;
+      &lt;/p&gt;
+    &lt;/div&gt;
+  <?php echo "{" ?>% endfor %<?php echo "}" ?>
+
+<?php echo "{" ?>% endif %<?php echo "}" ?>
+
+<?php echo "{" ?>% endblock %<?php echo "}" ?>
+</pre>
+
+<p>Funkci <code>fetchAllByArticleId()</code> z <span class="i">CommentControlleru</span> pak potřebujeme zavolat na samostatné stránce
+    s&nbsp;příspěkem. Tuto stránku nám generuje <span class="i">ArticleController</span>. Proto do šablony <code>article.html.twig</code>
+    doplním následující kód:</p>
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Article/article.html.twig #<?php echo '}'; ?>
+
+
+&lt;div id="comment-block"&gt;
+  &lt;h3&gt;Přidat komentář&lt;/h3&gt;
+  
+  &lt;h3&gt;Komentáře:&lt;/h3&gt;
+  <?php echo "{" ?>% block comment %<?php echo "}" ?>
+
+    <?php echo "{" ?><?php echo "{" ?> render(controller('pdsBlogBundle:Comment:fetchAllByArticleId',
+        <?php echo "{" ?> 'articleId': article.getId <?php echo "}" ?> )) <?php echo "}" ?><?php echo "}" ?>
+
+  <?php echo "{" ?>% endblock %<?php echo "}" ?>
+
+&lt;/div&gt;
+</pre>
 
 <h3>První formulář</h3>
 <p>Pro přidání komentáře budeme potřebovat formulář, takže si takový jednoduchý formulář navrhneme.
 Pro začátek si vystačíme s definicí v controlleru, později si ukážeme implementaci formuláře v rámci
-samostatné třídy. Práci s komentáři nám bude zajišťovat <code>CommentController</code>.
-Pojďme si takový controller vytvořit.
+samostatné třídy. 
 </p>
 
 
