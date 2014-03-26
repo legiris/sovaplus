@@ -6,8 +6,8 @@
 <h1>Píšeme první aplikaci v Symfony2</h1>	
     <p>V tomto článku si ukážeme, jakým způsobem můžeme v Symfony2 vytvořit naši první aplikaci v podobě jednoduchého blogu. 
        Symfony2 framework vychází z návrhového vzoru MVC a za jeho vývojem stojí firma Sensio Labs.
-       Pokud si ovšem chcete jen vyzkoušet práci s „nějakým tím“ frameworkem, tak
-       Symfony2 z&nbsp;mého pohledu doopravdy nedoporučím &#8211; ne jako první framework.
+       Pokud si ovšem chcete jen vyzkoušet práci s „nějakým“ frameworkem, tak
+       Symfony2 z&nbsp;mého pohledu spíše nedoporučím &#8211; tedy ne jako první framework.
        Tady mi třeba dost pomohl Nette framework. Symfony2 vypadá a funguje trochu jinak,
        první pocit byl pro mě takový, že se mi v něm hůře orientuje a celkově je postup učení pomalejší než v Nette, proto 
        počítejte s tím, že na to, abyste se naučili se Symfony2 dobře pracovat, tak to zabere poměrně dost času.
@@ -16,16 +16,17 @@
     <ul>
         <li>povědomí o tom, jak funguje MVP/MVC architektura</li>
         <li>základní znalost OOP, PHP a nejlépe i nějakého ORM (Object-Relational Mapping) nad databází</li>
-        <li>vývojové prostředí</li>
+        <li>vývojové prostředí (Xampp, Lamp)</li>
     </ul>
 
     <h3>Instalujeme Symfony2</h3>
     <p>Nejprve si nainstalujeme Symfony2 framework, který je k dispozici na stránkách symfony.com, takže doporučuji si rovnou
-       projít i sekci „Get started“. Nejjednodušší je provést instalaci přes Composer. Pokud jste s Composerem nikdy nepracovali,
+       projít i sekci „Get started“. Nejjednodušší je provést instalaci přes <span class="i">Composer</span>. Pokud
+       jste s Composerem nikdy nepracovali,
        můžete si stáhnout zazipovanou verzi, ale určitě doporučuji se na Composer podívat.
-       Symfony framework si umístíme do kořenového adresáře našeho projektu.
-       Na Windows používám xampp, takže v htdocs mám vytvořenou složku „web“ a tam mám jednotlivé projekty.
-       Moje adresářová struktura vypadá takto:
+       Symfony2 framework si umístíme do kořenového adresáře našeho projektu.
+       Na Windows používám <code>xampp</code>, takže v <code>htdocs</code> mám vytvořenou složku <code>web</code> a tam mám
+       jednotlivé projekty. Moje adresářová struktura vypadá takto:
     </p>	
     <pre>
 .../
@@ -33,19 +34,19 @@
     htdocs/
       web/
         blog/
+          app/
+          ...
           web/
-            ...
             app_dev.php</pre>
 		
     <p>Adresa pro zobrazení na localhostu potom bude ve tvaru <code>http://localhost/web/blog/web/app_dev.php</code>.<br />
-    Tam by se nám měla zobrazit uvodní demo stránka Symfony frameworku.
+    Tam by se nám měla zobrazit uvodní stránka Symfony2 frameworku.
     </p>
     <img src="{$basePath}/images/symfony2.jpg" title="Symfony2 demo page" width="600" height="421" class="center" />
     <p>
-    Základním stavebním kamenem Symfony frameworku je „Bundle“, což si můžeme představit jako plugin, ve kterém se nachází naše aplikace.
-    Instalace implicitně zahrnuje DemoBundle, ve kterém se mimo jiné nachází controllery a views. Zároveň si také můžete projít
-    ukázkové příklady.<br />
-    Pro představu zde uvedu alespoň způsob, jakým si můžeme inicializovat proměnnou v controlleru a&nbsp;předat ji do template:
+    Základním stavebním kamenem je tzv. „bundle“, což je adresář, ve kterém se nachází naše aplikace.
+    Instalace implicitně zahrnuje DemoBundle, který je umístěn ve složce <code>src/Acme</code>, a to včetně ukázkových příkladů.<br />
+    Pro představu zde uvedu způsob, jakým si můžeme inicializovat proměnnou v controlleru a&nbsp;předat ji do template:
     </p>
     <pre>
 public function indexAction()
@@ -88,192 +89,204 @@ public function indexAction()
     <p>
     Nebo pokud nás bude zajímat jednom hodnota „name“:
     </p>
-
     <pre>{{ array.name }}</pre>
-
     <p>Více informací o práci se šablonami najdete v <a href="http://symfony.com/doc/current/book/templating.html"
        title="Symfony2: Creating and using Templates" target="_blank">dokumentaci</a>. Nyní se již vrhneme na zmíněný blog.</p>
 		
-		<h2>Vytváříme jednoduchý blog</h2>
-		
-		<p>
-			Jako ukázkovou aplikaci zvolím jednoduchý blog &#8211; budeme mít nějaký seznam článků, ke kterým budeme moci vkládat komentáře.
-			Zároveň je to také moje první aplikace v Symfony2, takový můj QuickStart. Ale dost řečí, raději pojďme na to. 
-			Nejdříve odstraníme DemoBundle a založíme si vlastní BlogBundle.
-		</p>
-		
-		<h3>Jak odstranit DemoBundle a vytvořit vlastní</h3>
-		
-		<p>Potřebujeme „odstranit“ DemoBundle v níže uvedených souborech a pak ho můžeme smazat.</p>
-		<ul>
-			<li>app\AppKernel.php</li>
-			<li>app\config\routing_dev.yml</li>
-		</ul>
-		
-		<p>Bližší informace najdete zde:</p>
 
-		<ul>
-		<li><a href="http://symfony.com/doc/current/cookbook/bundles/remove.html" title="symfony.com" target="_blank">symfony.com</a></li>
-		<li><a href="http://funktion-it.co.za/2012/06/symfony2-removing-the-acme-demo/" title="funktion-it.co.za" target="_blank">removing the acme demo</a></li>
-		<li><a href="http://www.devforyou.be/delete-a-bundle-in-symfony2/" title="devforyou.be" target="_blank">delete a bundle in symfony2</a></li>
-		</ul>
-			
-		
-		<p>Nový bundle, který si pojmenujeme jako BlogBundle, si vytvoříme pomocí příkazu:</p>
-		
-<pre>
-php app/console generate:bundle --namespace=Acme/BlogBundle --format=yml</code>
-</pre>
+    <h2>Vytváříme jednoduchý blog</h2>
+    <p>Jako ukázkovou aplikaci zvolím jednoduchý blog, kdy k jednotlivým příspěvkům budeme moci vkládat komentáře.</p>
 
-			Pokud používáte Příkazový řádek ve Windows, je potřeba nastavit správnou cestu k symfony projektu,
-			v mém případě <code>...\xampp\htdocs\web\blog</code>. Tento postup nám vytvoří požadovanou strukturu.
-			Nyní si v souboru <code>app\config\routing.yml</code> upravíme nastavení routy, abychom mohli stránku zobrazit:
-		</p>
-		
-		<pre>
-acme_blog_homepage:
+    <h3>BlogBundle</h3>
+    <p>Pro aplikaci si z příkazové řádky vygenerujeme vlastní bundle, který si pojmenuji jako <code>BlogBundle</code>.
+        Bundle si umístím do nově vytvořené složky <code>pds</code> ve složce <code>src</code>. 
+        Pak pomocí níže uvedeného příkazu si spustíme Symfony2 bundle generátor, v příkazovém řádku se nacházím ve složce
+        <code>...\xampp\htdocs\web\blog</code>.
+    </p>
+    <pre>php app/console generate:bundle --namespace=pds/BlogBundle --format=yml</pre>
+
+    <p>
+    Tento postup nám vytvoří požadovanou strukturu. Pokud jsme použili pro vytvoření nového bundlu výchozí nastavení,
+    bude potřeba upravit některé soubory. Zároveň se nám automaticky vygeneroval také <code>DefaultController</code>, který si přejmenuji
+    na <code>BlogController</code>, takže rovnou zohledním i tuto změnu.
+    Pro zobrazení stránky musíme mít správně nastavené routy, proto nejprve soubor <code>routing.yml</code>
+    v&nbsp;adesáři <code>src/pds/BlogBundle/Resources/Config</code> upravím tímto způsobem:
+    </p>
+    <pre>pds_blog_homepage:
     pattern: /
-    defaults: { _controller: AcmeBlogBundle:Blog:index }
-		</pre>
-		
-		<p>Pokud jsme použili pro vytvoření nového bundlu „demo“ nastavení, bude potřeba trochu upravit také controller
-			(viz <code>Acme/BlogBundle/Controller/BlogController.php</code>): </p>
-		<pre>
-class BlogController extends Controller
+    defaults: { _controller: pdsBlogBundle:Blog:index }</pre>
+    <p>Nyní změníme controller <code>pds/BlogBundle/Controller/BlogController.php</code>.</p>
+    <pre>class BlogController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('AcmeBlogBundle:Blog:index.html.twig');
+        return $this->render('pdsBlogBundle:Blog:index.html.twig');
     }
-}
-		</pre>
-		
-		<p>a šablonu v <code>Acme/BlogBundle/Resources/views/Blog/index.html.twig</code>, kam vložíme nějaký text:</p>
-		
-		<pre>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit
-		</pre>
-		
-		<p>Nyní si aplikaci zobrazíme na webu: <code>http://localhost/web/blog/web/app_dev.php/</code>. Měli bychom vidět prázdnou stránku
-			s textem <span class="i">Lorem ipsum dolor sit amet, consectetur adipiscing elit</span>.
-		Vzápětí si k tomu doplníme html strukturu.
-		</p>
+}</pre>
 
-<h3>Základní příprava šablony</h3>
-<p>Nejprve se podíváme na to, jakým způsobem to funguje. Základní layout stránky, tedy definice typu DOCTYPE html se nachází 
-v souboru <code>base.html.twig</code>, který najdeme v <code>/app/Resources/views/</code>. Dále si připravíme výchozí
-layout stránky pojmenovaný jako <code>layout.html.twig</code>, který umístíme do <code>src/Acme/BlogBundle/Resources/views/</code>. 
-Tento layout bude dědit z <code>base.html.twig</code>.
-</p>
+    <p>A nakonec šablonu <code>Acme/BlogBundle/Resources/views/Blog/index.html.twig</code>, do které vložíme html kód:</p>
+    <pre>
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+		
+    <p>Nyní si zobrazíme stránku na localhostu: <code>http://localhost/web/blog/web/app_dev.php/</code>.
+    Měli bychom vidět prázdnou stránku
+    s textem <span class="i">Lorem ipsum dolor sit amet, consectetur adipiscing elit</span>.
+    Dole na stránce se nachází Symfony2 toolbar. V toolbaru máme základní informace o stránce, takže si
+    můžeme všimnout, že pro načtení stránky byla použita routa s názvem pds_blog_homepage a že se z BlogControlleru vykonala
+    akce indexAction.
+    </p>
 
+
+<h3>Šablonovací systém Twig</h3>
+<p>Nyní si doplníme kompletní html strukturu stránky. Do složky <code>Resources/views</code> v <code>src/pds/BlogBundle</code> přidáme novou šablonu <code>layout.html.twig</code>, kde
+se již podle názvu bude nacházet výchozí layout stránky. Část <code>content</code> je pak určena pro vlastní obsah.
 <pre>
-<?php echo'{'?># src/Acme/BlogBundle/Resources/views/layout.html.twig #<?php echo'}'?>
+<?php echo'{'?># src/pds/BlogBundle/Resources/views/layout.html.twig #<?php echo'}'?>
 
-<?php echo'{'?>% extends '::base.html.twig' %<?php echo'}'?>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;<?php echo "{" ?>% block title %<?php echo "}" ?>Můj blogísek<?php echo "{" ?>% endblock %<?php echo "}" ?>&lt;/title&gt;
+    <?php echo "{" ?>% block stylesheets %<?php echo "}" ?><?php echo "{" ?>% endblock %<?php echo "}" ?>
 
-<?php echo'{'?>% block title 'Můj blogísek' %<?php echo'}'?>
+    &lt;link rel="icon" type="image/x-icon" href="<?php echo "{" ?><?php echo "{" ?> asset('favicon.ico') <?php echo "}" ?><?php echo "}" ?>" /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    <?php echo "{" ?>% block content %<?php echo "}" ?><?php echo "{" ?>% endblock %<?php echo "}" ?>
+
+    <?php echo "{" ?>% block javascripts %<?php echo "}" ?><?php echo "{" ?>% endblock %<?php echo "}" ?>
+
+  &lt;/body&gt;
+&lt;/html&gt;
 </pre>
 
-<p>Nyní si doplníme šablonu pro blog <code>index.html.twig</code>, takže se potřebujeme odkázat na <code>layout.html.twig</code>:</p>
-
+<p>V dalším kroku si upravíme šablonu <code>index.html.twig</code>, kterou máme ve složce <code>Blog</code>.
+   Odebereme tagy, které již máme v layoutu a&nbsp;přidáme část <code>extends</code>, která nám zajistí to, že šablona bude dědit
+   náš layout stránky. Tady upozorním na to, že <code><?php echo "{" ?>% extends %<?php echo "}" ?></code> musí být prvním tagem v šabloně.
+</p>
 <pre>
-<?php echo'{'?># src/Acme/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo'}'?>
+<?php echo'{'?># src/pds/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo'}'?>
 
-<?php echo'{'?>% extends 'AcmeBlogBundle::layout.html.twig' %<?php echo'}'?>
+<?php echo "{" ?>% extends "pdsBlogBundle::layout.html.twig" %<?php echo "}" ?>
 
-<?php echo'{'?>% block body %<?php echo'}'?>
+<?php echo "{" ?>% block content %<?php echo "}" ?>
 
-&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit&lt;/p&gt;
-<?php echo'{'?>% endblock %<?php echo'}'?>
+    &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit&lt;/p&gt;
+<?php echo "{" ?>% endblock %<?php echo "}" ?>
 </pre>
 
-<p>Pokud si nyní zkusíme načíst stránku v localhostu, tak se sice na pohled mnoho nezměnilo, ale stránka už má svůj html kabát, který
-ještě upravíme. V titulku stránky je text „Můj blogísek“ a dole máme již umístěný Symfony2 toolbar.
-V toolbaru máme základní informace o stránce, takže si
-všimněte, že pro načtení stránky byla použita routa s názvem acme_blog_homepage a že se z BlogControlleru vykonala
-akce indexAction.
-Daleko více se pak ohledně šablon dočtete v <a href="http://symfony.com/doc/current/book/templating.html" title="Symfony templating" target="_blank">dokumentaci</a>.
-</p>
+<p>Pokud si nyní zkusíme znovu načíst stránku, tak se sice na pohled mnoho nezměnilo, ale stránka už má svůj kompletní html kabát
+a v titulku máme umístěn text „Můj blogísek“.</p>
+
 
 <h3>Vložení stylu</h3>
+<p>Pro testovací účely si připravím jednoduchou definici stylu:</p>
+<pre>body <?php echo'{'?> background-color: whitesmoke; <?php echo'}'?></pre>
 
-<p>Pro testovací účely si připravíme jednoduchou definici stylu:</p>
+<p>Tento styl si pojmenuji jako <code>blog.css</code>. Pokud se nyní podívám na strukturu aplikace, tak mi přijde
+jako nejlepší řešení, když styl bude součástí bundlu. Pro umístění stylu si tedy vytvoříme následující adresářovou
+strukturu:</p>
+<pre>src/pds/BlogBundle/Resources/public/css/blog.css</pre>
+
+<p>Provizorní styl máme, akorát ho potřebujeme vložit do html souboru.
+Pro vložení stylu využijeme tzv. <span class="i">assety</span>, což je označení pro soubory typu CSS, JavaScript a
+obrázky, které vkládáme do html. Na BlogBundle se v tomto případě odkážeme pomocí aliasu <code>@pdsBlogBundle</code>.
+Šablonu <code>layout.html.twig</code> proto upravíme tímto způsobem:</p>
 <pre>
-body <?php echo'{'?> 
-    background-color: whitesmoke;
-<?php echo'}'?>
+<?php echo'{'?># src/pds/BlogBundle/Resources/views/layout.html.twig #<?php echo'}'?>
+
+...
+&lt;head&gt;
+  &lt;meta charset="UTF-8" /&gt;
+  &lt;title&gt;<?php echo "{" ?>% block title %<?php echo "}" ?>Můj blogísek<?php echo "{" ?>% endblock %<?php echo "}" ?>&lt;/title&gt;
+  <?php echo "{" ?>% stylesheets '@pdsBlogBundle/Resources/public/css/blog.css' %<?php echo "}" ?>
+
+    &lt;link rel="stylesheet" href="<?php echo "{" ?><?php echo "{" ?> asset_url <?php echo "}" ?><?php echo "}" ?>" /&gt;
+  <?php echo "{" ?>% endstylesheets %<?php echo "}" ?>
+
+  &lt;link rel="icon" type="image/x-icon" href="<?php echo "{" ?><?php echo "{" ?> asset('favicon.ico') <?php echo "}" ?><?php echo "}" ?>" /&gt;
+&lt;/head&gt;
 </pre>
 
-<p>Tento styl si pojmenujeme jako <code>blog.css</code>. Pokud se vrátíme ke struktuře naší aplikace, tak styl si uložíme do adresáře
-<code>web/bundles</code>, kde nám, jak vidím, ještě zůstal adresář <code>acmedemo</code>, ten si tedy přejmenujeme na <code>acmeblog</code> a zároveň odstraníme původní styl <code>demo.css</code>.
-Do souboru <code>layout.html.twig</code> si přidáme následující kód:</p> 
+<p>Nakonec ještě musíme přidat náš bundle do assetic bundlu &#8211; to provedeme přímo v konfiguračním souboru <code>app/config/config.yml</code>.</p>
 <pre>
-<?php echo'{'?>% block stylesheets %<?php echo'}'?>
-
-&lt;link rel="stylesheet" href="<?php echo'{'?><?php echo'{'?> asset('bundles/blogdemo/css/blog.css') <?php echo'}'?><?php echo'}'?>" /&gt;
-<?php echo'{'?>% endblock %<?php echo'}'?>
+# Assetic Configuration
+assetic:
+    ...
+    use_controller: false
+    bundles:        [ 'pdsBlogBundle' ]
 </pre>
 
-<p>Do stylu zatím doplním <a href="http://meyerweb.com/eric/tools/css/reset/" title="myeyerweb reset" target="_blank">
-CSS reset</a> a jelikož stránka nevypadá úplně dobře, tak to aspoň trochu vystředím a přidám nějaký okraj, jinak „design“ aplikace o moc víc řešit nebudu.
-Taky to dělám proto, abychom si mohli ukázat použití šablon, kdy základní strukturu stránky dám do layoutu a ve výsledku tak dostaneme
-pěkný třívrstvý model.<br /><br />
+<p>
+Více informací je možné najít v <a href="http://symfony.com/doc/current/cookbook/assetic/asset_management.html"
+title="How to Use Assetic for Asset Management" target="_blank">dokumentaci</a> popř. i na serveru
+<a href="http://stackoverflow.com/questions/10376946/assetic-unable-to-find-file" title="stackoverflow.com" target="_blank">stackoverflow.com</a>.
+Styl nám funguje, takže nyní si doplním základní kostru stylu a upravím příslušné šablony. Styl je k dispozici TADY.<br /><br />
 </p>
+
 
 <p>Šablona layout.html.twig</p>
 <pre>
-<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/layout.html.twig #<?php echo '}'; ?>
-<?php echo '{'; ?>% extends '::base.html.twig' %<?php echo '}'; ?>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/layout.html.twig #<?php echo '}'; ?>
 
-<?php echo '{'; ?>% block stylesheets %<?php echo '}'; ?>
-&lt;link rel="stylesheet" 
-                             href="<?php echo '{'; ?><?php echo '{'; ?> asset('bundles/acmeblog/css/blog.css') <?php echo '}'; ?><?php echo '}'; ?>" /&gt;
-<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;<?php echo "{" ?>% block title %<?php echo "}" ?>Můj blogísek<?php echo "{" ?>% endblock %<?php echo "}" ?>&lt;/title&gt;
+    <?php echo "{" ?>% stylesheets '@pdsBlogBundle/Resources/public/css/blog.css' %<?php echo "}" ?>
 
-<?php echo '{'; ?>% block title 'Můj blogísek' %<?php echo '}'; ?>
+    &lt;link rel="stylesheet" href="<?php echo "{" ?><?php echo "{" ?> asset_url <?php echo "}" ?><?php echo "}" ?>" /&gt;
+    <?php echo "{" ?>% endstylesheets %<?php echo "}" ?>
 
-<?php echo '{'; ?>% block body %<?php echo '}'; ?>
+    &lt;link rel="icon" type="image/x-icon" href="<?php echo "{" ?><?php echo "{" ?> asset('favicon.ico') <?php echo "}" ?><?php echo "}" ?>" /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="page"&gt;
+      &lt;div id="top-menu"&gt;&lt;/div&gt;
+      &lt;div id="left-page"&gt;
+        <?php echo "{" ?>% block menu %<?php echo "}" ?>
 
-&lt;div id="page"&gt;
-  &lt;div id="top-menu"&gt;&lt;/div&gt;
-  &lt;div id="left-page"&gt;
-    <?php echo '{'; ?>% block menu%<?php echo '}'; ?>
+        <?php echo "{" ?>% endblock %<?php echo "}" ?>
 
-    <?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+      &lt;/div&gt;
+      &lt;div id="middle-page"&gt;  
+        <?php echo "{" ?>% block content %<?php echo "}" ?><?php echo "{" ?>% endblock %<?php echo "}" ?>
 
-  &lt;/div&gt;
-  &lt;div id="middle-page"&gt;
-    <?php echo '{'; ?>% block content %<?php echo '}'; ?>
+        <?php echo "{" ?>% block javascripts %<?php echo "}" ?><?php echo "{" ?>% endblock %<?php echo "}" ?>
 
-    <?php echo '{'; ?>% endblock %<?php echo '}'; ?>
-
-  &lt;/div&gt;
-&lt;/div&gt;
-
-<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+      &lt;/div&gt;    &lt;!-- END middle-page --&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
 </pre>
 
 <p>Šablona index.html.twig</p>
 <pre>
-<?php echo '{'; ?># src/Acme/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Blog/index.html.twig #<?php echo '}'; ?>
 
-<?php echo '{'; ?>% extends 'AcmeBlogBundle::layout.html.twig' %<?php echo '}'; ?>
+<?php echo "{" ?>% extends "pdsBlogBundle::layout.html.twig" %<?php echo "}" ?>
 
-<?php echo '{'; ?>% block menu %<?php echo '}'; ?>
+<?php echo "{" ?>% block menu %<?php echo "}" ?>
 
   &lt;ul&gt;
     &lt;li class="title"&gt;Nejnovější&lt;/li&gt;
     &lt;li&gt;&lt;a href=""&gt;Lorem Ipsum&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href=""&gt;De Finibus Bonorum...&lt;/li&gt;&lt;/a&gt;
+    &lt;li&gt;&lt;a href=""&gt;De Finibus Bonorum...&lt;/a&gt;&lt;/li&gt;
   &lt;/ul&gt;
-<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+<?php echo "{" ?>% endblock %<?php echo "}" ?>
 
-<?php echo '{'; ?>% block content %<?php echo '}'; ?>
+<?php echo "{" ?>% block content %<?php echo "}" ?>
 
   &lt;div class="article"&gt;
     &lt;h1&gt;Lorem Ipsum&lt;/h1&gt;
     &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit ... 
-          &lt;a href="" title=""&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+          &lt;a href="" title=""&gt;celý článek&lt;/a&gt;&lt;/p&gt;
     &lt;p class="date"&gt;Přidáno: 19.10.2013 v 18:42&lt;/p&gt;
   &lt;/div&gt;
   &lt;div class="article"&gt;
@@ -284,10 +297,10 @@ pěkný třívrstvý model.<br /><br />
        fringilla nisl, mattis tempor tortor posuere in. Nulla et venenatis augue. Suspendisse
        volutpat justo eu risus lobortis, quis lobortis nulla ornare. Aliquam erat volutpat.
        Praesent ut nunc felis. Etiam tincidunt dolor ac nisl congue, eu molestie ante venenatis.
-       Curabitur at risus ... &lt;a href="seznam.cz" title=""&gt;celý&nbsp;článek&lt;/a&gt;&lt;/p&gt;
+       Curabitur at risus ... &lt;a href="seznam.cz" title=""&gt;celý článek&lt;/a&gt;&lt;/p&gt;
     &lt;p class="date"&gt;Přidáno: 17.10.2013 v 22:05&lt;/p&gt;
   &lt;/div&gt;
-<?php echo '{'; ?>% endblock %<?php echo '}'; ?>
+<?php echo "{" ?>% endblock %<?php echo "}" ?>
 </pre>
 
 
@@ -305,7 +318,7 @@ se kterým jste se již pravděpodobně setkali. Proto předtím,
 než se do něčeho pustíte, tak doporučuji si projít minimálně <a href="http://www.zdrojak.cz/clanky/doctrine-2-zakladni-definice-entit/"
 title="Doctrine2: Základní definice entit" target="_blank">tento článek</a>, kde se dozvíte, na jakém principu se s Doctrine2 pracuje
 a něco o pojetí entit, bez kterých se v Doctrine2 neobejdete.
-Místo Doctrine by neměl být problém využít třeba Propel. 
+Místo Doctrine by neměl být problém využít třeba Propel či samotné PDO. 
 </p>
 
 <p>
