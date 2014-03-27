@@ -7,6 +7,26 @@
         <!--<p id="description">Here there is a space for solving my common or less common problems with development and for simple instructions.</p>-->
 
         <div class="comment">
+            <h2>NetBeans &#8211; OutOfMemoryError: GC overhead limit exceeded</h2>
+            <p>I had a problem with NetBeans when I was editing text in latte templates. In NetBeans 7.4 or latest
+            is implemented Nette framework. It works, but after a while working with latte, my processor AMD PhenomII X4 965
+            has performance about 85% to 95% and I cannot edit text.</p>
+            <p class="solution">You need to increase java heap size, so exit NetBeans and edit the file <code>etc/netbeans.conf</code>
+                in a folder with NetBeans installation. It is the line with <code>netbeans_default_options</code>.</p>
+            <p>My setting in the <code>netbeans.conf</code> looks like this:</p>
+            <pre>netbeans_default_options="-J-client -J-Xss2g -J-Xms512m -J-XX:PermSize=32m 
+-J-Dnetbeans.logger.console=true -J-ea -J-Dapple.laf.useScreenMenuBar=true
+-J-Dapple.awt.graphics.UseQuartz=true -J-Dsun.java2d.noddraw=true
+-J-Dsun.java2d.dpiaware=true -J-Dsun.zip.disableMemoryMapping=true
+-J-Dnetbeans.extbrowser.manual_chrome_plugin_install=yes"</pre>
+            <p>More information:</p>
+            <p><a href="http://javahowto.blogspot.cz/2006/06/6-common-errors-in-setting-java-heap.html" title="Heap Size in NetBeans"
+                  target="_blank">Six common errors in setting Java Heap Size</a></p>
+            <p class="date">Date: 2014-03-01</p>
+        </div>
+        
+        
+        <div class="comment">
             <h2>Git &#8211; the first repository</h2>
             <p>Create a new repository from existing files on the command line:</p>
             <pre>git init
