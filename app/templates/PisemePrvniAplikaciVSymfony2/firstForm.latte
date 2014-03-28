@@ -1,0 +1,216 @@
+{block content}
+<div id="middle-page">
+    
+<h3>První formulář</h3>
+
+<img src="{$basePath}/images/symfony-forms.jpg" width="25%" height="25%" class="right" />
+
+<p>Pro přidání komentáře budeme potřebovat formulář, takže si takový jednoduchý formulář navrhneme.
+    Symfony2 framework nabízí celkem tři způsoby, jakým můžeme formulář zahrnout do naší aplikace.
+    Pěkné schéma, které popisuje základní implementaci, si můžete prohlédnout
+    <a href="{$basePath}/files/working-with-symfony2-forms.pdf" title="Working with Symfony2 forms" target="_blank">zde</a>.
+    Pro začátek si tedy vyberu hned první způsob, kdy formulář umístíme přímo do controlleru a jelikož
+    se jedná o komentář, tak použijeme <code>CommentControler</code>. Přidání komentáře nám pak bude definovat
+    akce <code>add</code>. V rámci formuláře budeme pracovat entitou <code>Comment</code>, kdy si vytvoříme její instanci.
+    Nejprve si vyřešíme samotné vykreslení formuláře. 
+</p>
+<pre>
+// src/pds/BlogBundle/Controller/CommentController.php
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use pds\BlogBundle\Entity\Comment;
+
+class CommentController extends Controller
+{
+    public function addAction()
+    {
+        $comment = new Comment();
+        
+        $form = $this->createFormBuilder($comment)
+            ->add('login')
+            ->add('text', 'textarea', [
+                'attr' => [ 'cols' => 30, 'rows' => 5 ]
+            ])
+            ->add('Vložit', 'submit')
+            ->getForm()
+        ;
+        
+        return $this->render('pdsBlogBundle:Comment:add.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+</pre>
+
+<p>Šablona <code>add.html.twig</code> bude jednoduchá. Necháme Symfony, ať nám šablonu vykreslí automaticky.</p>
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Comment/add.html.twig #<?php echo '}'; ?>
+
+
+{{ form(form) }}
+</pre>
+
+<p>Jelikož formulář pro přidání komentáře je součástí stránky s hlavním příspěvkem, musíme upravit i&nbsp;šablonu
+    <code>article.html.twig</code> tak, aby se nám vykreslil formulář. Prostě zavoláme metodu <code>add()</code>.</p>
+<pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Article/article.html.twig #<?php echo '}'; ?>
+
+
+&lt;h3&gt;Přidat komentář&lt;/h3&gt;
+  {{ render(controller('pdsBlogBundle:Comment:add')) }}
+</pre>
+
+<p>Nyní si zobrazíme stránku s příspěvkem, na které bychom měli vidět formulář. Vzhled není určitě ideální a&nbsp;ani na
+tlačítku nemáme správně zobrazen text <span class="i">Vložit</span>. K úpravě vzhledu se dostaneme později.</p>
+<pre>http://localhost/web/blog/web/app_dev.php/article/8</pre>
+    
+<img src="{$basePath}/images/blog-form.jpg" />
+
+<p>Pokud kliknete na tlačítko Vložit,
+tak se formulář zatím neodešle. A pokud se podíváte do zdrojového kódu stránky, můžete si všimnout, že formulář
+je provázáný s entitou <code>Comment</code>,
+kdy u elementu <code>login</code> je doplněn atribut <code>maxlength</code>.</p>
+
+
+<h3>Atributy action a method</h3>
+<p>Pro to, abychom mohli formulář odeslat, budeme potřebovat nastavit metodu předání dat na server (GET, POST) a akci,
+    která se má vykonat. Doplníme metodu <code>add()</code>, konkrétně <code>createFormBuilder()</code> a nastavíme potřebné parametry.</p>
+<pre>
+// src/pds/BlogBundle/Controller/CommentController.php
+
+public function addAction()
+{
+    $comment = new Comment();
+
+    $form = $this->createFormBuilder($comment)
+        ->setAction($this->generateUrl('pds_blog_comment_add'))
+        ->setMethod('POST')
+        ->add('login')
+        ->add('text', 'textarea', [
+            'attr' => [ 'cols' => 30, 'rows' => 5 ]
+        ])
+        ->add('Vložit', 'submit')
+        ->getForm()
+    ;
+
+// ...
+}
+</pre>
+<p>Pomocí metody <code>setAction()</code> a <code>generateUrl()</code>, jejímž parametrem je název routy,
+    definujeme požadovanou akci. Proto si routu s názvem <code>pds_blog_comment_add</code> musíme doplnit
+    do souboru <code>routing.yml</code>. Routa se bude odkazovat na akci <code>add()</code>.</p>
+<pre>
+# src/pds/BlogBundle/Resources/config/routing.yml
+
+pds_blog_comment_add:
+    path: /comment/add
+    defaults: { _controller: pdsBlogBundle:Comment:add }
+</pre>
+<p>To znamená, že máme definovanou níže uvedenou url. Pokud ji zadáme do prohlížeče, zobrazí se nám pouze
+    samostatný formulář:</p>
+<pre>http://localhost/web/blog/web/app_dev.php/comment/add</pre>
+<p>A právě tato url je hodnota atributu <code>action</code> u elementu <code>form</code>. Můžete si prohlédnout
+    zdrojový kód stránky.</p>
+
+
+<h3>Odeslání a uložení dat</h3>
+<p>Pro odeslání dat využijeme objekt <code>Request</code>, pro jejich uložení pak instanci Doctrine manageru.
+    Pojďme si tedy doplnit kompletní logiku do metody <code>add()</code>.</p>
+<pre>
+// src/pds/BlogBundle/Controller/CommentController.php
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use pds\BlogBundle\Entity\Comment;
+
+class CommentController extends Controller
+{
+    public function addAction(Request $request)
+    {
+        $comment = new Comment();
+        
+        $form = $this->createFormBuilder($comment)
+            ->setAction($this->generateUrl('pds_blog_comment_add'))
+            ->setMethod('POST')
+            ->add('login')
+            ->add('text', 'textarea', [
+                'attr' => [ 'cols' => 30, 'rows' => 5 ]
+            ])
+            ->add('Vložit', 'submit')
+            ->getForm()
+        ;
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            
+            $comment->setArticleId(8);
+            
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($comment);
+            $em->flush();
+            
+            return $this->redirect($this->generateUrl('pds_blog_homepage'));
+        }
+        
+        return $this->render('pdsBlogBundle:Comment:add.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    // ...
+}
+</pre>
+
+<p>Formulář je zpracován pomocí metody <code>handleRequest()</code>. Podmínka <code>isValid()</code> nám
+    kontroluje validitu formuláře. O samotné uložení dat se stará mechanismus Doctrine, klasický <code>insert</code>
+    dat nemáme k&nbsp;dispozici, protože Doctrine sleduje "stav" entit a sama tyto změny vyhodnocuje &#8211; viz funkce
+    <code>persist()</code> a&nbsp;<code>flush()</code>.
+</p>
+<p>Pokud se nyní rozhodneme vyzkoušet funkčnost formuláře, tak narazíme, protože:</p>
+
+<pre>An exception occured while executing 'INSERT INTO comment (text, login, date, article_id)
+VALUES (?, ?, ?, ?)' with params [ ... ]
+
+SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'date' cannot be null
+</pre>
+
+<p>Vidíme, že místo datumu, dostáváme nulovou hodnotu. Řešení spočívá v nastavení životního cyklu entity. 
+    Proto entitu <code>Comment</code> upravíme tímto způsobem:
+</p>
+
+<pre>
+// src/pds/BlogBundle/Entity/Comment.php
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="comment")
+ * @ORM\HasLifecycleCallbacks
+ */
+class Comment
+{
+    // ...
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $date;
+    
+    /* lifecycles */
+    
+    /**
+     * @ORM\PrePersist
+     */
+    function onPrePersist()
+    {
+        $this->date = new \DateTime('now');
+    }
+
+    // ...
+}
+</pre>
+    
+    
+</div>
+{/block}

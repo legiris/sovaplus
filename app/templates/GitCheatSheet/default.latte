@@ -17,9 +17,6 @@ git push origin &lt;branch&gt;          publish local changes
 ... and then merge to master ...
 </pre>
 
-<h2>Download a non-existent branch on local PC</h2>
-<pre>git fetch origin &lt;branch_name&gt;:&lt;branch_name&gt;               use the same branch's name</pre>
-
 <h2>First repository</h2>
 <p>Create a new repository from existing files on the command line.</p>
 <pre>
@@ -50,12 +47,14 @@ git diff                          changes to tracked files
 
 <h2>Branches</h2>
 <pre>
-git branch                          list all existing branches
-git checkout -b &lt;branch&gt;            create a new branch
-git checkout &lt;branch&gt;               switch branch
-git branch -m &lt;oldname&gt; &lt;newname&gt;   rename a remote branch
-git branch -m &lt;newname&gt;             rename a local branch
-git branch -d &lt;name&gt;                delete a local branch
+git branch                                      list all existing branches
+git checkout -b &lt;branch&gt;                        create a new branch
+git checkout &lt;branch&gt;                           switch branch
+git fetch origin &lt;branch_name&gt;:&lt;branch_name&gt;    download a non-existent branch on local PC,
+                                                  use the same branch's name
+git branch -m &lt;oldname&gt; &lt;newname&gt;               rename a remote branch
+git branch -m &lt;newname&gt;                         rename a local branch
+git branch -d &lt;name&gt;                            delete a local branch
 </pre>
 
 <h2>Update & publish</h2>
