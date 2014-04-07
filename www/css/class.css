@@ -167,6 +167,15 @@ p.author {
 	padding: 40px 0px 5px;
 }
 
+#topbar a.active {
+    color: yellow;
+}
+
+#topbar a {
+    color: orange
+}
+
+/*
 #topbar a:link {
 	color: orange;
 }
@@ -174,6 +183,7 @@ p.author {
 #topbar a:visited {
 	color: orange;
 }
+*/
 
 /* blog style -- for homepage */
 #blog-style {

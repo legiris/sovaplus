@@ -5,10 +5,8 @@
  */
 class HomepagePresenter extends BasePresenter
 {
-
-	public function renderDefault()
-	{
-		//$this->template->php = phpinfo();
-	}
-
+    public function renderDefault()
+    {
+        $this->template->presenter = $this->getName();
+    }
 }

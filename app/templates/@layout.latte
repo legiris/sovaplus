@@ -38,10 +38,10 @@
 	<div id="topbar">
 	  <div id="topbarmenu">
 	  <ul>
-	  	<li><a href="{$basePath}/">Hlavní stránka</a></li>
-                <li><a href="{$basePath}/blog/">Blog</a></li>
-	  	<li><a href="{$basePath}/odkazy/">Odkazy</a></li>
-	  	<li class="end"><a href="{$basePath}/kontakt/">Kontakt</a></li>
+            <li><a href="{$basePath}/" {if $presenter == 'Homepage'}class="active"{/if}>Hlavní stránka</a></li>
+            <li><a href="{$basePath}/blog/" {if $presenter == 'Blog'}class="active"{/if}>Blog</a></li>
+            <li><a href="{$basePath}/odkazy/" {if $presenter == 'Odkazy'}class="active"{/if}>Odkazy</a></li>
+            <li class="end"><a href="{$basePath}/kontakt/" {if $presenter == 'Kontakt'}class="active"{/if}>Kontakt</a></li>
 	  </ul>	
 	  </div>
 	</div>	<!--  ./topbar -->
