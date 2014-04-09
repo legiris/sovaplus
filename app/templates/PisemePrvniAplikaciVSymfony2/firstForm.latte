@@ -1,7 +1,7 @@
 {block content}
 <div id="middle-page">
     
-<h3>První formulář</h3>
+<h2>První formulář</h2>
 
 <img src="{$basePath}/images/symfony-forms.jpg" width="25%" height="25%" class="right" />
 
@@ -11,7 +11,7 @@
     <a href="{$basePath}/files/working-with-symfony2-forms.pdf" title="Working with Symfony2 forms" target="_blank">zde</a>.
     Pro začátek si tedy vyberu hned první způsob, kdy formulář umístíme přímo do controlleru a jelikož
     se jedná o komentář, tak použijeme <code>CommentController</code>. Přidání komentáře nám pak bude definovat
-    akce <code>add</code>. V rámci formuláře budeme pracovat entitou <code>Comment</code>, kdy si vytvoříme její instanci.
+    akce <code>add</code>. V rámci formuláře budeme pracovat s&nbsp;entitou <code>Comment</code>, kdy si vytvoříme její instanci.
     Nejprve si vyřešíme samotné vykreslení formuláře. Formulář generujeme pomocí komponenty <code>createFormBuilder()</code>.
 </p>
 <pre>
@@ -61,7 +61,7 @@ class CommentController extends Controller
 </pre>
 
 <p>Nyní si zobrazíme stránku s příspěvkem, na které bychom měli vidět formulář. Vzhled není určitě ideální a&nbsp;ani na
-tlačítku nemáme správně zobrazen text <span class="i">Vložit</span>. K úpravě vzhledu se dostaneme v dalším díle.</p>
+tlačítku nemáme správně zobrazen text <span class="i">Vložit</span>. Úpravu vzhledu si však necháme na další díl.</p>
 <pre>http://localhost/web/blog/web/app_dev.php/article/8</pre>
     
 <img src="{$basePath}/images/blog-form.jpg" width="600" class="center" />
@@ -216,7 +216,7 @@ SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'date' cannot be nu
 </pre>
 
 <p>Vidíme, že místo datumu, dostáváme nulovou hodnotu. Řešení spočívá v nastavení životního cyklu entity. 
-    Proto entitu <code>Comment</code> upravíme tímto způsobem:
+    Proto entitu <code>Comment</code> upravíme níže uvedeným způsobem a aplikace by nám potom měla správně fungovat:
 </p>
 
 <pre>
@@ -252,8 +252,8 @@ class Comment
 }
 </pre>
     
-<p>V této kapitole jsme si ukázali jeden ze způsobů, jakým můžeme pomocí Symfony zpracovat formulář. Na závěr ještě doplním
-    některé zajímavé odkazy, které stojí za to si projít:
+<p>V tomto díle se nám podařilo dokončit základní část blogu, takže již k jednotlivým příspěvkům můžeme vkládat komentáře.
+     Na závěr ještě doplním některé zajímavé odkazy, které stojí za to si projít:
 </p>
 <ul>
     <li><a href="http://symfony.com/doc/current/book/forms.html" title="symfony.com" target="_blank">Symfony doc: Forms</a></li>
@@ -261,5 +261,14 @@ class Comment
     <li><a href="http://tutorial.symblog.co.uk/docs/extending-the-model-blog-comments.html" title="tutorial.symblog.co.uk" target="_blank">Symblog</a></li>
     <li><a href="https://www.digitalocean.com/community/articles/how-to-use-symfony2-to-perform-crud-operations-on-a-vps-part-2" title="digitalocean.com" target="_blank">How to use Symfony2 to perform CRUD operations</a></li>
 </ul>
+
+<p>V dalším díle si ukážeme pokročilejší práci s formuláři a podíváme se ještě na další věci ohledně formulářů.</p>
+
+<div class="small-bar">
+<p>
+<a href="{$basePath}/piseme-prvni-aplikaci-v-symfony2/comments" title="Komentáře">&lt;&lt; Předchozí</a> | <a href="{$basePath}/piseme-prvni-aplikaci-v-symfony2/form-best-way" title="Formulář &#8211; pokračování">Následující &gt;&gt;</a>
+</p>
+</div>
+
 </div>
 {/block}

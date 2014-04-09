@@ -1,0 +1,132 @@
+{block content}
+<div id="middle-page">
+  <h2>Formulář &#8211; pokračování</h2>
+  <p>V tomto díle seriálu si ukážeme následující:</p>
+    <ul>
+      <li>ruční vykreslení formuláře</li>
+      <li>flash messages</li>
+      <li>kontrola odeslaných dat</li>
+      <li>implementace formulářové třídy</li>
+    </ul>
+  
+  <h3>Ruční vykreslení formuláře</h3>
+  <p>Až doposud jsme formulář generovali automaticky, nyní si vyzkoušíme naformátovat formulář vlastními silami,
+      protože často může nastat situace, že budeme chtít, aby formulář vypadal prostě jinak. Jednotlivé prvky
+      formuláře si tedy zarovnáme do tabulky a přidáme vlastní styl. Způsob vykreslení takového formuláře je pak
+      poměrně dobře popsán v <a href="http://symfony.com/doc/current/book/forms.html#rendering-a-form-in-a-template"
+                                title="Symfony: rendering a from in a template" taget="_blank">dokumentaci</a>.
+      Původní obsah souboru <code>add.html.twig</code> tedy nahradíme za následující:
+  </p>
+  
+  <pre>
+&lt;form name="form" method="POST"
+      action="<?php echo "{" ?><?php echo "{" ?> path('pds_blog_comment_add', <?php echo "{" ?> 'articleId': comment.getArticleId <?php echo "}" ?> ) <?php echo "}" ?><?php echo "}" ?>"&gt;
+  <?php echo "{" ?><?php echo "{" ?> form_errors(form) <?php echo "}" ?><?php echo "}" ?>
+
+  &lt;table&gt;
+    &lt;tr&gt;
+      &lt;td class="w80"&gt;&lt;label for="form_login" class="required"&gt;Login:&lt;/label&gt;&lt;/td&gt;
+      &lt;td&gt;<?php echo "{" ?><?php echo "{" ?> form_widget(form.login, <?php echo "{" ?> 'attr': <?php echo "{" ?> 'class': 'form-field' <?php echo "}" ?> <?php echo "}" ?>) <?php echo "}" ?><?php echo "}" ?>&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td class="top"&gt;Text:&lt;/td&gt;
+      &lt;td&gt;<?php echo "{" ?><?php echo "{" ?> form_widget(form.text, <?php echo "{" ?> 'attr': <?php echo "{" ?> 'class': 'form-field' <?php echo "}" ?> <?php echo "}" ?>) <?php echo "}" ?><?php echo "}" ?>&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;input type="submit" id="form_Vložit" name="form[Vložit]" value="Vložit" /&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+  <?php echo "{" ?><?php echo "{" ?> form_widget(form._token) <?php echo "}" ?><?php echo "}" ?>
+
+&lt;/form&gt;
+  </pre>
+  
+  <p>Zde jen upozorním na jednu věc &#8211; vzhledem k tomu, že jsme nepoužili <code>{{ form_end(form) }}</code>
+      pro vygenerování zbývajících částí formuláře, musíme se sami postarat o vložení CSRF tokenu.
+  </p>
+  <pre><?php echo "{" ?><?php echo "{" ?> form_widget(form._token) <?php echo "}" ?><?php echo "}" ?></pre>
+  
+  <p>Po aktualizaci formuláře nám stránka bude vypadat takto:</p>
+  <img src="{$basePath}/images/form-rendering.jpg" width="600" height="496" alt="Přidání komentáře" title="Přidání komentáře" class="center" />
+  
+  <h3>Flash messages</h3>
+  <p>Pod flash messages si můžeme představit krátké zprávičky, které uživatele informují o výsledku nějaké akce. V našem
+  případě budeme chtít, aby uživatel byl informován o tom, že jeho komentář byl uložen. Po aktualizaci stránky pak tato zpráva zmizí.
+  Může to vypadat třeba takto:</p>
+  <img src="{$basePath}/images/form-success.jpg" width="600" height="457" alt="Komentář byl uložen" class="center" />
+  
+  <p>A nebo v případě chyby:</p>
+  <img src="{$basePath}/images/form-error.jpg" width="600" height="448" alt="Komentář se nepodařilo uložit" class="center" />
+  
+  <p>Takže pojďme na to. Nejprve si upravíme <code>CommentController()</code>.
+  Nastavíme si dva typy zpráv, a to pro případ, kdy se podařilo uložit komentář do databáze a pro případ,
+      kdy z nějakého důvodu komentář nemohl být uložen. Zároveň také musíme odchytit výjimku, pokud se vyskytne
+      chyba při ukládání dat.
+  </p>
+  <pre>
+// src/pds/BlogBundle/Controller/CommentController.php
+
+// ...
+
+if ($form->isValid()) {
+    try {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($comment);
+        $em->flush();
+        $this->get('session')->getFlashBag()->add('success', 'Komentář byl uložen.');
+    } catch (\Doctrine\DBAL\DBALException $e) {
+        $this->get('session')->getFlashBag()->add('error', 'Komentář se nepodařilo uložit.');
+    }
+
+    return $this->redirect($this->generateUrl('pds_blog_article', [ 'id' => $articleId ] ));
+}</pre>
+  
+  <p>Nyní si zobrazíme zprávy v šabloně <code>article.html.twig</code>:</p>
+  <pre>
+<?php echo '{'; ?># src/pds/BlogBundle/Resources/views/Article/article.html.twig #<?php echo '}'; ?>
+
+
+<?php echo '{'; ?># ... #<?php echo '}'; ?>
+
+
+&lt;div id="comment-block"&gt;
+  &lt;h3&gt;Přidat komentář&lt;/h3&gt;
+  <?php echo "{" ?><?php echo "{" ?> render(controller('pdsBlogBundle:Comment:add', <?php echo "{" ?> 'articleId': article.getId <?php echo "}" ?> )) <?php echo "}" ?><?php echo "}" ?>
+
+  <?php echo "{" ?>% for label, flashes in app.session.flashbag.all %<?php echo "}" ?>
+
+    <?php echo "{" ?>% for flash in flashes %<?php echo "}" ?>
+
+      &lt;div class="flash-<?php echo "{" ?><?php echo "{" ?> label <?php echo "}" ?><?php echo "}" ?>"&gt;
+        <?php echo "{" ?><?php echo "{" ?> flash <?php echo "}" ?><?php echo "}" ?>
+
+      &lt;/div&gt;
+    <?php echo "{" ?>% endfor %<?php echo "}" ?>
+
+  <?php echo "{" ?>% endfor %<?php echo "}" ?>
+
+  &lt;h3&gt;Komentáře:&lt;/h3&gt;
+  <?php echo "{" ?>% block comment %<?php echo "}" ?>
+
+    <?php echo "{" ?><?php echo "{" ?> render(controller('pdsBlogBundle:Comment:fetchAllByArticleId',
+                            <?php echo "{" ?> 'articleId': article.getId <?php echo "}" ?> )) <?php echo "}" ?><?php echo "}" ?>
+
+  <?php echo "{" ?>% endblock %<?php echo "}" ?>
+
+&lt;/div&gt;
+  </pre>
+
+  <p>Pozn.: Pro vyvolání výjimky můžeme využít situaci, kdy se pokusíme vložit do databáze komentář s ID, které již existuje.
+      V tomto případě je potřeba si do entity <code>Comment()</code> doplnit metodu <code>setId()</code> a zneplatnit anotaci
+      pro automatické navyšování hodnoty ID, pak v <span class="i">CommentControlleru</span> stačí nastavit
+      <code>$comment->setId(1);</code>.</p>
+  
+  
+  
+  <div class="small-bar">
+    <p><a href="{$basePath}/piseme-prvni-aplikaci-v-symfony2/first-form" title="První formulář">&lt;&lt; Předchozí</a></p>
+  </div>
+    
+</div>
+{/block}
