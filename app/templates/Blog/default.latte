@@ -12,8 +12,9 @@
                 are not underlined and the font is not same. Here is a comparison:
             </p>
             <img src="{$basePath}/images/chrome-links.jpg" width="600" height="274" alt="Google web search links" title="Google web search links" class="center" />
-            <p>I do not like this new style. The page is less readable for me, because links and text have too similar design
-                and even new font is not pleasant for my eyes. If you want old design, you need to make these steps:
+            <p>I do not like this new style. The page is less readable for me, because links are not separated from another text,
+                so the whole page has too uniform design and what's more &#8211; new font is ugly and links
+                have similar look as advertisement links. If you want old design, you need to make these steps:
             </p>
             <p class="solution">
                 1. install Stylish extension for <a href="https://chrome.google.com/webstore/detail/stylish/fjnbnpbmkenffdnngjfgmeleoegfcffe/related?hl=en" target="_blank"
@@ -30,10 +31,10 @@
         
         <div class="comment">
             <h2>NetBeans &#8211; OutOfMemoryError: GC overhead limit exceeded</h2>
-            <p>I had a problem with NetBeans when I was editing text in latte templates. In NetBeans 7.4 or latest
-            is implemented Nette framework. It works, but after a while working with latte, my processor AMD PhenomII X4 965
+            <p>I had a problem with NetBeans when I was editing text in Latte templates. In NetBeans 7.4 or latest
+            is implemented Nette framework. It works, but after a while working with Latte, my processor AMD PhenomII X4 965
             has performance about 85% to 95% and I cannot edit text.</p>
-            <p class="solution">You need to increase java heap size, so exit NetBeans and edit the file <code>etc/netbeans.conf</code>
+            <p class="solution">You should increase java heap size, so exit NetBeans and edit the file <code>etc/netbeans.conf</code>
                 in a folder with NetBeans installation. It is the line with <code>netbeans_default_options</code>.</p>
             <p>My setting in the <code>netbeans.conf</code> looks like this:</p>
             <pre>netbeans_default_options="-J-client -J-Xss2g -J-Xms512m -J-XX:PermSize=32m 
@@ -42,9 +43,9 @@
 -J-Dsun.java2d.dpiaware=true -J-Dsun.zip.disableMemoryMapping=true
 -J-Dnetbeans.extbrowser.manual_chrome_plugin_install=yes"</pre>
             
-            <p>Edited March 27, 2014 &#8211; I am afraid, the problem was not solved. Now I use JDK 8 with NetBeans 8.0, I&nbsp;download
-                PHP, latte... plugins after installation. It looks like it works &#8211; I do not have to restart NetBeans,
-                but without Latte templating engine. I want PhpStorm. Oh yeah :-)<br /><br /></p>
+            <p>Edited March 27, 2014 &#8211; I am afraid, the problem was not solved. Now I use JDK 8 with NetBeans 8.0 and
+                it looks like it works &#8211; I do not have to restart NetBeans,
+                but I am without Latte templating engine. If you have an SSD disk, I recommend to put your project on it.<br /><br /></p>
             
             <p>More information:</p>
             <p><a href="http://javahowto.blogspot.cz/2006/06/6-common-errors-in-setting-java-heap.html" title="Heap Size in NetBeans"

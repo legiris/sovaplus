@@ -18,10 +18,10 @@ Místo konceptu Doctrine2 by neměl být problém využít třeba Propel či sam
 
 <p>
 Nejprve si tedy připravíme databázovou strukturu. Vytvořím si novou databázi, kterou pojmenuji jednoduše „blog“ a která bude
-obsahovat tabulky pro uložení článků a komentářů.<br /><br />
+obsahovat tabulky pro uložení příspěvků a komentářů.<br /><br />
 </p>
 
-<p>Tabulka pro články:</p>
+<p>Tabulka pro příspěvky, články:</p>
 <pre>
 CREATE TABLE IF NOT EXISTS `article` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -45,9 +45,11 @@ CREATE TABLE IF NOT EXISTS `comment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci AUTO_INCREMENT=1 ;
 </pre>
 
-<p>Nyní si naplníme tabulku „article“ daty. Vzorová data si můžete stáhnout <a href="{$basePath}/files/blog.sql" title="Databáze blog">zde</a>.
+<p>Nyní si naplníme tabulku „article“ daty. Vzorová data si můžete stáhnout <a href="{$basePath}/files/blog.sql" title="Databáze blog">zde</a>
+    nebo pokud si aplikaci stáhnete z <a href="https://github.com/legiris/blog-dev" title="GitHub: blog repository" target="_blank">GitHubu</a>,
+    tak data najdete ve složce <code>src/pds/BlogBundle/Resources/data</code>.
 Pro reálné nasazení by bylo potřeba si vytvořit trochu více
-sofistikovanější systém, který by nám umožňoval přidávat a&nbsp;editovat jednotlivé články.
+sofistikovanější systém, který by nám umožňoval přidávat a&nbsp;editovat jednotlivé příspěvky.
 My si v této chvíli práci usnadníme a budeme předpokládat, že takový systém již máme.
 </p>	
 
@@ -99,7 +101,7 @@ objektů na relační databázi, tedy o vrstvu ORM. Proto si vytvoříme vlastn�
 
 
 <h3>Entita jako základní prvek modelu</h3>
-<p>Jako první si vytvoříme entitu „Article“, která nám bude definovat samotný článek. V pojetí PHP entitě bude odpovídat
+<p>Jako první si vytvoříme entitu „Article“, která nám bude definovat samotný článek nebo příspěvek na blogu. V pojetí PHP entitě bude odpovídat
 samostatná třída. V adresáři <code>pds/BlogBundle</code> si vytvoříme novou složku „Entity“ a do ní umístíme tuto třídu.
 V této třídě pak jednotlivé atributy popíšeme pomocí anotací tak, abychom s nimi mohli v Doctrine2 pracovat.
 Přehled anotací najdete <a href="http://docs.doctrine-project.org/en/2.0.x/reference/basic-mapping.html" title="doctrine docs: Basic Mapping"

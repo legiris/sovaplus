@@ -1,12 +1,12 @@
 {block content}
 <div id="middle-page">
   <h2>Formulář &#8211; pokračování</h2>
-  <p>V tomto díle seriálu si ukážeme následující:</p>
+  <p>V tomto díle tutoriálu si ukážeme následující:</p>
     <ul>
       <li>ruční vykreslení formuláře</li>
       <li>flash messages</li>
-      <li>kontrola odeslaných dat</li>
       <li>implementace formulářové třídy</li>
+      <!--<li>kontrola odeslaných dat</li>-->
     </ul>
   
   <h3>Ruční vykreslení formuláře</h3>
@@ -49,6 +49,16 @@
   
   <p>Po aktualizaci formuláře nám stránka bude vypadat takto:</p>
   <img src="{$basePath}/images/form-rendering.jpg" width="600" height="496" alt="Přidání komentáře" title="Přidání komentáře" class="center" />
+  
+  <p>Úpravou šablony jsme si zároveň definovali metodu předání dat na server a také atribut <code>action</code>. Proto
+      z&nbsp;<span class="i">CommentControlleru</span> můžeme odstranit následující kód:
+  </p>
+  <pre>
+    // ->setAction($this->generateUrl('pds_blog_comment_add',
+    //    [ 'articleId' => $comment->getArticleId() ] ))
+    // ->setMethod('POST')
+</pre>
+  
   
   <h3>Flash messages</h3>
   <p>Pod flash messages si můžeme představit krátké zprávičky, které uživatele informují o výsledku nějaké akce. V našem
@@ -123,6 +133,128 @@ if ($form->isValid()) {
       <code>$comment->setId(1);</code>.</p>
   
   
+  <h3>Implementace formulářové třídy</h3>
+  <p>Nyní přejdeme k doporučené implementaci formuláře. Formulář umístíme do samostatné třídy. To nám bude umožňovat
+      jeho znovupoužití v aplikaci. V <code>pds/BlogBundle</code> si vytvoříme složku <code>Form</code>, do
+      které umístíme novou třídu <code>CommentType.php</code>. Pro formulář využijeme <code>FormBuilderInterface</code>.
+      Funkce <code>getName()</code> nám potom vrací název formulářového typu, je nutné ji definovat, protože potřebujeme
+      přepsat původní metodu v <code>Symfony\Component\Form\FormTypeInterface</code>.
+  </p>
+  <pre>
+&lt;?php
+
+namespace pds\BlogBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+class CommentType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('login')
+            ->add('text', 'textarea', [
+                'attr' => [ 'cols' => 30, 'rows' => 5 ]
+            ])
+            ->add('Vložit', 'submit');
+    }
+    
+    public function getName()
+    {
+        return 'comment';
+    }
+}
+  </pre>
+  <p>Pokud by nás zajímala hodnota proměnné <code>$articleId</code>, je možné si ji vytáhnout z pole <code>$options</code>
+      tímto způsobem:
+  </p>
+  <pre>$articleId = $options['data']->getArticleId();</pre>
+  
+  <p>Nicméně hodnotu ID nepotřebujeme, takže "Keep it simple".<br /><br /></p>
+  
+  <p>Nakonec akorát musíme doplnit třídu <code>CommentType()</code> do metody <code>addAction()</code> v <span class="i">CommentControlleru</span>.
+      To provedeme tímto způsobem:</p>
+  <pre>$form = $this->createForm(new CommentType(), $comment);</pre>
+  
+  <p>Na začátku souboru pak nesmíme zapomenout použít:</p>
+  <pre>use pds\BlogBundle\Form\CommentType;</pre>
+      
+  <p>Metoda <code>addAction()</code> tedy ve výsledku bude vypadat takto:</p>
+      
+  <pre>
+// src/pds/BlogBundle/Controller/CommentController.php
+
+namespace pds\BlogBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use pds\BlogBundle\Entity\Comment;
+use pds\BlogBundle\Form\CommentType;
+
+class CommentController extends Controller
+{
+    public function addAction($articleId, Request $request)
+    {
+        $comment = new Comment();
+        $comment->setArticleId($articleId);
+        
+        $form = $this->createForm(new CommentType(), $comment);
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            try {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($comment);
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('success',
+                                                        'Komentář byl uložen.');
+            } catch (\Doctrine\DBAL\DBALException $e) {
+                $this->get('session')->getFlashBag()->add('error',
+                                                        'Komentář se nepodařilo uložit.');
+            }
+
+            return $this->redirect($this->generateUrl('pds_blog_article',
+                                                        [ 'id' => $articleId ] ));
+        }
+        
+        return $this->render('pdsBlogBundle:Comment:add.html.twig', [
+            'comment' => $comment,
+            'form' => $form->createView()
+        ]);
+    }
+
+    // ...
+}
+</pre>
+  
+  <h2>Slovo na závěr</h2>
+  
+  <p>Tímto se nám podařilo dostat na aspoň prozatímní konec tutoriálu, ve kterém jsme se lehce seznámili
+      se základy Symfony2 frameworku a Doctrine, a to na jednoduché aplikaci, která nám může posloužit jako
+      odrazový můstek pro větší projekty. 
+      Zároveň si dovolím vyslovit jednu přípomínku &#8211; dostat aplikaci aspoň do současného stavu vydalo na sedm dílů
+      našeho tutoriálu, a to jsme si nepředstavili veškeré možnosti, které Symfony2 nabízí.
+      Tady prosím o schovívavost. Za prvé Symfony2 je hodně rozsáhlý framework, jehož zvládnutí
+      vyžaduje o poznání více času než například Nette a za druhé součástí frameworku je i&nbsp;Doctrine, takže na
+      začátek je to dost informací a záleží je na vás, jestli se tím necháte odradit nebo ne :)<br /><br />
+  </p>
+
+  <p>Na závěr ještě doplním další náměty, o které by se dala aplikace rozšířit.</p>
+  <ul>
+      <li>implementace repository &#8211; není vhodné, aby dotazy na databázi byly v controlleru</li>
+      <li>přihlašování a odhlašování uživatelů</li>
+      <li>uživatelské účty</li>
+      <li>administrační systém pro vkládání příspěvků</li>
+      <li>stránkování příspěvků, komentářů</li>
+      <li>různé statistiky</li>
+      <li>... a další</li>
+  </ul>
+  
+  <h3>Zdrojový kód</h3>
+  <p>Veškerý zdrojový kód je dostupný na <a href="https://github.com/legiris/blog-dev" title="GitHub" target="_blank">GitHubu</a>.</p>
+      
   
   <div class="small-bar">
     <p><a href="{$basePath}/piseme-prvni-aplikaci-v-symfony2/first-form" title="První formulář">&lt;&lt; Předchozí</a></p>
