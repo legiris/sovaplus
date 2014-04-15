@@ -1,6 +1,6 @@
 <?php
 
-class KontaktPresenter extends BasePresenter
+class OMnePresenter extends BasePresenter
 {
     public function renderDefault()
     {

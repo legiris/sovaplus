@@ -5,8 +5,9 @@
     <p>V tomto tutoriálu si ukážeme, jakým způsobem můžeme v Symfony2 vytvořit naši první aplikaci v podobě jednoduchého blogu
        s&nbsp;komentáři. 
        Symfony2 framework vychází z návrhového vzoru MVC a za jeho vývojem stojí firma Sensio Labs.
-       Více se o frameworku dozvíte přímo na stránce <a href="http://symfony.com/" title="Symfony2" target="_blank">symfony.com</a>.
-       Na závěr ještě doplním, co všechno budeme potřebovat:
+       Více se o frameworku dozvíte přímo na stránce <a href="http://symfony.com/" title="Symfony2" target="_blank">symfony.com</a>
+       a nebo si můžete přečíst článek <a href="http://www.zdrojak.cz/clanky/symfony2-tesi-me/" title="Symfony2, těší mě!" target="_blank">Symfony2, těší mě!</a>,
+       což ostatně mohu jedině doporučit. Na závěr ještě doplním, co všechno budeme potřebovat:
     </p>
     <ul>
         <li>povědomí o tom, jak funguje MVP/MVC architektura</li>
@@ -31,10 +32,18 @@
     <h3>Začínáme</h3>
     <p>Nejprve si nainstalujeme Symfony2 framework &#8211; odkaz pro stažení je
         <a href="http://symfony.com/download" title="Symfony2: download" target="_blank">zde</a>.
-       Nejjednodušší je provést instalaci přes <span class="i">Composer</span>. Pokud jste s Composerem nikdy nepracovali,
+       Nejjednodušší je provést instalaci přes <a href="https://getcomposer.org/" title="Get Composer" target="_blank">Composer</a>. Otevřeme
+       konzoli (na Windows používám Git Bash) a spustíme následující příkaz:</p>
+       <pre>composer create-project symfony/framework-standard-edition [directory]/ 2.4.3</pre>
+       <p>Pokud si tedy pro projekt vytvořím novou složku <code>blog</code>, tak zadám tyto příkazy:</p>
+       <pre>cd blog
+composer create-project symfony/framework-standard-edition ./ 2.4.3</pre>    
+       
+    <p>
+       Pokud jste s Composerem nikdy nepracovali,
        můžete si stáhnout zazipovanou verzi, ale určitě doporučuji se na Composer podívat.
        Symfony2 framework si umístíme do kořenového adresáře našeho projektu.
-       Na Windows používám <code>xampp</code>, takže v <code>htdocs</code> mám vytvořenou složku <code>web</code> a tam mám
+       Pod Windows využívám vývojové prostředí <code>xampp</code>, takže v <code>htdocs</code> mám vytvořenou složku <code>web</code> a tam mám
        jednotlivé projekty. Moje adresářová struktura vypadá takto:
     </p>	
     <pre>
@@ -48,8 +57,10 @@
           web/
             app_dev.php</pre>
 		
-    <p>Adresa pro zobrazení na localhostu potom bude ve tvaru <code>http://localhost/web/blog/web/app_dev.php</code>.<br />
-       Tam by se nám měla zobrazit uvodní stránka Symfony2 frameworku. Stránku <code>app_dev.php</code> musíme zadat.
+    <p>Vzhledem k tomu, že Symfony rozlišuje produkční a vývojové prostředí, tak
+        adresa pro zobrazení na localhostu bude ve tvaru <code>http://localhost/web/blog/web/app_dev.php</code>
+        &#8211; 
+        tam by se nám měla zobrazit uvodní stránka Symfony2 frameworku. Pro produkční prostředí je pak určen <code>app.php</code>.
     </p>
     <img src="{$basePath}/images/symfony2.jpg" title="Symfony2 demo page" alt="Symfony2 framework"  width="600" height="421" class="center" />
     <p>
@@ -104,7 +115,7 @@ public function indexAction()
     <pre>{{ array.name }}</pre>
     <p>Více informací o práci se šablonami najdete v <a href="http://symfony.com/doc/current/book/templating.html"
        title="Symfony2: Creating and using Templates" target="_blank">dokumentaci</a> k Symfony2 frameworku. Nyní se již
-       vrhneme na zmíněný blog.</p>
+       vrhneme na zmíněný blog.<br /> Pozn.: V dalším pokračování již budu pro zápis pole využívat konstrukci <code>[ ... ]</code>.</p>
 	
     <div class="small-bar">
       <p><a href="{$basePath}/piseme-prvni-aplikaci-v-symfony2/our-blog" title="Vytváříme jednoduchý blog">Následující &gt;&gt;</a></p>
