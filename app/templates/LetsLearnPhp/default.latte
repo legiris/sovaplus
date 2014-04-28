@@ -1,0 +1,50 @@
+{block content}
+<div id="middle-page">
+  <h1>Let's Learn PHP</h1>
+  <p>This page contains some examples for PHP testing, which you should solve with logical and
+      analytical thinking. 
+      These examples test your basic PHP skills and knowledge, that's why
+      <span class="i">you should do it without PHP documentation or testing code on your localhost.</span>
+  </p>
+  <hr />
+  <h4>Example 1:</h4>
+  <p>Read the following code. What will be the value of the output variable?</p>
+  <pre>
+$number = 10;
+
+function math($number) {
+    $number *= 10;
+}
+
+math($number);
+
+echo '&lt;p&gt;Result: ' . $number . '&lt;/p&gt;';
+</pre>
+  
+  <h4>Example 2:</h4>
+  <p>Find and correct an error in the code. Syntax is OK.</p>
+  <pre>
+$a = 0;
+$b = -5;
+
+function isGreater($a, $b) {
+    if ($a > $b) {
+        return $a;
+    } elseif ($b > $a) {
+        return $b;
+    } else {
+        return FALSE;
+    }
+}
+
+$number = isGreater($a, $b);
+
+if ($number) {
+    echo '&lt;p&gt;Greater is ' . $number . '.&lt;p&gt;'; 
+} else {
+    echo '&lt;p&gt;Variables are same.&lt;p&gt;';
+}
+</pre>
+    
+</div>
+{/block}

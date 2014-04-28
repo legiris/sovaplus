@@ -1,0 +1,141 @@
+{block content}
+<div id="middle-page">
+    <h1>Spaghetti Code in PHP</h1>
+    <p>Sometimes it can happen that we need to work with an older application code using PHP and MySQL.
+       There is an application's example with base CRUD operations &#8211; that means create, read,
+       update and delete. It is only a frame of the application, so it is not implemented data
+       protection(!), MySQL error handling or CSS, JavaScript...<br />
+       Each record in a database will represent an author. Let's go to create easy app for manage it. 
+       It may look like this:
+    </p>
+    <img src="{$basePath}/images/spaghetti-code-app.jpg" width="558" height="482" title="Example of application" alt="Example of application" class="center" />
+    
+    <p>First we prepare a table with some data.</p>
+    <pre>
+CREATE TABLE IF NOT EXISTS `author` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8_general_ci NOT NULL,
+  `surname` varchar(100) COLLATE utf8_general_ci NOT NULL,
+  `birth` date NOT NULL,
+  `death` date NOT NULL,
+  `country` varchar(50) COLLATE utf8_general_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1 ;
+
+INSERT INTO `author` (`id`, `name`, `surname`, `birth`, `death`, `country`) VALUES
+(1, 'Karl', 'May', '1842-02-25', '1912-03-30', 'Germany'),
+(2, 'Jaroslav', 'Foglar', '1907-07-06', '1999-01-23', 'Czech Republic'),
+(3, 'Charles', 'Dickens', '1812-02-07', '1870-06-09', 'England'),
+(4, 'Edgar Alan', 'Poe', '1809-01-19', '1849-10-07', 'USA');
+</pre>
+    
+    <p>Then, we need only one file &#8211; index.php. At the beginning of the file we add the application logic, it is
+       the main part with <code>php</code> code.
+    </p>
+<pre>
+&lt;?php
+$connect = mysql_connect('localhost', 'root', '');
+if (!$connect) {
+    die('No DB connection: ' . mysql_error() . '. Please send email at root@domain...');
+}
+
+mysql_select_db('oop');
+mysql_query('SET NAMES utf8');
+mysql_query('DEFAULT CHARSET=utf8');
+
+if (isset($_POST['save'])) {
+    $data = $_POST['form'];
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        $query = mysql_query("
+            UPDATE author SET
+                name = '$data[name]',
+                surname = '$data[surname]',
+                birth = '$data[birth]',
+                death = '$data[death]',
+                country = '$data[country]'
+            WHERE
+                id = $id
+            ")
+        ;
+    } else {
+        $query = mysql_query("
+            INSERT INTO author
+                (name, surname, birth, death, country)
+            VALUES
+                ('$data[name]', '$data[surname]', '$data[birth]', '$data[death]',
+                 '$data[country]')
+            ")
+        ;
+    }
+    header('Location: index.php');
+} elseif (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $query = mysql_query("DELETE FROM author WHERE id = $id");
+    header('Location: index.php');
+} elseif (isset($_GET['action']) && $_GET['action'] == 'edit' && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $query = mysql_query("SELECT id, name, surname, birth, death, country FROM author
+                            WHERE id = $id");
+    $guy = mysql_fetch_assoc($query);
+}
+
+$authors = [];
+$query = mysql_query("SELECT id, name, surname, birth, death, country FROM author");
+while ($author = mysql_fetch_assoc($query)) {
+    $authors[] = $author;
+}
+?&gt;
+</pre>
+    <p>Then follows the <code>html</code> code.</p>
+<pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;Spaghetti Code&lt;/title&gt;
+    &lt;link rel="icon" type="image/x-icon" href="favicon.ico" /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h2&gt;Add or edit data&lt;/h2&gt;
+    &lt;form method="POST"&gt;
+    &lt;table&gt;
+      &lt;tr&gt;&lt;td&gt;Name:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="form[name]"
+                value="&lt;?php if (isset($guy)) { echo $guy['name']; }?&gt;" /&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Surname:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="form[surname]" 
+                value="&lt;?php if (isset($guy)) { echo $guy['surname']; }?&gt;" /&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Birth:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="form[birth]" 
+                value="&lt;?php if (isset($guy)) { echo $guy['birth']; }?&gt;" /&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Death:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="form[death]" 
+                value="&lt;?php if (isset($guy)) { echo $guy['death']; }?&gt;" /&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Country:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="form[country]" 
+                value="&lt;?php if (isset($guy)) { echo $guy['country']; }?&gt;" /&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="submit" name="save" value="Save" /&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;/table&gt;
+    &lt;/form&gt;
+    &lt;p&gt;&lt;a href="index.php" title="Na hlavní stránku"&gt;Back to main page&lt;/a&gt;&lt;/p&gt;
+    &lt;hr /&gt;
+    &lt;h2&gt;List of Authors&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;tr&gt;&lt;th&gt;Id&lt;/th&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Surname&lt;/th&gt;&lt;th&gt;Date of Birth&lt;/th&gt;
+          &lt;th&gt;Date of Death&lt;/th&gt;&lt;th&gt;Country&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;
+      &lt;?php foreach ($authors as $author) { ?&gt;
+      &lt;tr&gt;
+        &lt;td&gt;&lt;?= $author['id'] ?&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;?= $author['name'] ?&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;?= $author['surname'] ?&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;?= $author['birth'] ?&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;?= $author['death'] ?&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;?= $author['country'] ?&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;a href="?action=edit&id=&lt;?= $author['id'] ?&gt;"&gt;Edit&lt;/a&gt;&amp;nbsp;&amp;nbsp;
+            &lt;a href="?action=delete&id=&lt;?= $author['id'] ?&gt;"&gt;Delete&lt;/a&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;?php } ?&gt;
+    &lt;/table&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+    
+</div>
+{/block}
